@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F7FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131A22" media="(prefers-color-scheme: dark)">
+<script>(function(){var t=null;try{var v=JSON.parse(localStorage.getItem('sizheng-timeline-v1')||'{}');if(v&&(v.theme==='light'||v.theme==='dark'))t=v.theme;}catch(_){}if(!t){try{t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(_){t='light';}}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;})();</script>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="史纲时间轴">
+<link rel="manifest" href="data:application/octet-stream;base64,ewogICJuYW1lIjogIuWPsue6suaXtumXtOi9tCIsCiAgInNob3J0X25hbWUiOiAi5Y+y57qy5pe26Ze06L20IiwKICAibGFuZyI6ICJ6aC1DTiIsCiAgImRlc2NyaXB0aW9uIjogIuS4reWbvei/keeOsOS7o+WPsue6suimgSAxMDQg5Liq55+l6K+G54K55pe26Ze06L20IiwKICAic3RhcnRfdXJsIjogIi4uL2luZGV4Lmh0bWwiLAogICJzY29wZSI6ICIuLi8iLAogICJkaXNwbGF5IjogImZ1bGxzY3JlZW4iLAogICJkaXNwbGF5X292ZXJyaWRlIjogWyJmdWxsc2NyZWVuIiwgInN0YW5kYWxvbmUiLCAibWluaW1hbC11aSJdLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxMzFBMjIiLAogICJ0aGVtZV9jb2xvciI6ICIjMTMxQTIyIiwKICAiaWNvbnMiOiBbCiAgICB7ICJzcmMiOiAiaWNvbi0xOTIucG5nIiwgInNpemVzIjogIjE5MngxOTIiLCAidHlwZSI6ICJpbWFnZS9wbmciIH0sCiAgICB7ICJzcmMiOiAiaWNvbi01MTIucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkiIH0KICBdCn0K">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<title>史纲时间轴 · sadpotatomine 的复习本</title>
+<style>
+:root{
+  --bg:#F5F7FA;--panel:#FFFFFF;--sunk:#E8EDF3;--ink:#1E2A36;--ink-2:#455668;--ink-3:#5F7186;
+  --line:#D8E0EA;--line-2:#E6ECF2;--hover:#EDF2F7;--focus:#2470B8;--accent:#2470B8;--accent-hover:#1D5F9E;
+  --warn-bg:#F8F3E7;--warn-line:#E4D7B8;--warn-ink:#7A5E1E;--warn-k:rgba(176,141,52,.15);
+  --mn-bg:#EAF3F6;--mn-line:#BFD9DE;--mn-ink:#285E6B;
+  --gold:#90701E;--green:#247A68;--mark:rgba(74,144,217,.28);--hl:#1D4ED8;
+  --shadow:0 1px 2px rgba(20,34,52,.06),0 10px 30px rgba(20,34,52,.12);
+  --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","Noto Serif SC",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
+  --era:#72879A;--era-ink:#54687C;--era-tint:rgba(114,135,154,.11);
+  /* 动效标尺（Apple 标准值）：hover 150ms / 按压 100ms / 入场 250ms / 结构 320ms */
+  --ease-apple:cubic-bezier(0.16,1,0.3,1);--ease-snappy:cubic-bezier(0.2,0,0,1);--ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+  --ease:var(--ease-apple);--ease-out:var(--ease-apple);
+  --dur-micro:150ms;--dur-press:100ms;--dur-enter:250ms;--dur-struct:320ms;
+  /* 时间轴收起/展开专用：更长的时长 + 更平缓的入场曲线（起步缓、出程长尾），淡入淡出与滑动错峰衔接 */
+  --dur-ribbon:560ms;--ease-ribbon:cubic-bezier(0.22,1,0.36,1);
+  /* 沉浸阅读进/出专用：只驱动 transform/opacity（GPU 合成层），一次到位、长尾缓动，进出同帧反向，不分段衔接 */
+  --dur-immersive:640ms;--ease-immersive:cubic-bezier(0.22,1,0.36,1);
+  /* 翻页专用：新页淡入滑动 420ms；旧页淡出 160ms 先行，两段同曲线衔接成一次交叉过渡 */
+  --dur-page:420ms;--dur-page-out:160ms;
+  --ease-soft:cubic-bezier(0.22,1,0.36,1);--ease-draw:cubic-bezier(0.65,0,0.45,1);--dur-ui:250ms;
+  /* 玻璃配方（只给浮动 chrome）：tint + blur 链(saturate/brightness) + 不对称 rim + ring */
+  --glass-tint:rgba(255,255,255,.45);
+  --glass-blur:blur(20px) saturate(170%) brightness(1.06);
+  --glass-border:rgba(255,255,255,.65);
+  --glass-rim-top:rgba(255,255,255,.90);
+  --glass-rim-bottom:rgba(0,0,0,.06);
+  --glass-ring:rgba(255,255,255,.35);
+  --glass-shadow:0 8px 24px rgba(20,34,52,.10);
+  --glass-shadow-up:0 -8px 24px rgba(20,34,52,.10);
+  --glass-insets:inset 0 1px 1px var(--glass-rim-top),inset 0 -1px 1px var(--glass-rim-bottom),inset 1px 0 1px rgba(255,255,255,.20),inset -1px 0 1px rgba(255,255,255,.20),0 0 0 .5px var(--glass-ring);
+  --on-glass:rgba(255,255,255,.50);--on-glass-hover:rgba(255,255,255,.78);
+  /* 圆角等级：chips/按钮/开关全胶囊，内容卡片 24px，框架表面（顶栏/底栏/抽屉）28px，节点全圆 */
+  --r-chip:999px;--r-card:24px;--r-frame:28px;
+}
+:root[data-theme="dark"]{
+  --bg:#131A22;--panel:#1A232E;--sunk:#232F3D;--ink:#EAF0F6;--ink-2:#C2CFDC;--ink-3:#9FB0C2;
+  --line:#2E3B4A;--line-2:#263241;--hover:#222E3C;--focus:#7DB6F0;--accent:#357EC2;--accent-hover:#2C6BA8;
+  --warn-bg:#2E2A1E;--warn-line:#4A4230;--warn-ink:#E3C98A;--warn-k:rgba(227,201,138,.16);
+  --mn-bg:#182A30;--mn-line:#2E4A52;--mn-ink:#A8D3DC;
+  --gold:#D9B45C;--green:#62BFA6;--mark:rgba(125,182,240,.32);--hl:#93C5FD;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.45);
+  --glass-tint:rgba(15,23,42,.55);
+  --glass-blur:blur(20px) saturate(170%) brightness(1.08);
+  --glass-border:rgba(255,255,255,.14);
+  --glass-rim-top:rgba(255,255,255,.35);
+  --glass-rim-bottom:rgba(255,255,255,.08);
+  --glass-ring:rgba(255,255,255,.10);
+  --glass-shadow:0 8px 32px rgba(0,0,0,.35);
+  --glass-shadow-up:0 -8px 32px rgba(0,0,0,.35);
+  --on-glass:rgba(255,255,255,.08);--on-glass-hover:rgba(255,255,255,.16);
+}
+[data-era=cn1]{--era:#3D7AB8;--era-ink:#2A5F92;--era-tint:rgba(61,122,184,.10)}
+[data-era=cn2]{--era:#A85A54;--era-ink:#8A423C;--era-tint:rgba(168,90,84,.09)}
+[data-era=cn3]{--era:#B07D45;--era-ink:#8A5F30;--era-tint:rgba(176,125,69,.10)}
+[data-era=cn4]{--era:#4E8A74;--era-ink:#386A56;--era-tint:rgba(78,138,116,.10)}
+[data-era=cn5]{--era:#8C7360;--era-ink:#6E5747;--era-tint:rgba(140,115,96,.10)}
+  [data-theme="dark"] [data-era=cn1]{--era:#6FA3D8;--era-ink:#9CC2EA;--era-tint:rgba(111,163,216,.15)}
+  [data-theme="dark"] [data-era=cn2]{--era:#D08A84;--era-ink:#E2ACA6;--era-tint:rgba(208,138,132,.14)}
+  [data-theme="dark"] [data-era=cn3]{--era:#D2A870;--era-ink:#E4C08E;--era-tint:rgba(210,168,112,.14)}
+  [data-theme="dark"] [data-era=cn4]{--era:#84B8A4;--era-ink:#A8D2C0;--era-tint:rgba(132,184,164,.14)}
+  [data-theme="dark"] [data-era=cn5]{--era:#C2A48C;--era-ink:#D6BCA4;--era-tint:rgba(194,164,140,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);isolation:isolate;transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
+/* 玻璃的底料：蓝色 mesh 渐变，玻璃元素才有东西可磨 */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 50% at 15% 0%,rgba(37,99,235,.20),transparent 70%),radial-gradient(50% 45% at 90% 10%,rgba(96,165,250,.18),transparent 70%),radial-gradient(55% 60% at 85% 90%,rgba(167,139,250,.16),transparent 70%),radial-gradient(45% 40% at 5% 85%,rgba(34,211,238,.14),transparent 70%)}
+[data-theme="dark"] body::before{background:radial-gradient(60% 50% at 15% 0%,rgba(37,99,235,.28),transparent 70%),radial-gradient(50% 45% at 90% 10%,rgba(59,130,246,.22),transparent 70%),radial-gradient(55% 60% at 85% 90%,rgba(139,92,246,.20),transparent 70%),radial-gradient(45% 40% at 5% 85%,rgba(14,165,233,.16),transparent 70%)}
+/* 有机 blob：8 值 border-radius + 缓慢 morph，只在背景层低透明度漂移，不挡内容（玻璃顶/底栏能透出一点蓝） */
+.bg-blobs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.blob{position:absolute;display:block;filter:blur(30px);opacity:.32;background:linear-gradient(135deg,rgba(59,130,246,.55),rgba(147,197,253,.32))}
+.blob-a{width:340px;height:340px;left:-90px;top:15%;border-radius:32% 68% 63% 37%/38% 34% 66% 62%;animation:blobMorphA 17s ease-in-out infinite alternate}
+.blob-b{width:260px;height:260px;right:-70px;bottom:6%;border-radius:62% 38% 33% 67%/60% 64% 36% 40%;animation:blobMorphB 21s ease-in-out infinite alternate}
+@keyframes blobMorphA{from{border-radius:32% 68% 63% 37%/38% 34% 66% 62%;transform:rotate(0deg) scale(1)}to{border-radius:58% 42% 38% 62%/45% 60% 40% 55%;transform:rotate(24deg) scale(1.08)}}
+@keyframes blobMorphB{from{border-radius:62% 38% 33% 67%/60% 64% 36% 40%;transform:rotate(0deg) scale(1)}to{border-radius:38% 62% 57% 43%/52% 38% 62% 48%;transform:rotate(-20deg) scale(1.1)}}
+[data-theme="dark"] .blob{opacity:.24}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+svg{display:block;flex:none}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* 网格轨道不做过渡：沉浸切换时轨道一次性切换（单次重排），可见运动全部交给 transform/opacity，避免逐帧重排掉帧 */
+.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh}
+
+/* 全局基线：所有可点元素天生带过渡，再按组件补 hover/active */
+button,[role="button"],a,input,select,summary,.btn,.chip,.item,.tag,.pn button,.sel{transition:background-color var(--dur-micro) var(--ease-apple),color var(--dur-micro) var(--ease-apple),border-color var(--dur-micro) var(--ease-apple),box-shadow var(--dur-micro) var(--ease-apple),transform var(--dur-micro) var(--ease-apple),opacity var(--dur-micro) var(--ease-apple);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:hover,.chip:hover,.tag:hover,.pn button:hover:not(:disabled),.sel:hover,.immersive-exit:hover{transform:translateY(-1px)}
+.btn:active,.chip:active,.tag:active,.pn button:active:not(:disabled),.immersive-exit:active{transform:scale(.96);transition-duration:var(--dur-press)}
+.sel:active{transform:scale(.96);transition-duration:var(--dur-press)}
+.item:active{transform:scale(.98);transition-duration:var(--dur-press)}
+
+/* 玻璃配方：只给浮动 chrome（顶栏 / 底部时间轴 / 退出沉浸按钮 / 移动端抽屉） */
+.top,.ribbon,.immersive-exit{isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.top::after,.immersive-exit::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.08) 28%,transparent 58%);mix-blend-mode:screen}
+.top::after{border-radius:0 0 var(--r-frame) var(--r-frame)}
+.immersive-exit::after{border-radius:999px}
+[data-theme="light"] .top::after,[data-theme="light"] .immersive-exit::after{mix-blend-mode:normal}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top,.ribbon,.immersive-exit{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}@media (max-width:760px){.side{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}}
+@media (prefers-reduced-transparency:reduce){.top,.ribbon,.immersive-exit{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}@media (max-width:760px){.side{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}}
+
+/* 顶栏 */
+.top{display:flex;align-items:center;gap:14px;padding:10px max(20px,env(safe-area-inset-right)) 10px max(20px,env(safe-area-inset-left));padding-top:max(10px,env(safe-area-inset-top));border-bottom:1px solid var(--glass-border);border-radius:0 0 var(--r-frame) var(--r-frame);box-shadow:var(--glass-shadow),var(--glass-insets);position:relative;z-index:30;will-change:transform,opacity;transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),transform var(--dur-immersive) var(--ease-immersive),opacity calc(var(--dur-immersive) * .55) var(--ease-immersive),visibility 0s linear 0s}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1 1 0}
+.brand b{font-family:var(--serif);font-weight:700;font-size:21px;letter-spacing:.08em;white-space:nowrap}
+.brand span{font-size:14px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tools{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex:1 1 0;min-width:0}
+.prog{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.prog .bar{width:64px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .45s var(--ease-soft),background-color var(--dur-struct) var(--ease-apple)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;border-radius:var(--r-chip);border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:14px;white-space:nowrap}
+.btn svg{width:17px;height:17px;transition:transform var(--dur-micro) var(--ease-apple),opacity var(--dur-micro) var(--ease-apple)}
+.btn:hover{background:var(--hover);box-shadow:0 4px 16px rgba(20,34,52,.10)}
+.btn[aria-pressed="true"],.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover,.btn[aria-pressed="true"]:hover{opacity:1;background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.sm{min-height:44px;padding:0 12px;font-size:14px;border-radius:var(--r-chip)}
+.btn.on-star{background:transparent;color:var(--gold);border-color:currentColor}
+.btn.on-done{background:transparent;color:var(--green);border-color:currentColor}
+.btn.on-star:hover,.btn.on-done:hover{background:var(--hover);opacity:1}
+.top .btn:not([aria-pressed="true"]),.ribbon .btn:not([aria-pressed="true"]){background:var(--on-glass)}
+.top .btn:not([aria-pressed="true"]):hover,.ribbon .btn:not([aria-pressed="true"]):hover{background:var(--on-glass-hover);box-shadow:0 4px 16px rgba(20,34,52,.10)}
+.icon-btn{width:44px;padding:0}
+.menu-btn,.drawer-head{display:none}
+
+/* 主体 */
+/* 主体一直铺到视口底边、从时间轴胶囊下穿过：不再给底栏预留整条空带（那条带只剩背景渐变，横贯全宽像一整块方形盖住页面）。
+   滚动到底的避让改放进滚动容器内部（.card 的 margin-bottom / .list 的 padding-bottom），内容能滚到胶囊上方，静止时胶囊的玻璃模糊直接透出正文 */
+.wrap{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:0;position:relative}
+.app.ribbon-off .wrap{padding-bottom:0}
+.side{display:flex;flex-direction:column;min-width:0;min-height:0;border-right:1px solid var(--line);background:var(--panel);will-change:transform,opacity;transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),transform var(--dur-enter) var(--ease-apple),opacity calc(var(--dur-immersive) * .55) var(--ease-immersive),visibility 0s linear 0s}
+/* 桌面端侧栏的 transform 只服务于沉浸进出场：进/出都用沉浸时长（移动端抽屉仍走上面的 250ms） */
+@media (min-width:761px){.side{transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),transform var(--dur-immersive) var(--ease-immersive),opacity calc(var(--dur-immersive) * .55) var(--ease-immersive),visibility 0s linear 0s}}
+.side-head{padding:12px 14px 8px;display:grid;gap:9px;border-bottom:1px solid var(--line);background:var(--panel);transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple)}
+.search{position:relative}
+.search>svg{position:absolute;left:11px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.search input{display:block;width:100%;height:44px;padding:0 38px 0 34px;border:1px solid var(--line);border-radius:var(--r-chip);background:var(--panel);font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
+.search input::placeholder{color:var(--ink-3)}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.search input:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(36,112,184,.20)}
+.search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font:14px/1 var(--sans);color:var(--ink-3);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:3px 6px;background:var(--bg);pointer-events:none}
+.search .clear{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:var(--r-chip);background:transparent;color:var(--ink-3);display:grid;place-items:center}
+.search .clear:hover{background:var(--hover);color:var(--ink)}
+.search .clear:active{transform:translateY(-50%) scale(.96);transition-duration:var(--dur-press)}
+.search .clear svg{width:16px;height:16px}
+.search .clear[hidden]{display:none}
+@media (hover:none){.search kbd{display:none}}
+.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.chip{min-height:44px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:14px;color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.chip:hover{background:var(--hover);box-shadow:0 3px 12px rgba(20,34,52,.08)}
+.chip[aria-pressed="true"]{background:transparent;border-color:transparent;color:#fff}
+.sel{position:relative;grid-column:1/-1;min-width:0;max-width:100%;min-height:44px;display:inline-flex;align-items:center;gap:4px;padding:0 26px 0 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--ink-2)}
+.sel:hover{border-color:var(--ink-3);box-shadow:0 3px 12px rgba(20,34,52,.08)}
+.sel::after{content:"";position:absolute;right:11px;top:50%;width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-70%) rotate(45deg)}
+.sel.on{border-color:var(--focus);color:var(--focus);font-weight:600}
+.sel select{position:static;flex:1;min-width:0;width:auto;height:42px;opacity:1;cursor:pointer;-webkit-appearance:none;appearance:none;border:0;background:transparent;font:inherit;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0}
+.sel:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+.side-cap{font-size:14px;color:var(--ink-3);padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(118px + env(safe-area-inset-bottom))}
+.app.ribbon-off .list{padding-bottom:18px}
+.grp{position:relative}
+/* 时代分组之间用半圆弧代替直角分割（S 形曲线感），只画在分组之间、不碰条目 */
+.grp:not(:last-of-type)::after{content:"";display:block;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M6 3 Q60 19 114 3' fill='none' stroke='%23D8E0EA' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/120px 14px no-repeat}
+[data-theme="dark"] .grp:not(:last-of-type)::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14' viewBox='0 0 120 14'%3E%3Cpath d='M6 3 Q60 19 114 3' fill='none' stroke='%232E3B4A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
+/* 详情段落之间的内联 SVG 波浪分隔线 */
+.wave-sep{height:10px;margin:20px 0 -8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='10' viewBox='0 0 220 10'%3E%3Cpath d='M2 5 Q29 0 56 5 T110 5 T164 5 T218 5' fill='none' stroke='%23D8E0EA' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center/220px 10px no-repeat;opacity:.75}
+[data-theme="dark"] .wave-sep{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='10' viewBox='0 0 220 10'%3E%3Cpath d='M2 5 Q29 0 56 5 T110 5 T164 5 T218 5' fill='none' stroke='%232E3B4A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")}
+.era-h{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:8px minmax(0,1fr);align-items:center;gap:0 8px;padding:9px 16px 7px;background:var(--panel);border-bottom:1px solid var(--line-2);font-size:14px;font-weight:600;color:var(--era-ink);transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
+.era-h .dot{width:8px;height:8px;border-radius:50%;background:var(--era);flex:none}
+.era-h .en{white-space:normal;overflow-wrap:anywhere}
+.era-h .yr{grid-column:2;font-weight:400;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.item{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:60px;padding:9px 14px 9px 16px;border:0;border-bottom:1px solid var(--line-2);background:transparent;text-align:left}
+.item:hover{background:var(--hover)}
+.item:active{background:var(--era-tint)}
+.item[aria-current="true"]{background:var(--era-tint)}
+
+.it-y{font-size:15px;font-weight:700;color:var(--era-ink);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.it-m{min-width:0;display:block}
+.it-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;font-size:14.5px;line-height:1.42;color:var(--ink)}
+.item[aria-current="true"] .it-t{font-weight:600}
+.it-s{display:block;margin-top:2px;font-size:14px;line-height:1.4;color:var(--ink-3);white-space:normal;overflow-wrap:anywhere}
+.it-f{display:flex;gap:3px;align-items:center}
+.it-f i{display:block}
+.it-f svg{width:15px;height:15px}
+.it-f .fs{color:var(--gold)} .it-f .fd{color:var(--green)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.empty{padding:44px 24px;text-align:center;color:var(--ink-2);font-size:14px}
+.empty p{margin:0 0 14px;line-height:1.7}
+
+/* 详情 */
+.detail{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--panel);outline:none;transition:background-color var(--dur-struct) var(--ease-apple)}
+/* 卡片盒模型不做过渡：沉浸切换时布局一次到位，可见运动只走 transform/opacity */
+.card{max-width:780px;margin:0 auto;margin-bottom:calc(118px + env(safe-area-inset-bottom));padding:26px 44px 40px}
+.app.ribbon-off .card{margin-bottom:24px}
+.card.enter{animation:enter var(--dur-enter) var(--ease-apple) both}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:14px;font-weight:600;color:var(--era-ink);min-width:0}
+.crumb .dot{width:9px;height:9px;border-radius:50%;background:var(--era);flex:none}
+.crumb .yr{font-weight:400;color:var(--ink-3);white-space:nowrap}
+.head{display:flex;align-items:flex-end;flex-wrap:wrap;gap:6px 18px;margin-top:8px}
+.year{font-family:var(--serif);font-size:78px;line-height:.92;font-weight:600;color:var(--era);letter-spacing:-.01em;font-variant-numeric:lining-nums}
+.when{display:grid;gap:3px;padding-bottom:7px;font-size:14px;color:var(--ink-2);min-width:0}
+.when .date{font-weight:600;color:var(--ink)}
+.when .place{display:flex;align-items:center;gap:4px;color:var(--ink-3)}
+.when .place svg{width:14px;height:14px}
+.acts{display:flex;gap:8px;margin-left:auto;padding-bottom:6px}
+.acts .btn svg{transition:transform var(--dur-micro) var(--ease-spring),color var(--dur-micro) var(--ease-apple)}
+.acts .btn:hover svg{transform:scale(1.15)}
+.acts .btn:active svg{transform:scale(.9)}
+.title{font-family:var(--serif);font-size:31px;line-height:1.28;font-weight:700;letter-spacing:.01em;margin:16px 0 0;text-wrap:balance}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;min-height:44px;padding:6px 14px;border-radius:var(--r-chip);border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--ink-3);text-align:left;line-height:1.45}
+.tag b{color:var(--ink-2);font-weight:600;white-space:nowrap}
+.tag.here{border-color:var(--era);background:var(--era-tint)}
+.tag.here b{color:var(--era-ink)}
+.tag:hover{background:var(--hover);box-shadow:0 4px 14px rgba(20,34,52,.09)}
+.sig{margin:16px 0 0;padding:13px 18px;border-left:3px solid var(--era);background:var(--era-tint);border-radius:0 var(--r-card) var(--r-card) 0;font-size:17px;line-height:1.6;font-weight:500}
+.sig .lab{display:inline-block;margin-right:12px;font-size:14px;font-weight:700;letter-spacing:.1em;color:var(--era-ink);vertical-align:2px}
+.blk{margin-top:28px}
+h3.lab{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;font-weight:700;letter-spacing:.14em;color:var(--ink-3)}
+h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
+.bg{margin:0;font-size:16px;line-height:1.85;color:var(--ink-2)}
+.pts{list-style:none;margin:0;padding:0;display:grid;gap:11px;counter-reset:p}
+.pts li{position:relative;padding-left:36px;font-size:16px;line-height:1.75;counter-increment:p}
+.pts li::before{content:counter(p);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--era-tint);color:var(--era-ink);font-size:14px;font-weight:700;line-height:1;transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
+.hl{font-weight:700;color:var(--hl)}
+.tips{list-style:none;margin:0;padding:14px 18px;display:grid;gap:10px;border:1px solid var(--warn-line);background:var(--warn-bg);border-radius:var(--r-card);corner-shape:superellipse(2)}
+.tips li{font-size:16px;line-height:1.75}
+.tips .k{display:inline-block;margin-right:8px;padding:0 7px;border-radius:5px;background:var(--warn-k);color:var(--warn-ink);font-size:14px;font-weight:700;line-height:20px;vertical-align:1px}
+.mn{margin:0;padding:12px 18px;border:1px dashed var(--mn-line);background:var(--mn-bg);border-radius:var(--r-card);corner-shape:superellipse(2);color:var(--mn-ink);font-family:var(--serif);font-size:17.5px;letter-spacing:.06em;line-height:1.6}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+.pn button{display:grid;gap:3px;min-height:66px;padding:10px 16px;border-radius:var(--r-card);border:1px solid var(--line);background:var(--panel);text-align:left;min-width:0}
+.pn button:hover:not(:disabled){background:var(--hover);box-shadow:0 6px 18px rgba(20,34,52,.10)}
+.pn .next{text-align:right}
+.pn small{font-size:14px;color:var(--ink-3)}
+.pn b{font-size:14.5px;font-weight:600;white-space:normal;overflow-wrap:anywhere}
+.pn button:disabled{opacity:.5;cursor:default}
+.note{margin:30px 0 0;font-size:14px;line-height:1.7;color:var(--ink-3);text-align:center}
+
+/* 时间带 */
+.ribbon-meta{display:none;position:absolute;top:0;left:0;right:0;align-items:center;justify-content:space-between;gap:12px;font-size:14px;line-height:22px;pointer-events:none}
+.era-current{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--era-ink)}
+.ribbon-count{color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:1100px){.ribbon-meta{display:flex}.band .bl{display:none}}
+
+/* 胶囊自身的玻璃底色比顶栏更透：身后就是正文，磨砂透出内容才像浮在页面上，而不是一块实心板 */
+.ribbon{--glass-tint:rgba(255,255,255,.30)}
+[data-theme="dark"] .ribbon{--glass-tint:rgba(13,20,32,.42)}
+.ribbon{display:flex;align-items:center;gap:14px;width:auto;height:auto;min-height:0;padding:8px 16px;border:1px solid var(--glass-border);border-radius:999px;box-shadow:var(--glass-shadow),var(--glass-insets);position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:1180px;margin:0 auto;z-index:40;transition:transform var(--dur-ribbon) var(--ease-ribbon),opacity calc(var(--dur-ribbon) * .82) var(--ease-ribbon) 60ms,background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),visibility 0s linear 0s;will-change:transform,opacity}
+.play{border-radius:50%;flex:none}
+.track{position:relative;flex:1;height:72px;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:var(--r-card)}
+.track:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
+/* 直线轨道：轨道本体是一条内联 SVG 直线（JS 按轨道宽度生成 path，中心线 y=27），连接线为圆点链；
+   进度是同一条 path 的 stroke-dasharray 截取，小球/节点圆点都落在同一条直线上 */
+.rail-svg{position:absolute;left:0;top:0;width:100%;height:72px;pointer-events:none;overflow:visible}
+.rail-w{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-dasharray:0.1 7.5}
+.rail-fill{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;opacity:.9;pointer-events:none}
+/* Wobble 弹簧驱动小球时关掉 transform 过渡，避免过渡与逐帧写入互相拉扯 */
+.track.springy .cur-line,.track.springy .cur-dot,.track.springy .cur-lab{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.speed{display:flex;align-items:center;padding:3px;gap:2px;border-radius:999px;background:var(--sunk);box-shadow:inset 0 0 0 1px var(--line-2);flex:none;transition:background-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.speed button{min-height:38px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--ink-2);font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.speed button:hover{color:var(--ink);background:var(--panel);transform:translateY(-1px)}
+.speed button:active{transform:scale(.96);transition-duration:var(--dur-press)}
+.speed button[aria-pressed="true"]{background:transparent;color:#fff;font-weight:600}
+.play-count{font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;min-width:54px;text-align:right}
+.band{position:absolute;top:0;height:40px;pointer-events:none}
+.band .bl{position:absolute;left:3px;right:3px;top:1px;font-size:14px;font-weight:600;color:var(--era-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band .bb{position:absolute;left:1px;right:1px;top:24px;height:6px;border-radius:3px;background:var(--era);opacity:.2}
+.dot-e{position:absolute;top:27px;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--panel);border:1.5px solid var(--era);pointer-events:none;transition:opacity var(--dur-micro) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),transform var(--dur-enter) var(--ease-spring)}
+.dot-e.now{background:var(--era);transform:scale(1.65)}
+.dot-e.done{background:var(--era)}
+.dot-e.dim{opacity:.18}
+.cur-line{position:absolute;left:0;top:13px;width:2px;height:28px;margin-left:-1px;border-radius:1px;background:var(--ink);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple)}
+.cur-dot{position:absolute;left:0;top:27px;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--era);box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--era);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.cur-dot::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--era);opacity:0;pointer-events:none}
+.app.playing .cur-dot::after{animation:curPulse 1.6s var(--ease-out) infinite}
+@keyframes curPulse{0%{transform:scale(.5);opacity:.8}70%{transform:scale(1.3);opacity:0}100%{transform:scale(1.3);opacity:0}}
+.app.playing .play{animation:playPulse 2s var(--ease-apple) infinite}
+/* 播放中游标位置由逐帧线性推进以 transform 直接写入（合成层，不触发布局）：
+   关掉 transform 的过渡，否则缓动曲线 + 过渡时长会让小球冲到节点、停住、再冲向下一个 */
+.app.playing .cur-line,.app.playing .cur-dot,.app.playing .cur-lab{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+@keyframes playPulse{0%,100%{box-shadow:0 0 0 0 rgba(36,112,184,0)}50%{box-shadow:0 0 0 6px rgba(36,112,184,.14)}}
+.tick,.cur-lab{position:absolute;top:47px;transform:translateX(-50%);font-size:14px;line-height:20px;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.tick{color:var(--ink-3);transition:opacity var(--dur-micro) var(--ease-apple)}
+.tick.hide{opacity:0}
+.cur-lab{left:0;font-size:14px;font-weight:700;color:var(--era-ink);will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
+.tick.first,.cur-lab.first{transform:none}
+.tick.last,.cur-lab.last{transform:translateX(-100%)}
+
+/* 工具栏：收起时间轴 / 沉浸阅读。时间轴是固定浮动层，收起只走 transform + opacity，布局高度不变 */
+.app.ribbon-off .ribbon{transform:translateY(135%);opacity:0;pointer-events:none;visibility:hidden;transition:transform var(--dur-ribbon) var(--ease-ribbon),opacity calc(var(--dur-ribbon) * .72) var(--ease-ribbon) calc(var(--dur-ribbon) * .18),background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),visibility 0s linear var(--dur-ribbon)}
+/* 沉浸阅读 = 独立覆盖层（样式在本文件末尾）：底层布局完全不动、不参与动画，
+   只有覆盖层自身做 opacity + transform 的淡入上浮 / 淡出。退出键是覆盖层的子元素，
+   定位规则写在末尾覆盖层一节，避免被 [data-ripplet] 的 position:relative 覆盖 */
+.immersive-exit{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--glass-border);color:var(--ink);font-size:15px;font-weight:600;box-shadow:var(--glass-shadow),var(--glass-insets)}
+.immersive-exit svg{width:18px;height:18px}
+.immersive-exit:hover{box-shadow:var(--glass-shadow),var(--glass-insets),0 6px 20px rgba(20,34,52,.12)}
+@media (max-width:760px){.tools{flex-wrap:wrap}.tools .btn{padding:0 9px}}
+.year,.crumb,.it-y,.it-t,.hl{transition:color var(--dur-struct) var(--ease-apple)}
+.sig,.tips,.mn{transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
+.it-f svg{transition:color var(--dur-struct) var(--ease-apple),opacity var(--dur-struct) var(--ease-apple)}
+.scrim{display:none}
+.nos{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:var(--bg);color:var(--ink);font-size:16px;text-align:center}
+
+@media (max-width:1060px){
+  .top{flex-wrap:wrap}
+  .wrap{grid-template-columns:238px minmax(0,1fr)}
+  .card{padding:24px 30px 36px}
+  .brand span{display:none}
+}
+@media (max-width:760px){
+  .top,.ribbon{-webkit-backdrop-filter:blur(14px) saturate(170%) brightness(1.06);backdrop-filter:blur(14px) saturate(170%) brightness(1.06)}
+  .top{flex-wrap:wrap;gap:8px 8px;padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));padding-top:max(8px,env(safe-area-inset-top))}
+  .menu-btn{display:inline-flex;order:0}
+  .brand{order:1;flex:1 1 auto}
+  .brand b{font-size:18px}
+  .tools{order:2;flex:none;gap:8px}
+  .prog .bar{display:none}
+  .prog::before{content:"✓";color:var(--accent);font-weight:700}
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  .list{padding-bottom:18px}
+  .side{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(88vw,360px);border-right:0;border-radius:0 var(--r-frame) var(--r-frame) 0;overflow:hidden;isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateX(-104%);transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .side.open{transform:none}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 0 18px}
+  .drawer-head b{font-family:var(--serif);font-size:18px;letter-spacing:.06em}
+  .scrim{display:block;position:fixed;inset:0;z-index:45;background:rgba(15,23,33,.38);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-apple)}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .card{padding:18px 18px 30px;margin-bottom:calc(160px + env(safe-area-inset-bottom))}
+  .app.ribbon-off .card{margin-bottom:24px}
+  .year{font-size:58px}
+  .head{gap:4px 14px}
+  .acts{width:100%;margin-left:0;padding-bottom:0}
+  .acts .btn{flex:1}
+  .title{font-size:24px;margin-top:12px}
+  .sig{font-size:16px;padding:12px 14px}
+  .bg,.pts li{font-size:16px}
+  .pn{gap:8px}
+  .pn button{padding:9px 12px}
+  .ribbon{gap:8px;flex-wrap:wrap;row-gap:4px;height:auto;left:8px;right:8px;padding:6px 12px}
+  .play{width:44px;min-height:44px}
+  .speed button{min-height:36px;padding:0 7px;font-size:12.5px}
+  .play-count{display:block;min-width:0;text-align:left}
+  .track{order:-1;flex:1 1 100%}
+  .speed{margin-left:auto}
+  .ribbon-count{display:none}
+  .dot-e{width:6px;height:6px;margin:-3px 0 0 -3px;border-width:1.2px}
+}
+
+/* ===== site-wide button motion (per BUTTON/MARK research reports) ===== */
+[data-ripplet]{position:relative;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.ripplet-wrap{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;z-index:0}
+.ripplet-ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.16;transform:scale(0);pointer-events:none}
+.filters,.speed{position:relative}
+.chip,.speed button{position:relative;z-index:1}
+.chip[aria-pressed="true"]:hover,.speed button[aria-pressed="true"]:hover{background:transparent}
+.mv-pill{position:absolute;left:0;top:0;width:0;height:0;background:var(--accent);box-shadow:0 1px 3px rgba(20,34,52,.18);transition:transform var(--dur-ui) var(--ease-soft),width var(--dur-ui) var(--ease-soft),height var(--dur-ui) var(--ease-soft);will-change:transform,width;pointer-events:none;z-index:0}
+.filters .mv-pill{border-radius:999px}
+.speed .mv-pill{border-radius:999px}
+.icon-swap{position:relative;display:inline-grid;flex:none}
+.icon-swap .ic{grid-area:1/1;display:grid;place-items:center;opacity:0;filter:blur(2px);transform:scale(.25);transition:opacity var(--dur-ui) var(--ease-soft),filter var(--dur-ui) var(--ease-soft),transform var(--dur-ui) var(--ease-soft);pointer-events:none}
+.icon-swap .ic.on{opacity:1;filter:blur(0);transform:scale(1)}
+.pn-arrow{display:inline-block;transition:transform var(--dur-press) var(--ease-soft)}
+.pn button:active .pn-arrow{transform:translateX(3px)}
+.pn button.prev:active .pn-arrow{transform:translateX(-3px)}
+@media (hover:hover){.pn button:hover .pn-arrow{transform:translateX(3px)}.pn button.prev:hover .pn-arrow{transform:translateX(-3px)}}
+.card.enter-next{animation:pageNext var(--dur-page) var(--ease-immersive) both}
+.card.enter-prev{animation:pagePrev var(--dur-page) var(--ease-immersive) both}
+@keyframes pageNext{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes pagePrev{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+
+.search:focus-within>svg{color:var(--accent)}
+.search.is-clearing input{opacity:0;transform:translateY(-4px);transition:opacity 200ms var(--ease-soft),transform 200ms var(--ease-soft)}
+.search .clear{animation:clearPop 200ms var(--ease-spring)}
+@keyframes clearPop{from{opacity:0;transform:translateY(-50%) scale(.5)}to{opacity:1;transform:translateY(-50%) scale(1)}}
+.sel::after{transition:transform var(--dur-ui) var(--ease-soft)}
+.sel:focus-within::after{transform:translateY(-30%) rotate(225deg)}
+@keyframes selPop{from{transform:scale(.97)}to{transform:scale(1)}}
+.sel.pop{animation:selPop var(--dur-ui) var(--ease-soft);transform-origin:top left}
+.list{position:relative}
+.sel-bar{position:absolute;left:0;top:0;width:3px;height:0;border-radius:0 3px 3px 0;background:var(--era);transform:translateY(0);transition:transform var(--dur-ui) var(--ease-soft),height var(--dur-ui) var(--ease-soft);will-change:transform,height;pointer-events:none;z-index:1}
+@media (hover:hover){.item:hover{transform:translateY(-1px)}}
+.chip-star{display:inline-block}
+.chip.is-pop .chip-star{animation:chipStarPop 200ms var(--ease-spring)}
+@keyframes chipStarPop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+.star-burst-particle{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;color:#E8B84A;pointer-events:none;z-index:5;transition-property:transform,opacity;will-change:transform,opacity}
+.star-burst-particle svg{width:100%;height:100%;fill:currentColor}
+@keyframes star-pop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+@keyframes star-unpop{0%{transform:scale(1.15)}50%{transform:scale(.85)}100%{transform:scale(1)}}
+.btn.star-btn.is-pop svg{animation:star-pop 450ms var(--ease-spring)}
+.btn.star-btn.is-unpop svg{animation:star-unpop 200ms var(--ease-soft)}
+.master-badge .master-ring{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-dasharray:151;stroke-dashoffset:0}
+.master-badge .master-check{fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:34;stroke-dashoffset:0}
+@keyframes master-draw{to{stroke-dashoffset:0}}
+@keyframes master-card{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+.btn.just-done .master-ring{stroke-dashoffset:151;animation:master-draw .55s var(--ease-draw) .15s forwards}
+.btn.just-done .master-check{stroke-dashoffset:34;animation:master-draw .3s var(--ease-draw) .65s forwards}
+.btn.just-done{animation:master-card .45s var(--ease-soft) both}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ===== 沉浸阅读覆盖层 =====
+   独立 fixed 层盖住整个屏幕，自带滚动，内容单栏居中（复用 .card 版式）。
+   进/出只过渡覆盖层自身的 opacity + transform；底层 .app 布局不加类、不动、不参与动画。
+   本节写在样式表最后：同优先级时后写者胜，确保退出键的 absolute 定位不被
+   [data-ripplet]{position:relative} 等规则覆盖（旧 bug：退出键被压成 relative，
+   排到 100vh 应用下方、屏幕之外）。 */
+.imm-overlay{position:fixed;inset:0;z-index:80;background:var(--panel);opacity:0;transform:translateY(18px);visibility:hidden;pointer-events:none;will-change:opacity,transform;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),visibility 0s linear var(--dur-immersive)}
+.imm-overlay.show{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),visibility 0s linear 0s}
+.imm-overlay[hidden]{display:none}
+.imm-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--panel)}
+.imm-scroll .card{margin-bottom:0;padding-bottom:96px;will-change:opacity,transform}
+/* 翻页交叉过渡的出场段：旧页只走 opacity + transform 淡出滑走，随后新页以 enter-next/enter-prev 淡入 */
+.imm-scroll .card.page-out-next{opacity:0;transform:translateX(-16px);transition:opacity var(--dur-page-out) var(--ease-immersive),transform var(--dur-page-out) var(--ease-immersive)}
+.imm-scroll .card.page-out-prev{opacity:0;transform:translateX(16px);transition:opacity var(--dur-page-out) var(--ease-immersive),transform var(--dur-page-out) var(--ease-immersive)}
+.imm-overlay .immersive-exit{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));z-index:7;opacity:1;transform:none;visibility:visible;pointer-events:auto}
+.imm-overlay .immersive-exit:hover{transform:translateY(-1px)}
+.imm-overlay .immersive-exit:active{transform:scale(.96);transition-duration:var(--dur-press)}
+/* 沉浸翻页：覆盖层的直接子元素（不在滚动区内），进入沉浸后恒可见、随时可点。
+   宽屏（桌面 / iPad 横屏 ≥1024px）：左右悬浮圆钮，贴在 780px 正文栏两侧的留白里，垂直居中，不压正文；
+   窄屏（iPad 竖屏 / 手机 ≤1023px）：改为底部固定翻页栏，按钮横向拉满拇指区，正文底部留白避让，不挤占正文宽度。
+   注意：这两个按钮不挂 data-ripplet —— 涟漪的 position:relative 会顶掉它们的定位（退出键旧 bug）。 */
+.imm-nav{position:absolute;inset:0;z-index:6;pointer-events:none}
+.imm-nav-btn{pointer-events:auto;position:absolute;top:50%;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;padding:0;border:1px solid var(--glass-border);color:var(--ink);isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateY(-50%);transition:transform var(--dur-micro) var(--ease-apple),opacity var(--dur-micro) var(--ease-apple),background-color var(--dur-micro) var(--ease-apple),box-shadow var(--dur-micro) var(--ease-apple)}
+.imm-nav-btn svg{width:26px;height:26px}
+.imm-nav-btn .imm-nav-txt{display:none}
+.imm-nav-btn.imm-prev{left:max(12px,calc(50% - 478px))}
+.imm-nav-btn.imm-next{right:max(12px,calc(50% - 478px))}
+.imm-nav-btn:hover{transform:translateY(-50%) scale(1.06);box-shadow:var(--glass-shadow),var(--glass-insets),0 6px 20px rgba(20,34,52,.12)}
+.imm-nav-btn:active{transform:translateY(-50%) scale(.94);transition-duration:var(--dur-press)}
+.imm-nav-btn:disabled{opacity:.32;pointer-events:none}
+.imm-count{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:6px 14px;border-radius:999px;border:1px solid var(--glass-border);background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.imm-nav-btn,.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-transparency:reduce){.imm-nav-btn,.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (max-width:1023px){
+  .imm-nav{inset:auto;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));pointer-events:auto;isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-top:1px solid var(--glass-border);box-shadow:var(--glass-shadow-up),var(--glass-insets)}
+  .imm-nav-btn{position:static;flex:1 1 0;width:auto;height:52px;min-height:52px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transform:none;font-size:15px;font-weight:600}
+  .imm-nav-btn svg{width:20px;height:20px}
+  .imm-nav-btn .imm-nav-txt{display:inline}
+  .imm-nav-btn:hover{transform:none}
+  .imm-nav-btn:active{transform:scale(.97);transition-duration:var(--dur-press)}
+  .imm-count{position:static;transform:none;flex:none;padding:0 2px;border:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+  .imm-scroll .card{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+}
+/* lenis.css（darkroomengineering/lenis，MIT）—— Lenis 必需样式，随库一并内联 */
+html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopped{overflow:clip}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}.lenis.lenis-smooth iframe{pointer-events:none}.lenis.lenis-autoToggle{transition-property:overflow;transition-duration:1ms;transition-behavior:allow-discrete}
+/* View Transitions：只给详情标题/年份起共享元素名，节点切换时小幅交叉过渡；无此 API 的浏览器走原硬切 */
+.card .title{view-transition-name:ev-title}
+.card .year{view-transition-name:ev-year}
+::view-transition-old(ev-title),::view-transition-new(ev-title),::view-transition-old(ev-year),::view-transition-new(ev-year){animation-duration:340ms}
+::view-transition-old(root),::view-transition-new(root){animation-duration:200ms}
+</style>
+</head>
+<body>
+<div class="bg-blobs" aria-hidden="true"><i class="blob blob-a"></i><i class="blob blob-b"></i></div>
+<div class="app" id="app">
+  <header class="top">
+    <button class="btn icon-btn menu-btn" id="menuBtn" type="button" data-ripplet aria-label="打开目录" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <div class="brand"><b>史纲时间轴</b><span>sadpotatomine 的复习本</span></div>
+    <div class="tools">
+      <div class="prog" id="prog"><span class="bar" aria-hidden="true"><i></i></span><span class="txt"></span></div>
+      <button class="btn" id="ribbonBtn" type="button" data-ripplet aria-pressed="false" title="收起页面底部的时间轴条"><span class="icon-swap" id="ribSwap"><span class="ic on" data-icon="collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 8.5L12 11l2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="expand"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 11L12 8.5l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span class="btn-lab">收起时间轴</span></button>
+      <button class="btn" id="immersiveBtn" type="button" data-ripplet aria-pressed="false" title="隐藏顶栏、目录和时间轴，专注阅读正文"><span class="icon-swap" id="immSwap"><span class="ic on" data-icon="enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="exit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></span><span>沉浸阅读</span></button>
+      <button class="btn" id="themeBtn" type="button" data-ripplet aria-pressed="false" title="切换深色 / 浅色主题"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.6A8.2 8.2 0 1 1 10.4 4 6.6 6.6 0 0 0 20 13.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>深色</span></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <aside class="side" id="side" aria-label="事件目录">
+      <div class="drawer-head"><b>目录</b><button class="btn icon-btn" id="closeSide" type="button" data-ripplet aria-label="关闭目录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+      <div class="side-head">
+        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="搜索事件、人物" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="搜索"><kbd id="kbd">/</kbd><button class="clear" id="clearQ" type="button" data-ripplet aria-label="清除搜索" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+        <div class="filters" role="group" aria-label="筛选">
+          <button class="chip" type="button" data-ripplet data-f="all" aria-pressed="true">全部</button>
+          <button class="chip" type="button" data-ripplet data-f="star" aria-pressed="false"><span class="chip-star">★</span> 重点</button>
+          <label class="sel" id="selWrap" data-ripplet><select id="chSel" aria-label="按章节筛选"></select></label>
+        </div>
+        <div class="side-cap" id="cap"></div>
+      </div>
+      <div class="list" id="list"></div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <main class="detail" id="detail" tabindex="-1"></main>
+  </div>
+  <footer class="ribbon">
+    <button class="btn icon-btn play" id="playBtn" type="button" data-ripplet aria-label="自动播放" aria-pressed="false"></button>
+    <div class="track" id="track" role="slider" tabindex="0" aria-label="时间轴（可拖动；节点等距排列）" title="拖动浏览；节点按顺序等距排列，与真实年份间隔无关。← → 切换节点，Home / End 跳转首尾。"></div>
+    <span class="play-count" id="playCount" aria-hidden="true"></span>
+    <div class="speed" role="group" aria-label="播放速度">
+      <button type="button" data-ripplet data-speed="0.5" aria-pressed="false" title="0.5 倍速（每节点停留更久）">0.5×</button>
+      <button type="button" data-ripplet data-speed="1" aria-pressed="true" title="1 倍速">1×</button>
+      <button type="button" data-ripplet data-speed="2" aria-pressed="false" title="2 倍速">2×</button>
+      <button type="button" data-ripplet data-speed="3" aria-pressed="false" title="3 倍速">3×</button>
+    </div>
+  </footer>
+  <div class="vh" id="live" aria-live="polite"></div>
+</div>
+<div class="imm-overlay" id="immOverlay" role="dialog" aria-modal="true" aria-label="沉浸阅读" hidden>
+  <div class="imm-scroll" id="immScroll" data-lenis-prevent><div id="immDetail"></div></div>
+  <nav class="imm-nav" id="immNav" aria-label="沉浸翻页">
+    <button class="imm-nav-btn imm-prev" id="immPrev" type="button" aria-label="上一节点"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="imm-nav-txt">上一节点</span></button>
+    <span class="imm-count" id="immCount" aria-hidden="true"></span>
+    <button class="imm-nav-btn imm-next" id="immNext" type="button" aria-label="下一节点"><span class="imm-nav-txt">下一节点</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </nav>
+  <button class="immersive-exit" id="immersiveExit" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>退出沉浸</span></button>
+</div>
+<noscript><div class="nos">这个时间轴需要启用 JavaScript 才能使用。</div></noscript>
+<script type="application/json" id="sz-data">{"courses":{"sg":{"name":"史纲","full":"中国近现代史纲要","set":"cn","prefix":"史纲"}},"chapters":{"史纲":{"第一章":"进入近代后中华民族的磨难与抗争","第二章":"不同社会力量对国家出路的早期探索","第三章":"辛亥革命与君主专制制度的终结","第四章":"中国共产党成立和中国革命新局面","第五章":"中国革命的新道路","第六章":"中华民族的抗日战争","第七章":"为建立新中国而奋斗","第八章":"中华人民共和国的成立与中国社会主义建设道路的探索","第九章":"改革开放与中国特色社会主义的开创和发展","第十章":"中国特色社会主义进入新时代"}},"eras":{"cn":[{"k":"cn1","name":"旧民主主义革命时期","short":"旧民主主义革命","range":"1840—1919","from":1830,"to":1919.33},{"k":"cn2","name":"新民主主义革命时期","short":"新民主主义革命","range":"1919—1949","from":1919.33,"to":1949.74,"tick":1919},{"k":"cn3","name":"社会主义革命和建设时期","short":"社会主义革命和建设","range":"1949—1978","from":1949.74,"to":1978.9,"tick":1949},{"k":"cn4","name":"改革开放和社会主义现代化建设新时期","short":"改革开放新时期","range":"1978—2012","from":1978.9,"to":2012.8,"tick":1978},{"k":"cn5","name":"中国特色社会主义新时代","short":"新时代","range":"2012—","from":2012.8,"to":2100,"tick":2012}]},"events":[{"y":1840.49,"d":"1840年6月28日","t":"鸦片战争爆发","ch":["史纲·第一章"],"p":"广东沿海","s":"中国近代史的开端","b":"英国对华贸易长期处于逆差，便向中国大量走私鸦片。1839年林则徐虎门销烟，英国以此为借口，于1840年6月发动侵略战争。","k":["中国开始从一个独立的封建国家**逐步沦为半殖民地半封建国家**","近代中国两对主要矛盾：**帝国主义和中华民族的矛盾、封建主义和人民大众的矛盾，前者是最主要的矛盾**","两大历史任务：**求得民族独立和人民解放；实现国家富强和人民幸福**——前者为后者扫清障碍、创造前提","半殖民地（主权原因）：不平等条约破坏了中国的领土主权、领海主权、关税主权、司法主权等，中国丧失了完全独立的地位，但仍维持独立国家和政府的名义","半封建（经济原因）：中国出现了资本主义生产关系，但民族资本主义经济不可能成为社会经济的主要形式，外国资本及依附于它的官僚资本居于支配地位","**近代中国诞生的新兴被压迫阶级是工人阶级，它先于中国的资产阶级而产生，是中国沦为两半社会过程最早出现的新社会阶级**","**林则徐是近代中国睁眼看世界的第一人**"],"q":["易混：**1840年是“开始沦为”，1901年《辛丑条约》才是“完全沦为”**半殖民地半封建社会"],"m":"一个开端，两对矛盾，两大任务","c":["sg"],"id":"1840a"},{"y":1842.66,"d":"1842年8月29日","t":"《南京条约》签订","ch":["史纲·第一章"],"p":"南京","s":"中国近代第一个不平等条约","b":"清军战败，清政府被迫在南京江面的英国军舰上签约；1843年又订立《五口通商章程》和《虎门条约》作为补充。","k":["主要内容：**割香港岛；赔款2100万银元；开放广州、厦门、福州、宁波、上海五口通商；协定关税**","补充条约使英国攫取了**领事裁判权、片面最惠国待遇**等特权"],"q":["易混：领事裁判权、片面最惠国待遇出自1843年的补充条约，不在《南京条约》本身","易混：**香港岛（1842年割让）→ 九龙司地方一区（1860年割让）→ 新界（1898年租借）**"],"m":"割岛、赔款、五口、协定关税","c":["sg"],"id":"1842a"},{"y":1851.03,"d":"1851年1月11日","t":"金田起义","ch":["史纲·第二章"],"p":"广西桂平金田村","s":"太平天国运动爆发","b":"洪秀全以拜上帝会为组织形式，在广西桂平金田村发动起义，建号太平天国。","k":["太平天国运动是**中国旧式农民战争的最高峰**","沉重打击了清王朝的统治和外国侵略势力","先后提出**《天朝田亩制度》和《资政新篇》两个纲领性文件**"],"q":["考法：“旧式农民战争的最高峰”指太平天国；**农民阶级不可能提出科学的革命纲领**"],"m":"金田一声起，农民战争到顶峰","c":["sg"],"id":"1851a"},{"y":1853.21,"d":"1853年3月19日","t":"定都天京·《天朝田亩制度》","ch":["史纲·第二章"],"p":"天京（南京）","s":"建立与清王朝对峙的农民政权","b":"太平军攻克南京，定为首都，改称天京；同年颁布《天朝田亩制度》。1859年洪仁玕又提出《资政新篇》。","k":["《天朝田亩制度》**以解决土地问题为中心**，反映了农民废除封建土地所有制的强烈愿望","它带有**绝对平均主义色彩，具有空想性**，在当时无法实现","《资政新篇》是**中国近代第一个比较系统的发展资本主义的方案**，但缺乏实施条件"],"q":["易混：《天朝田亩制度》= 平均分配土地（空想）；《资政新篇》= 学习西方、发展资本主义（未能实施）","易混：**《资政新篇》既学技术、又学制度；魏源《海国图志》“师夷长技以制夷”只学技术、不学制度**"],"m":"","c":["sg"],"id":"1853a"},{"y":1856.81,"d":"1856年10月23日","t":"第二次鸦片战争","ch":["史纲·第一章"],"p":"广州","s":"英法联合扩大侵华","b":"英国借口“亚罗号事件”，法国借口“马神甫事件”，联合发动侵华战争，1857年底攻占广州，1858年北上攻陷大沽炮台。","k":["1858年清政府被迫签订《天津条约》：外国公使进驻北京，增开通商口岸，外国人可到内地游历、经商、传教","沙俄趁火打劫，1858年迫签《瑷珲条约》，**割占黑龙江以北、外兴安岭以南60多万平方公里领土**"],"q":["易混：沙俄割地三步——**《瑷珲条约》（1858，黑龙江以北）→《北京条约》（1860，乌苏里江以东）→《勘分西北界约记》（1864，西北）**"],"m":"","c":["sg"],"id":"1856a"},{"y":1860.8,"d":"1860年10月18日","t":"火烧圆明园·《北京条约》","ch":["史纲·第一章"],"p":"北京","s":"第二次鸦片战争结束","b":"英法联军攻入北京，劫掠并焚毁圆明园；清政府分别与英、法、俄签订《北京条约》。","k":["割九龙司地方一区给英国，增开天津为商埠，允许招募华工出国","沙俄以“调停有功”为名，**割占乌苏里江以东约40万平方公里领土**","此后清政府与外国侵略者逐步勾结，“借师助剿”镇压太平天国"],"q":["考法：第二次鸦片战争的主要条约 =《天津条约》（1858）+《北京条约》（1860）"],"m":"","c":["sg"],"id":"1860a"},{"y":1861.05,"d":"1861年1月20日—1894年","t":"洋务运动兴起","ch":["史纲·第二章"],"p":"北京·上海·安庆等地","s":"地主阶级洋务派“自强”“求富”的探索","b":"1861年清政府设立总理各国事务衙门。奕䜣、曾国藩、李鸿章、左宗棠、张之洞等以“中学为体，西学为用”为指导思想，学习西方技术。","k":["**前期以“自强”为旗号兴办军用工业（如江南制造总局），后期以“求富”为旗号兴办民用企业（如轮船招商局）**","创办新式学堂、派遣留学生，筹建北洋、南洋、福建水师","失败原因：**具有封建性，对外国有依赖性，管理具有腐朽性**；1894年甲午战败标志其失败","洋务派民用企业多数采取官督商办方式，基本上是资本主义性质的近代企业"],"q":["易混：洋务运动**客观上促进了中国早期工业化和民族资本主义的产生，但没有使中国走上富强道路**"],"m":"中体西用，先自强后求富","c":["sg"],"id":"1861a"},{"y":1864.55,"d":"1864年7月19日","t":"天京陷落","ch":["史纲·第二章"],"p":"天京（南京）","s":"太平天国运动失败","b":"1856年天京变乱后，太平天国由盛转衰；1864年7月湘军攻破天京。","k":["**失败的根本原因是农民阶级的局限性**：没有先进阶级领导，不能提出科学的革命纲领","领导集团腐败，宗教思想不能指导斗争，对外国侵略者缺乏理性认识","证明**单纯的农民战争不能完成反帝反封建的历史任务**"],"q":["易混：**天京变乱（1856）是由盛转衰的转折点；天京陷落（1864）标志运动失败**"],"m":"","c":["sg"],"id":"1864a"},{"y":1883.95,"d":"1883年12月14日—1885年","t":"中法战争","ch":["史纲·第一章"],"p":"越南北部·镇南关","s":"“不败而败”的战争","b":"法国侵略越南并以越南为跳板进犯中国，1883年12月进攻驻越清军，战争爆发；1884年马尾海战中福建水师几乎全军覆没。","k":["1885年3月冯子材率军取得镇南关大捷","清政府“乘胜即收”，与法国签订《中法新约》，法国势力深入中国西南","1884年中法战争期间，香港中国造船工人罢工，拒绝修理受伤的法舰，爱国商人罢市，码头工人拒运法货。","19世纪70至80年代边疆危机中，法国从越南侵犯广西。"],"q":["考法：近代反侵略战争失败的**根本原因是社会制度的腐败，重要原因是经济技术的落后**"],"m":"","c":["sg"],"id":"1883b"},{"y":1894.56,"d":"1894年7月25日","t":"甲午中日战争","ch":["史纲·第一章"],"p":"黄海·辽东·威海卫","s":"洋务运动失败，民族危机空前严重","b":"日本借朝鲜问题挑起战争：1894年7月25日日军在丰岛海面袭击中国运兵船；9月黄海海战中邓世昌等壮烈殉国；1895年2月北洋舰队在威海卫全军覆没。","k":["**标志着洋务运动的失败**","战后帝国主义列强掀起瓜分中国的狂潮","**民族危机空前加深，促进了中华民族的觉醒**","历次反侵略战争失败的原因：**社会制度的腐败和经济技术的落后，其中制度腐败是更根本的原因**","帝国主义列强未能灭亡和瓜分中国的原因：列强之间的矛盾和互相制约是重要原因，**最根本的原因是中华民族不屈不挠的反侵略斗争**，中国长期是一个统一的大国也是原因之一"],"q":["易混：**丰岛海战是开端；黄海海战是规模最大的海战；威海卫之战北洋舰队全军覆没**"],"m":"","c":["sg"],"id":"1894a"},{"y":1894.9,"d":"1894年11月24日","t":"兴中会成立","ch":["史纲·第三章"],"p":"美国檀香山","s":"第一个资产阶级革命团体","b":"孙中山在檀香山创立兴中会，誓词为“驱除鞑虏，恢复中华，创立合众政府”。","k":["**中国第一个资产阶级革命团体**","誓词提出推翻清王朝、建立共和政府的主张","孙中山在《兴中会章程》中**喊出“振兴中华”这个时代的最强音**"],"q":["易混：**兴中会（1894）是第一个资产阶级革命团体；同盟会（1905）是第一个全国性的资产阶级革命政党**"],"m":"","c":["sg"],"id":"1894b"},{"y":1895.29,"d":"1895年4月17日","t":"《马关条约》签订","ch":["史纲·第一章"],"p":"日本马关（下关）","s":"中国半殖民地化程度大大加深","b":"清政府派李鸿章赴日本马关议和，签订《马关条约》。","k":["**割让辽东半岛、台湾全岛及所有附属各岛屿、澎湖列岛给日本**","**赔偿日本军费白银2亿两；增开沙市、重庆、苏州、杭州为商埠**","**允许日本在中国通商口岸开设工厂**，适应了列强资本输出的需要","《马关条约》使**列强对华经济侵略由商品输出转向资本输出**，掀起瓜分中国的狂潮，中国人民的民族意识开始普遍觉醒"],"q":["易混：俄、德、法“三国干涉还辽”后，清政府以3000万两白银“赎回”辽东半岛","考法：**台湾被日本割占始于1895年，1945年抗战胜利后回归中国**"],"m":"割辽台澎，赔两亿，开四口，准设厂","c":["sg"],"id":"1895a"},{"y":1898.44,"d":"1898年6月11日","t":"戊戌维新","ch":["史纲·第二章"],"p":"北京","s":"资产阶级维新派的政治改良尝试","b":"1895年康有为等发动“公车上书”，维新运动兴起。1898年6月11日光绪帝颁布“明定国是”诏书，变法开始；9月21日慈禧太后发动政变，变法失败，历时103天。","k":["是一次**爱国救亡运动，一场资产阶级性质的政治改良运动，也是一场思想启蒙运动**","失败原因：**维新派不敢否定封建主义，对帝国主义抱有幻想，脱离并惧怕人民群众**；守旧势力强大","教训：在半殖民地半封建的中国，**自上而下的改良道路走不通**","戊戌维新是中国民族资产阶级登上政治舞台的第一次表演"],"q":["易混：维新派与守旧派论战三问——**要不要变法；要不要兴民权、设议院，实行君主立宪；要不要废八股、改科举、兴西学**","考法：维新派与守旧派的论战实质上是**资产阶级思想与封建主义思想在中国的第一次正面交锋**"],"m":"公车上书起，百日维新止","c":["sg"],"id":"1898a"},{"y":1900.46,"d":"1900年6月17日","t":"义和团运动·八国联军侵华","ch":["史纲·第一章"],"p":"京津地区","s":"粉碎了列强瓜分中国的图谋","b":"义和团以“扶清灭洋”为口号在山东、直隶兴起。1900年6月，英、法、德、俄、美、日、意、奥组成八国联军侵华，8月攻占北京。","k":["义和团运动**粉碎了列强瓜分中国的图谋**，显示了中国人民巨大的反侵略力量","局限：**带有笼统排外色彩和迷信落后的一面**"],"q":["考法：列强之间的矛盾和互相制约是列强未能瓜分中国的原因之一，但不是根本原因","考法：义和团蒙受封建统治者欺骗，是因为认识不到帝国主义联合中国封建地主阶级压迫中国人民的实质"],"m":"","c":["sg"],"id":"1900a"},{"y":1901.68,"d":"1901年9月7日","t":"《辛丑条约》签订","ch":["史纲·第一章"],"p":"北京","s":"中国完全沦为半殖民地半封建社会","b":"八国联军侵华战争后，清政府被迫与11国签订《辛丑条约》。","k":["**赔款白银4.5亿两，分39年还清，本息合计9.8亿余两**，以海关税、盐税等作担保","**划定北京东交民巷为使馆界，允许各国驻兵保护；拆毁大沽炮台，允许列强在北京至山海关铁路沿线驻兵**","清政府保证严禁人民参加反帝活动，**从此完全成为帝国主义统治中国的工具**","清末新政（1901年4月成立督办政务处）：设立商部、学部、巡警部，裁撤绿营，建立新军，颁布商法商律、奖励工商，鼓励留学、颁布新学制，1906年起正式废除科举考试"],"q":["易混：裁撤绿营是清末新政的内容，不是洋务运动"],"m":"四亿五千万，三十九年还","c":["sg"],"id":"1901a"},{"y":1905.63,"d":"1905年8月20日","t":"中国同盟会成立","ch":["史纲·第三章"],"p":"日本东京","s":"第一个全国性的资产阶级革命政党","b":"孙中山和黄兴、宋教仁等人以兴中会和华兴会为基础，在日本东京成立中国同盟会，以《民报》为机关报，并确定了革命纲领。","k":["纲领：**“驱除鞑虏，恢复中华，创立民国，平均地权”**","孙中山在《民报》发刊词中将其概括为**民族、民权、民生三大主义（旧三民主义）**","1905—1907年革命派与改良派展开大论战，划清了革命与改良的界限"],"q":["易混：论战三问——**要不要以革命手段推翻清王朝；要不要推翻帝制、实行共和；要不要进行社会革命**","易混：改良派很大一部分就是戊戌维新时期的维新派，例如梁启超"],"m":"十六字纲领，三民主义","c":["sg"],"id":"1905a"},{"y":1911.78,"d":"1911年10月10日","t":"武昌起义·辛亥革命","ch":["史纲·第三章"],"p":"湖北武昌","s":"推翻统治中国两千多年的君主专制制度","b":"保路运动推动革命形势高涨，湖北新军中的革命团体文学社、共进会发动武昌起义，各省纷纷响应。","k":["推翻了清王朝，**结束了统治中国两千多年的君主专制制度，建立了中华民国**","使民主共和观念深入人心，为中国的进步打开了闸门","但**没有改变中国半殖民地半封建的社会性质**"],"q":["考法：辛亥革命是近代中国**比较完全意义上的资产阶级民主革命**"],"m":"","c":["sg"],"id":"1911a"},{"y":1912.0,"d":"1912年1月1日","t":"中华民国成立","ch":["史纲·第三章"],"p":"南京","s":"资产阶级共和国性质的革命政权","b":"孙中山在南京就任临时大总统，南京临时政府成立。","k":["南京临时政府是**资产阶级共和国性质的革命政权**","**1912年2月12日清帝退位；随后孙中山辞职，袁世凯窃取了革命果实**","南京临时政府的局限性：《告友邦书》**试图用承认清政府与列强所订的一切不平等条约和所欠的一切外债换取列强承认中华民国**；没有提出满足农民土地要求的政策措施，反而以保护私有财产为借口维护封建土地制度以及官僚、地主占有的土地和财产","毛泽东指出：“中国反帝反封建的资产阶级民主革命，正规地说起来，是从孙中山先生开始的”"],"q":["易混：清帝退位标志清王朝统治结束；**袁世凯在北京就任临时大总统后，北洋军阀统治开始**"],"m":"","c":["sg"],"id":"1912a"},{"y":1912.19,"d":"1912年3月11日","t":"《中华民国临时约法》","ch":["史纲·第三章"],"p":"南京","s":"第一部具有资产阶级共和国宪法性质的法典","b":"南京临时政府公布《中华民国临时约法》。","k":["规定中华民国**主权属于国民全体，实行三权分立**","规定国民一律平等，享有人身、居住、言论、集会、结社、宗教信仰等自由","**改总统制为责任内阁制，意在限制袁世凯的权力**","《临时约法》以根本大法的形式废除了两千多年来的封建君主专制制度，确认了资产阶级共和国的政治制度"],"q":["考法：《临时约法》是**中国历史上第一部具有资产阶级共和国宪法性质的法典**"],"m":"","c":["sg"],"id":"1912b"},{"y":1913.53,"d":"1913年7月12日—1918年","t":"二次革命·护国运动·护法运动","ch":["史纲·第三章"],"p":"南方各省","s":"旧民主主义革命走向失败","b":"袁世凯建立北洋军阀统治。1913年宋教仁遇刺，孙中山发动“二次革命”失败；1915年袁世凯复辟帝制，蔡锷等发起护国战争；1917年孙中山发起护法运动。","k":["辛亥革命失败的根本原因：**在帝国主义时代的半殖民地半封建中国，资本主义的建国方案行不通**","主观原因：没有提出彻底的反帝反封建纲领，不能充分发动和依靠人民群众，不能建立坚强的革命政党","护法运动失败：1918年1月西南军阀与直系军阀勾结擅自停战、排挤孙中山、改组军政府，1918年5月21日孙中山愤然离开广州去上海；**护法运动的失败标志着整个民族资产阶级领导的旧民主主义革命的终结**"],"q":["考法：辛亥革命的失败表明，**资产阶级共和国的方案没有能够救中国**","考法：辛亥革命失败的客观根本原因是资本主义的建国方案行不通，主观根本原因是资产阶级的软弱性和妥协性（阶级局限性）"],"m":"","c":["sg"],"id":"1913a"},{"y":1915.71,"d":"1915年9月15日","t":"新文化运动兴起","ch":["史纲·第四章"],"p":"上海→北京","s":"一场空前的思想解放运动","b":"陈独秀在上海创办《青年杂志》（次年改名《新青年》），新文化运动兴起；1917年后以北京大学和《新青年》为主要阵地。","k":["**基本口号是民主和科学**","**提倡新道德、反对旧道德，提倡新文学、反对旧文学**","十月革命后，**新文化运动后期发展为宣传马克思主义的思想运动**","新文化运动为马克思主义的广泛传播准备了思想和文化的条件","新文化运动的局限：**把改造国民性置于优先地位，但离开改造产生封建思想的社会环境的革命实践，仅靠少数人呐喊和有限宣传手段，不可能根本改造国民性**；许多领导人物还没有马克思主义的批判精神，使用的方法一般还是资产阶级的方法"],"q":["易混：**前期新文化运动属于资产阶级民主主义性质**；局限是对东西方文化存在绝对肯定或绝对否定的形式主义偏向","考法：新民主主义革命与旧民主主义革命的**根本区别在于领导权掌握在资产阶级还是无产阶级手中**"],"m":"","c":["sg"],"id":"1915b"},{"y":1917.86,"d":"1917年11月7日","t":"十月革命·马克思主义在中国初步传播","ch":["史纲·第四章"],"p":"俄国彼得格勒→北京","s":"中国先进分子找到了马克思主义","b":"俄国十月革命胜利，给中国送来了马克思列宁主义。李大钊在北京率先宣传十月革命和马克思主义。","k":["**李大钊是中国最早的马克思主义者**，1918年发表《法俄革命之比较观》《庶民的胜利》《Bolshevism的胜利》等文章","1919年李大钊发表《我的马克思主义观》，**标志着马克思主义在中国进入比较系统的传播阶段**","1919年苏维埃俄国第一次对华宣言声明放弃沙俄在中国攫取的一切特权，引起人们很大震动"],"q":["考法：毛泽东语——**“十月革命一声炮响，给我们送来了马克思列宁主义”**"],"m":"","c":["sg"],"id":"1917b"},{"y":1919.34,"d":"1919年5月4日","t":"五四运动","ch":["史纲·第四章"],"p":"北京→上海","s":"中国新民主主义革命的开端","b":"巴黎和会上中国外交失败，5月4日北京学生举行示威游行；6月3日后上海工人罢工，运动中心转到上海。","k":["是一场**彻底地不妥协地反帝反封建的爱国运动**","**中国工人阶级开始以独立的姿态登上政治舞台**","**促进了马克思主义在中国的传播及其同中国工人运动的结合**，为中国共产党成立作了思想上和干部上的准备","民族意识：普遍觉醒——甲午战争；全面觉醒——五四运动"],"q":["易混：**运动主力由学生转为工人，中心由北京转到上海**；直接导火索是巴黎和会外交失败"],"m":"五四：新民主主义革命的起点","c":["sg"],"id":"1919b"},{"y":1921.56,"d":"1921年7月23日","t":"中共一大·中国共产党成立","ch":["史纲·第四章"],"p":"上海→浙江嘉兴南湖","s":"开天辟地的大事变，是近现代中国历史发展的必然产物，是中国人民在救亡图存斗争中顽强求索的必然产物，是实现中华民族伟大复兴的必然产物","b":"1920年起，上海、北京、武汉、长沙、济南、广州等地以及旅日、旅法的先进分子相继建立共产党早期组织。1921年7月23日中共一大在上海开幕，最后一天的会议转移到嘉兴南湖的一艘游船上举行。","k":["**确定党的名称为“中国共产党”，通过党的第一个纲领和第一个决议**","纲领规定党的奋斗目标是**推翻资产阶级政权、建立无产阶级专政、消灭私有制**","确定党成立后的中心任务是**组织工人阶级、领导工人运动**；选举陈独秀为中央局书记","**中国共产党是马克思列宁主义同中国工人运动相结合的产物**","会场受到暗探注意和法租界巡捕房搜查，最后一天会议转移到嘉兴南湖游船上举行，这条游船后来被称为“红船”","中国共产党一开始就是以马克思列宁主义理论为基础的党，是区别于第二国际旧式社会改良党的新型工人阶级革命政党，是在马克思主义同中国工人运动相结合的基础上产生的","伟大建党精神：**坚持真理、坚守理想、践行初心、担当使命、不怕牺牲、英勇斗争、对党忠诚、不负人民**，是中国共产党的精神之源"],"q":["易混：**一大只提出了最高纲领，还没有提出反帝反封建的民主革命纲领**——这一步由二大完成","考法：**7月1日是1941年由党中央正式确定的纪念日，一大实际开幕日是7月23日**","易混：中国共产党是在马克思主义同中国工人运动相结合的基础上产生的，不能说农民运动"],"m":"","c":["sg"],"id":"1921a"},{"y":1922.54,"d":"1922年7月16日","t":"中共二大·民主革命纲领","ch":["史纲·第四章"],"p":"上海","s":"第一次明确提出彻底的反帝反封建民主革命纲领，也是中国近代史上第一个彻底的反帝反封建的民主革命纲领","b":"建党一年后，党在领导工人运动的实践中，并借助列宁关于民族和殖民地问题的理论，认识到中国首先要进行民主革命。","k":["**最高纲领：实现共产主义；最低纲领：打倒军阀，推翻国际帝国主义的压迫，统一中国为真正的民主共和国**","**第一次明确提出彻底的反帝反封建的民主革命纲领**，为中国人民的革命斗争指明了方向","**通过党的第一部党章，提出党要成为“大的群众党”**；决定加入共产国际"],"q":["易混：**一大＝党名、第一个纲领（最高纲领）；二大＝民主革命纲领（最低纲领）、第一部党章；三大＝国共合作方针**","易混：二大提出组成“民主主义的联合战线”，是第一次提出统一战线政策，但此时还不是与孙中山领导的国民党建立统一战线","考法：共产国际及其在中国的代表对大革命起了积极作用，但并不真正了解中国情况，也出了一些错误主意，幼年的党难以摆脱其错误指导"],"m":"一大建党，二大定纲，三大合作","c":["sg"],"id":"1922a"},{"y":1923.45,"d":"1923年6月12日","t":"中共三大·确定国共合作方针","ch":["史纲·第四章"],"p":"广州","s":"确定以“党内合作”形式建立革命统一战线","b":"1923年2月京汉铁路工人大罢工遭到军阀吴佩孚血腥镇压（二七惨案），党认识到工人阶级孤军奋斗难以战胜强大的敌人，必须争取一切可能的同盟者。","k":["**决定共产党员以个人身份加入国民党**，同时在政治上、组织上保持党的独立性","**实行国共合作，建立各民主阶级的革命统一战线**","三大正确估计了孙中山的革命立场和国民党进行改革的可能性"],"q":["考法：合作形式是**“党内合作”——共产党员以个人名义加入国民党，而不是两党平行合作**","考法：共产党员加入国民党时，党必须在政治上、思想上、组织上保持自己的独立性"],"m":"","c":["sg"],"id":"1923a"},{"y":1924.05,"d":"1924年1月20日","t":"国民党一大·第一次国共合作","ch":["史纲·第四章"],"p":"广州","s":"标志第一次国共合作正式形成","b":"孙中山在中国共产党和共产国际帮助下改组国民党，在广州召开国民党第一次全国代表大会，李大钊等共产党员参加大会并进入国民党中央领导机构。","k":["大会宣言对三民主义作了新的解释，形成**以联俄、联共、扶助农工三大政策为基础的新三民主义**","**新三民主义的政纲同中国共产党民主革命阶段的纲领基本一致，成为国共合作的政治基础**","1924年5月创办黄埔军校，为国民革命培养军事和政治骨干"],"q":["易混：旧三民主义（1905同盟会）→ 新三民主义（1924国民党一大）：**民族主义突出反帝，民权主义强调“为一般平民所共有”，民生主义增加“节制资本”**","考法：**国共合作的政治基础是新三民主义，合作形式是党内合作**","考法：民生主义概括为“平均地权”和“节制资本”两大原则，后来孙中山又提出“耕者有其田”的主张"],"m":"","c":["sg"],"id":"1924a"},{"y":1925.03,"d":"1925年1月11日","t":"中共四大·领导权与工农联盟","ch":["史纲·第四章"],"p":"上海","s":"第一次提出无产阶级领导权和工农联盟问题","b":"国共合作后，统一战线内部谁来领导、依靠谁的问题逐渐突出，党需要从理论上作出回答。","k":["**明确提出无产阶级在民主革命中的领导权问题**","提出工农联盟问题，指出**农民是工人阶级天然的同盟者**","四大对民主革命的内容作了更加完整的规定，这是对中国革命问题认识的重大进展。"],"q":["易混：四大提出了领导权问题，但大革命后期以陈独秀为代表的右倾机会主义恰恰放弃了领导权","中国革命的中心问题是无产阶级领导权问题。"],"m":"","c":["sg"],"id":"1925a"},{"y":1925.41,"d":"1925年5月30日","t":"五卅运动","ch":["史纲·第四章"],"p":"上海","s":"大革命高潮的起点","b":"上海日本纱厂资本家枪杀工人顾正红，5月30日英国巡捕在南京路向抗议群众开枪，制造了五卅惨案。","k":["中国共产党领导上海工人罢工、学生罢课、商人罢市，反帝怒潮迅速席卷全国","**6月爆发省港大罢工，坚持16个月**，有力支援了广东革命政府","五卅运动后，以广东为中心的革命统一战线进一步巩固，为北伐准备了条件"],"q":["易混：**五卅运动是大革命高潮的起点，北伐战争把大革命推向高潮**","省港大罢工是持续时间最长的罢工。"],"m":"","c":["sg"],"id":"1925b"},{"y":1926.52,"d":"1926年7月9日","t":"北伐战争","ch":["史纲·第四章"],"p":"广州出师→长江流域","s":"把大革命推向高潮","b":"国民革命军从广州出师北伐，口号是“打倒列强，除军阀”，主要打击吴佩孚、孙传芳、张作霖三支北洋军阀力量。","k":["共产党员和共青团员在北伐军中发挥了先锋模范作用，**叶挺独立团被誉为“铁军”**","不到半年就从珠江流域打到长江流域，**基本消灭了吴佩孚、孙传芳的主力**","北伐推动了工农运动的高涨，1927年3月上海工人第三次武装起义取得胜利","北伐战争以推翻北洋军阀统治为目标，国民革命军在工农群众支援下采取各个击破的战略节节胜利。","共产党人建立工人纠察队、农民自卫军等工农武装，配合正规军作战。"],"q":["考法：**北伐的胜利进军是国共合作的成果**，但高潮中也潜伏着统一战线破裂的危机","北伐战争在孙中山逝世之后发生，不由孙中山发动。"],"m":"","c":["sg"],"id":"1926a"},{"y":1927.28,"d":"1927年4月12日、7月15日","t":"四一二·七一五政变·大革命失败","ch":["史纲·第四章"],"p":"上海·武汉","s":"第一次国共合作破裂，大革命失败","b":"1927年4月12日蒋介石在上海发动反革命政变，大肆屠杀共产党员和革命群众；7月15日汪精卫集团在武汉公开“分共”。","k":["客观原因：反革命力量强大，大大超过革命力量；**资产阶级严重动摇，统一战线内部发生剧烈分化**","主观原因：党的领导机关在大革命后期犯了以陈独秀为代表的右倾机会主义错误，**放弃了对农民、对政权特别是对武装力量的领导权**","大革命失败的国际因素：大革命后期受到共产国际的错误指导","大革命失败后，国民党不再是工人、农民、城市小资产阶级和民族资产阶级的革命联盟，而是变成由代表地主阶级、买办性大资产阶级利益的反动集团控制的政党；其建立的南京国民政府同北洋军阀统治没有本质区别，国民党统治下中国社会的半殖民地半封建性质没有改变"],"q":["考法：大革命失败最深刻的教训是**党必须掌握革命的领导权，特别是对武装力量的领导权**","易混：1935年遵义会议之前党失败的原因共同点是**不善于把理论与实践相结合、共产国际瞎指挥**"],"m":"","c":["sg"],"id":"1927a"},{"y":1927.33,"d":"1927年4—5月","t":"中共五大","ch":["史纲·第四章"],"p":"湖北武汉","s":"首次明确民主集中制为党的根本组织原则","b":"1927年4—5月，中国共产党第五次全国代表大会在武汉举行，通过《中国共产党第三次修正章程决案》。","k":["**首次明确规定党组织的“指导原则为民主集中制”**","五大于1927年4月27日至5月9日在武汉举行，提出争取无产阶级对革命的领导权、建立革命民主政权和实行土地革命等正确原则。"],"q":["五大没有就如何争取革命领导权、如何领导农民实行土地革命、特别是如何建立党领导的革命武装提出有效具体措施，难以承担起挽救革命的任务。"],"m":"","c":["sg"],"id":"1927e"},{"y":1927.58,"d":"1927年8月1日","t":"南昌起义","ch":["史纲·第五章"],"p":"江西南昌","s":"打响武装反抗国民党反动派的第一枪","b":"大革命失败后，周恩来、贺龙、叶挺、朱德、刘伯承等领导党所掌握和影响的军队两万余人在南昌举行起义。","k":["**标志着中国共产党独立领导革命战争、创建人民军队和武装夺取政权的开端**","起义军南下广东途中受挫，朱德、陈毅率余部转战湘南，1928年4月上井冈山与毛泽东部会师","**8月1日后来被定为中国人民解放军建军节**"],"q":["易混：南昌起义是“第一枪”“开端”；**第一次公开打出“工农革命军”旗帜的是秋收起义**"],"m":"","c":["sg"],"id":"1927b"},{"y":1927.6,"d":"1927年8月7日","t":"八七会议","ch":["史纲·第五章"],"p":"湖北汉口","s":"由大革命失败到土地革命战争兴起的历史性转折","b":"大革命失败后全国陷入白色恐怖，共产党被宣布为“非法”，党的组织不断遭到破坏，活动被迫转入地下；1927年3月到1928年上半年，被杀害的共产党员和革命群众达31万多人，全党党员由五大时的57967人锐减到1万余人。党中央在汉口秘密召开紧急会议，总结大革命失败的教训，纠正以陈独秀为代表的右倾机会主义错误。","k":["**确定了实行土地革命和武装反抗国民党反动派的总方针**","毛泽东提出**“须知政权是由枪杆子中取得的”**","会后派干部到各地发动武装起义；但会议在反对右倾错误时，也为“左”倾错误的发展开了先河","八七会议明确提出**土地革命是中国资产阶级民主革命的中心问题**"],"q":["考法：**“枪杆子里面出政权”的思想最早在八七会议上提出**","易混：中国革命的**首要问题是分清敌友，中心问题是领导权问题，基本问题是农民问题，中国资产阶级民主革命的中心问题是土地革命**"],"m":"","c":["sg"],"id":"1927c"},{"y":1927.69,"d":"1927年9月9日起","t":"秋收起义·井冈山革命根据地","ch":["史纲·第五章"],"p":"湘赣边界→江西井冈山","s":"由进攻城市转向农村进军的伟大开端","b":"毛泽东领导湘赣边界秋收起义，攻打长沙受挫后，果断放弃进攻大城市，率部转向敌人统治薄弱的农村山区。","k":["**起义第一次公开打出“工农革命军”的旗帜**","9月底三湾改编，**把党的支部建在连上，从组织上确立了党对军队的领导**","10月到达井冈山，**创建第一个农村革命根据地**；1928年4月朱德、陈毅部到达井冈山，两军会师组成工农革命军第四军","1928年毛泽东写下《中国的红色政权为什么能够存在？》《井冈山的斗争》，**提出“工农武装割据”思想**"],"q":["考法：工农武装割据＝**以武装斗争为主要形式、以土地革命为基本内容、以农村革命根据地为战略阵地**，三者紧密结合","考法：三湾改编是建设无产阶级领导的新型人民军队的重要开端，标志着毛泽东建设人民军队思想开始形成，也是中国共产党建设新型人民军队最早的一次成功探索和实践"],"m":"秋收转兵上井冈，支部建在连上","c":["sg"],"id":"1927d"},{"y":1928.47,"d":"1928年6月18日—7月11日","t":"中共六大","ch":["史纲·第五章"],"p":"苏联莫斯科","s":"唯一一次在国外召开的全国代表大会；确定以争取群众为首要任务，是党的工作方针的一次重要转变","b":"大革命失败后，党内对中国社会性质和革命性质认识不一，“左”倾盲动错误又给革命造成了损失。会议在继续把城市工作的复兴视为革命高潮到来的决定条件的同时，肯定了农村根据地和红军是决定革命新高潮的更大发展基础和重要力量。","k":["肯定中国仍是半殖民地半封建社会，**现阶段的革命仍是资产阶级民主革命**","指出当时处在两个革命高潮之间，**党的总任务是争取群众，而不是进攻和暴动**","不足：对中间阶级的作用和反动势力内部的矛盾缺乏正确估计，对农村根据地的重要性和民主革命的长期性认识不足"],"q":["易混：土地革命时期三次“左”倾错误——瞿秋白盲动主义（1927—1928）、李立三冒险主义（1930）、王明教条主义（1931—1935），**危害最大的是王明“左”倾错误**"],"m":"","c":["sg"],"id":"1928a"},{"y":1929.99,"d":"1929年12月28日","t":"古田会议","ch":["史纲·第五章"],"p":"福建上杭古田","s":"确立思想建党、政治建军的原则","b":"红军长期处于农村游击环境，成分复杂（农民和其他小资产阶级占多数），存在单纯军事观点、极端民主化、非组织观点等非无产阶级思想，影响军队建设和党的领导。1929年12月，红四军第九次党的代表大会在福建上杭古田召开，通过了毛泽东起草的决议（即古田会议决议）。","k":["规定**红军是一个执行革命的政治任务的武装集团，必须绝对服从党的领导**","批判了单纯军事观点、极端民主化、非组织观点等错误思想","**古田会议决议是党和人民军队建设的纲领性文献**","**把思想建设放在党的建设首位，用无产阶级思想克服非无产阶级思想**","红军必须担负打仗、筹款和做群众工作的任务，必须加强政治工作"],"q":["易混：三湾改编从“组织上”确立党对军队的领导；**古田会议从“思想上、政治上”确立建党建军原则**","易混：党对军队的绝对领导——**发端于南昌起义、奠基于三湾改编（支部建在连上）、定型于古田会议**"],"m":"","c":["sg"],"id":"1929a"},{"y":1931.71,"d":"1931年9月18日","t":"九一八事变","ch":["史纲·第六章"],"p":"辽宁沈阳","s":"中国人民抗日战争的起点","b":"日本关东军炸毁沈阳北郊柳条湖附近的南满铁路，反诬中国军队所为，当夜炮轰东北军驻地北大营，接着向沈阳城等地发动进攻。国民党政府奉行“攘外必先安内”方针，实行不抵抗政策，东北三省很快沦陷。","k":["**揭开了中国人民抗日战争的序幕，也揭开了世界反法西斯战争的序幕**","1932年**日本扶植成立伪“满洲国”**；东北抗日义勇军和后来的东北抗日联军坚持抗战","中国共产党号召武装抗日，领导和推动了东北的抗日斗争","国际联盟和英、美等国对日本采取姑息、纵容政策，使日本对中国的侵略计划步步得逞"],"q":["易混：**九一八事变＝局部抗战开始（14年抗战的起点）；七七事变＝全民族抗战开始**"],"m":"","c":["sg"],"id":"1931a"},{"y":1931.87,"d":"1931年11月","t":"中华苏维埃第一次全国代表大会","ch":["史纲·第五章"],"p":"江西瑞金","s":"成立中华苏维埃共和国，中国历史上第一个全国性的工农民主政权","b":"1931年11月，中华苏维埃第一次全国代表大会在江西瑞金召开，成立了中华苏维埃共和国临时中央政府。大会的召开扩大了党和红色政权的影响，一定程度上加强了对处于被分割状态的各根据地的中枢指挥作用，推动了各根据地的政权、经济、文化教育和党的自身建设，开创了土地革命战争新局面。","k":["**通过《中华苏维埃共和国宪法大纲》**以及土地法令、劳动法等","选举产生中央执行委员会，**毛泽东当选为临时中央政府主席**","中华苏维埃共和国是**中国历史上第一个全国性的工农民主政权**，是中国共产党在局部地区执政的重要尝试","实行工农兵代表大会制度，各级苏维埃政府广泛吸收工农群众代表参加政权管理"],"q":["易混：**土地革命时期政权性质——工农民主政权；抗日战争时期——一切赞成抗日又赞成民主的人们政权；解放战争时期——各个革命阶级的联合专政；新中国——人民民主专政**"],"m":"","c":["sg"],"id":"1931b"},{"y":1934.78,"d":"1934年10月10日—1936年10月","t":"红军长征","ch":["史纲·第五章"],"p":"江西瑞金→陕北→甘肃会宁","s":"中国革命转危为安的伟大战略转移","b":"由于王明“左”倾教条主义错误的领导，中央革命根据地第五次反“围剿”失败，中央红军被迫进行战略转移。","k":["1935年10月中央红军到达陕北吴起镇；**1936年10月红一、二、四方面军在甘肃会宁、宁夏将台堡会师，长征胜利结束**","**长征是宣言书，是宣传队，是播种机**；宣告了国民党反动派围追堵截的破产","长征的胜利，是党和中国革命事业**从挫折走向胜利的伟大转折点**，形成了伟大的长征精神"],"q":["考法：长征胜利结束的标志是1936年10月三大主力会师；长征途中最重要的会议是遵义会议"],"m":"","c":["sg"],"id":"1934a"},{"y":1935.04,"d":"1935年1月15日","t":"遵义会议","ch":["史纲·第五章"],"p":"贵州遵义","s":"党的历史上一个生死攸关的转折点","b":"长征初期红军损失惨重，湘江战役后由出发时的8.6万余人锐减到3万余人。博古、李德等人的“左”倾错误军事指挥是第五次反“围剿”失败的主要原因，党和红军面临生死存亡的危机，迫切需要纠正错误、确立正确领导。1935年1月中央政治局在遵义召开扩大会议。","k":["**集中解决了当时具有决定意义的军事问题和组织问题**，结束了王明“左”倾教条主义在党中央的统治","**实际上确立了毛泽东在党中央和红军的领导地位**","是党第一次独立自主地运用马克思主义基本原理解决自己的路线、方针、政策问题，标志着党在政治上开始走向成熟","在极其危急的情况下**挽救了中国共产党、挽救了中国工农红军、挽救了中国革命**"],"q":["易混：遵义会议没有全面讨论政治路线问题，而是集中解决军事和组织问题——这是紧急情况下的正确选择","易混：遵义会议确立毛泽东的领导地位；**正式确立毛泽东思想为指导思想是1945年七大**"],"m":"生死攸关的转折点","c":["sg"],"id":"1935a"},{"y":1935.94,"d":"1935年12月9日","t":"一二·九运动·瓦窑堡会议","ch":["史纲·第六章"],"p":"北平·陕北瓦窑堡","s":"抗日救亡新高潮与抗日民族统一战线策略方针的确定","b":"1935年日本策动“华北事变”，企图使华北五省脱离中国政府管辖，民族危机空前严重。","k":["12月9日北平学生举行抗日救国示威游行，**标志着中国人民抗日救亡运动新高潮的到来**","12月中共中央在瓦窑堡召开政治局会议，**确定了建立抗日民族统一战线的策略方针**","毛泽东作《论反对日本帝国主义的策略》报告，**批判了党内的“左”倾关门主义**","瓦窑堡会议批评了“左”倾冒险主义和关门主义错误，强调共产党在抗日民族统一战线中的领导作用","瓦窑堡会议**开始解决党的政治路线问题、实现了政治路线的转变**，标志着党的抗日民族统一战线策略正式形成"],"q":["易混：1935年8月的《八一宣言》呼吁停止内战、一致抗日；**瓦窑堡会议才正式确定抗日民族统一战线的策略方针**"],"m":"","c":["sg"],"id":"1935b"},{"y":1936.95,"d":"1936年12月12日","t":"西安事变","ch":["史纲·第六章"],"p":"陕西西安","s":"西安事变的和平解决成为时局转换的枢纽，十年内战局面基本结束、国内和平初步实现","b":"蒋介石“攘外必先安内”的方针并没有根本改变，1936年12月初他到达西安，逼张学良、杨虎城“剿共”。张学良、杨虎城多次劝谏蒋介石停止内战、联共抗日无效后，在西安扣押蒋介石，实行“兵谏”。","k":["中国共产党从民族大义出发，**主张和平解决**，派周恩来等赴西安谈判","蒋介石被迫接受“停止内战，联共抗日”的主张","西安事变的和平解决使**十年内战的局面基本结束，国内和平初步实现**"],"q":["考法：**西安事变和平解决 ≠ 抗日民族统一战线正式形成**（正式形成在1937年9月）"],"m":"","c":["sg"],"id":"1936a"},{"y":1937.52,"d":"1937年7月7日","t":"七七事变·全民族抗战","ch":["史纲·第六章"],"p":"北平卢沟桥","s":"全民族抗战的开始","b":"日军借口一名士兵“失踪”，向北平西南卢沟桥一带的中国守军发动进攻，中国守军奋起抵抗。","k":["7月8日中共中央通电全国：“平津危急！华北危急！中华民族危急！**只有全民族实行抗战，才是我们的出路！**”","8月洛川会议提出全面抗战路线（人民战争路线），制定《抗日救国十大纲领》；红军主力改编为八路军，10月南方红军游击队改编为新四军","9月22日国民党中央通讯社发表中共中央提交的国共合作宣言，23日蒋介石发表谈话承认共产党的合法地位，**标志着以国共第二次合作为基础的抗日民族统一战线正式形成**"],"q":["易混：**共产党的全面抗战路线（依靠广大人民群众）vs 国民党的片面抗战路线（单纯依靠政府和军队）**"],"m":"","c":["sg"],"id":"1937a"},{"y":1937.52,"d":"1937年7月7日—1938年10月","t":"正面战场·战略防御","ch":["史纲·第六章"],"p":"淞沪·太原·徐州·武汉","s":"国民党军队担负正面战场作战","b":"战略防御阶段，国民党政府的抗战态度比较积极，组织了一系列大规模会战。","k":["先后组织淞沪、太原、徐州、武汉等会战，粉碎了日本“三个月灭亡中国”的狂妄计划","1938年春**台儿庄战役，是抗战以来正面战场取得的最大胜利**","1937年12月日军攻陷南京，制造了**屠杀中国军民30万人以上的南京大屠杀**；12月13日现为南京大屠杀死难者国家公祭日","1938年10月广州、武汉失守后，**抗日战争进入战略相持阶段**","忻口会战是国共两党军队合作抗日配合最好的一次战役。","国民党实行片面抗战路线，不敢放手发动和武装民众，在战略战术上进行单纯的阵地防御战。","战略防御阶段，国民党正面战场的正规战是主要的，敌后游击战是辅助的。","1938年初国民政府改组军事委员会下设政治部，聘请周恩来任副部长，同年6月国民参政会成立。","东部沿海一批重要工厂企业内迁，北京大学、清华大学、南开大学迁往昆明合并组建国立西南联合大学。"],"q":["考法：进入相持阶段后，**日本对国民党改以政治诱降为主、军事打击为辅，国民党政策重心逐渐转向消极抗日、积极反共**","除台儿庄战役取得大捷外，正面战场其他战役几乎都以退却、失败告终。"],"m":"","c":["sg"],"id":"1937b"},{"y":1937.62,"d":"1937年8月","t":"洛川会议","ch":["史纲·第六章"],"p":"陕西洛川","s":"制定全面抗战路线和《抗日救国十大纲领》","b":"1937年“七七事变”后全面抗日战争爆发，面对日军全面进攻，党需要明确抗战的路线、方针和策略，解决“如何抗战、依靠谁抗战”的关键问题。1937年8月，中共中央在陕北洛川召开政治局扩大会议。","k":["**制定了中国共产党的全面抗战路线，制定《抗日救国十大纲领》**","**实行全国军事的总动员、全国人民的总动员**","**坚持抗日战争中的无产阶级领导权**，在敌人后方放手发动独立自主的山地游击战争","提出必须改革政治机构，并适当改善工农大众的生活"],"q":["易混：**瓦窑堡会议（1935.12）侧重“建立统一战线”；洛川会议（1937.8）侧重“如何抗战”**、制定全面抗战路线"],"m":"","c":["sg"],"id":"1937d"},{"y":1937.71,"d":"1937年9月—1945年8月","t":"敌后战场与抗日根据地建设","ch":["史纲·第六章"],"p":"华北·华中敌后","s":"中国共产党成为全民族抗战的中流砥柱","b":"全民族抗战开始后，八路军、新四军深入敌后，发动群众开展游击战争，开辟敌后战场，建立抗日根据地。为克服根据地面临的严重困难局面，毛泽东提出“发展经济，保障供给”的经济工作和财政工作总方针，发出“自己动手，丰衣足食”的号召，领导根据地军民开展大生产运动。","k":["1937年9月平型关大捷，是**全国抗战以来中国军队的第一个大胜仗**","1940年8—12月百团大战，是抗战期间八路军在华北发动的规模最大、持续时间最长的战役","抗日民主政权实行**“三三制”：共产党员、非党的左派进步分子、不左不右的中间派各占三分之一**；农村实行减租减息","面对国民党顽固派的三次反共高潮（第二次以1941年1月皖南事变为顶点），**党坚持“发展进步势力，争取中间势力，孤立顽固势力”的方针**"],"q":["易混：**减租减息（抗战时期，地主减租减息、农民交租交息）≠ 没收地主土地（解放战争时期）**","易混：进步势力指工人、农民和城市小资产阶级，是统一战线的基础和抗日战争的主要依靠力量；中间势力指民族资产阶级、开明绅士和地方实力派"],"m":"","c":["sg"],"id":"1937c"},{"y":1938.4,"d":"1938年5月26日","t":"《论持久战》","ch":["史纲·第六章"],"p":"陕北延安","s":"科学预见了抗日战争的发展进程","b":"抗战初期，国内流行“亡国论”和“速胜论”两种错误观点。毛泽东在延安抗日战争研究会上发表长篇讲演。","k":["**驳斥了“亡国论”和“速胜论”，指出抗日战争是持久战，最后胜利属于中国**","预见抗日战争将经过**战略防御、战略相持、战略反攻三个阶段，战略相持阶段是最重要、是转变的枢纽**","强调“战争的伟力之最深厚的根源，存在于民众之中”，指出游击战争的战略地位和作用，**兵民是胜利之本**"],"q":["考法：持久战的依据是中日双方的基本特点——敌强我弱、敌退步我进步、敌小我大、敌寡助我多助"],"m":"","c":["sg"],"id":"1938a"},{"y":1938.75,"d":"1938年9月29日—11月6日","t":"六届六中全会·提出“马克思主义中国化”","ch":["史纲·第六章"],"p":"陕北延安","s":"第一次明确提出“马克思主义中国化”的命题","b":"王明从苏联回国后提出“一切经过统一战线”的右倾主张，党内思想亟须统一。1938年8月中共驻共产国际代表王稼祥回国，传达共产国际指示：中共中央的政治路线是正确的，中共中央要以毛泽东为首来解决统一领导的问题。","k":["毛泽东指出：要**“使马克思主义在中国具体化，使之在其每一表现中带着必须有的中国的特性”**","强调在统一战线中坚持独立自主原则，**批判了“一切经过统一战线”的错误主张**","全会**基本上纠正了王明的右倾错误**，统一了全党的思想和步调","毛泽东在会上作《论新阶段》政治报告，**第一次提出“马克思主义中国化”的科学命题**，它源于对中国革命进程中正反两个方面实践经验的科学总结","毛泽东后来指出“六中全会是决定中国之命运的”；全会进一步巩固了毛泽东在全党的领导地位"],"q":["易混：**1938年提出“马克思主义中国化”；十九届六中全会决议、二十大报告进一步使用“马克思主义中国化时代化”的表述**"],"m":"","c":["sg"],"id":"1938b"},{"y":1940.02,"d":"1940年1月9日","t":"《新民主主义论》","ch":["史纲·第六章"],"p":"陕北延安","s":"系统阐述新民主主义理论","b":"抗战进入相持阶段后，“中国向何处去”成为各界关注的问题。毛泽东在陕甘宁边区文化协会第一次代表大会上发表讲演，后以《新民主主义论》为题发表。","k":["中国革命分两步走：第一步是新民主主义革命，第二步是社会主义革命，好比文章的上篇和下篇","**系统阐述了新民主主义的政治、经济、文化纲领**","新民主主义文化是**民族的、科学的、大众的文化**","同期著作一起系统阐述了新民主主义革命理论，**标志着毛泽东思想走向成熟**"],"q":["易混：**民主主义革命是社会主义革命的必要准备，社会主义革命是民主主义革命的必然趋势**"],"m":"","c":["sg"],"id":"1940a"},{"y":1942.09,"d":"1942年2月1日—1945年4月","t":"延安整风运动","ch":["史纲·第六章"],"p":"陕北延安","s":"一次全党范围的马克思主义思想教育运动","b":"遵义会议以来党的路线已走上马克思主义的正确轨道，但对曾经给党的事业造成严重危害的主观主义、教条主义还没有来得及从思想上进行认真清理。为清除“左”倾和右倾错误、特别是教条主义的影响，党在全党范围内开展整风。1941年5月毛泽东作《改造我们的学习》报告，1942年2月作《整顿党的作风》《反对党八股》讲演。","k":["**主要内容：反对主观主义以整顿学风，反对宗派主义以整顿党风，反对党八股以整顿文风**","**反对主观主义是整风运动最主要的任务，重点是反对教条主义**","毛泽东对“实事求是”作了马克思主义的解释，**党的实事求是思想路线得以确立**","1945年4月六届七中全会通过《关于若干历史问题的决议》，**即党的第一个历史决议**"],"q":["易混：三个历史决议——1945年六届七中全会、1981年十一届六中全会、2021年十九届六中全会","易混：**遵义会议解决军事和组织问题，瓦窑堡会议解决政治路线问题，延安整风解决思想问题**（实事求是思想路线在全党确立）"],"m":"","c":["sg"],"id":"1942a"},{"y":1945.31,"d":"1945年4月23日—6月11日","t":"中共七大·确立毛泽东思想为指导思想","ch":["史纲·第六章"],"p":"陕北延安","s":"把毛泽东思想确立为党的指导思想并写入党章","b":"抗战胜利前夕，党的第七次全国代表大会在延安召开。七大召开前，延安整风使全党团结在毛泽东的旗帜下，实现了党的空前统一和团结。","k":["毛泽东作《论联合政府》政治报告，提出党的政治路线：**放手发动群众，壮大人民力量，在党的领导下打败日本侵略者，解放全国人民，建立一个新民主主义的中国**","总结了党的三大优良作风：**理论和实践相结合、和人民群众紧密地联系在一起、自我批评**","中共七大以“团结的大会，胜利的大会”载入党的史册，标志着我们党在政治上、思想上、组织上走向了成熟"],"q":["易混：“毛泽东思想”一词由王稼祥在1943年7月首先提出；**1945年七大正式确立为党的指导思想**","考法：**毛泽东思想是马克思主义中国化的第一个重大理论成果**"],"m":"","c":["sg"],"id":"1945a"},{"y":1945.62,"d":"1945年8月15日","t":"抗日战争胜利","ch":["史纲·第六章"],"p":"全国","s":"近代以来中国人民反抗外敌入侵第一次取得完全胜利的民族解放战争","b":"1945年8月苏联对日宣战，中国军民发起大反攻；8月15日日本宣布无条件投降，9月2日在投降书上签字。","k":["**9月3日被确定为中国人民抗日战争胜利纪念日；10月25日台湾光复**","胜利原因：**中国共产党的中流砥柱作用**；全民族团结抗战；世界上一切爱好和平和正义的国家和人民的支持","意义：彻底粉碎了日本军国主义殖民奴役中国的图谋，洗刷了近代以来抗击外来侵略屡战屡败的民族耻辱，**重新确立了中国在世界上的大国地位，开辟了中华民族伟大复兴的光明前景**","**中国战场是世界反法西斯战争的东方主战场**","胜利原因还包括：以爱国主义为核心的民族精神是中国人民抗日战争胜利的决定因素","抗日战争的伟大胜利是中华民族从近代以来陷入深重危机走向伟大复兴的历史转折点"],"q":["易混：**14年抗战（1931—1945）vs 8年全民族抗战（1937—1945）**"],"m":"","c":["sg"],"id":"1945b"},{"y":1945.66,"d":"1945年8月28日—10月10日","t":"重庆谈判·《双十协定》","ch":["史纲·第七章"],"p":"重庆","s":"国民党被迫承认和平建国的基本方针","b":"抗战胜利后，中国面临两种命运、两个前途的抉择。蒋介石三次电邀毛泽东赴重庆谈判，其目的是一以此敷衍国内外舆论、掩盖其正在进行的内战准备，二是诱使中共交出人民军队和解放区政权以期不战而控制全中国，三是如果谈判不成即放手发动内战并把战争责任转嫁给中国共产党。","k":["毛泽东、周恩来、王若飞赴重庆谈判，**10月10日签订《政府与中共代表会谈纪要》（即《双十协定》）**","**国民党承认和平建国的基本方针**，同意召开政治协商会议，但军队和解放区政权问题未能解决","1945年8月25日中共中央发表《对目前时局的宣言》，**明确提出和平、民主、团结的口号**","政协协议较多地吸收了中间人士的意见，虽然还不是新民主主义性质的，但有利于冲破蒋介石的独裁统治和实行民主政治、有利于和平建国；在一个时期内，是否忠实履行政协协议成了人们衡量政治是非的重要尺度"],"q":[],"m":"","c":["sg"],"id":"1945c"},{"y":1946.48,"d":"1946年6月26日","t":"全面内战爆发","ch":["史纲·第七章"],"p":"中原解放区","s":"解放战争全面开始","b":"国民党依仗军事优势和美国援助，以围攻中原解放区为起点，向各解放区发动全面进攻。","k":["战略防御阶段（1946年6月—1947年6月），**以歼灭敌人有生力量为主要目标，不以保守或夺取地方为主要目标**","1947年3月起国民党转为对陕北和山东解放区的重点进攻；5月孟良崮战役全歼整编第七十四师","1946年5月4日中共中央发出《关于清算减租及土地问题的指示》（《五四指示》），**将减租减息政策改为实现“耕者有其田”**","毛泽东指出，在军事上必须采取集中优势兵力、各个歼灭敌人的作战原则；在政治上必须在党的领导下建立最广泛的人民民主统一战线","1947年10月10日中国人民解放军总部发表宣言，提出**“打倒蒋介石，解放全中国”的口号**"],"q":["考法：1946年8月毛泽东同斯特朗谈话，提出**“一切反动派都是纸老虎”**","易混：**解放战争三阶段是战略防御、战略进攻、战略决战；抗日战争三阶段是战略防御、战略相持（最重要）、战略反攻**"],"m":"","c":["sg"],"id":"1946a"},{"y":1947.38,"d":"1947年5月20日","t":"五二〇运动·第二条战线","ch":["史纲·第七章"],"p":"南京·上海·天津等地","s":"国民党统治区人民民主运动形成第二条战线","b":"国统区物价飞涨、民不聊生，各地学生举行“反饥饿、反内战、反迫害”示威游行，遭到军警镇压。","k":["毛泽东指出：中国境内已有了两条战线，**学生运动与国民党反动政府之间的尖锐斗争是第二条战线**","学生运动带动工人、农民和各阶层人民的斗争，与人民解放战争相配合","国民党政府陷入全民的包围之中","国民党政府派官员到原沦陷区接收时把接收变成劫收。","1948年8月法币发行额比1937年抗战前增发47万多倍，物价暴涨725万多倍，国统区陷入严重经济危机。","1946年6月23日南京下关事件，上海人民团体联合会请愿团在南京下关遭暴徒围殴5个小时，马叙伦、雷洁琼等多人受伤。","1947年2月28日台湾发生二二八起义。"],"q":["考法：第二条战线指**国统区以学生运动为先导的人民民主运动**"],"m":"","c":["sg"],"id":"1947a"},{"y":1947.49,"d":"1947年6月30日","t":"刘邓大军挺进大别山","ch":["史纲·第七章"],"p":"鲁西南→大别山","s":"揭开战略进攻的序幕","b":"经过一年作战，国民党军的全面进攻和重点进攻相继被粉碎，战争形势开始发生根本变化。","k":["刘伯承、邓小平率晋冀鲁豫野战军主力强渡黄河，**千里跃进大别山**","陈赓、谢富治兵团挺进豫西，陈毅、粟裕率华东野战军主力进入豫皖苏，三路大军在中原形成“品”字形阵势","**人民解放战争由战略防御转入战略进攻**","三路大军打到外线，迫使国民党军由战略进攻转变为“全面防御”，人民军队结束了长期以来在国内革命战争中所处的战略防御地位"],"q":["易混：**挺进大别山＝战略进攻开始（1947年下半年）；三大战役＝战略决战（1948年秋—1949年初）**"],"m":"","c":["sg"],"id":"1947b"},{"y":1947.77,"d":"1947年10月10日","t":"《中国土地法大纲》","ch":["史纲·第七章"],"p":"河北平山西柏坡","s":"规定实行耕者有其田的土地制度","b":"1947年下半年，解放区2/3的地方已基本实现“耕者有其田”，但还有1/3的地方没有进行土地制度改革，已进行土改的地方有的也不够彻底。1947年7—9月中共中央工作委员会在西柏坡召开全国土地会议，制定《中国土地法大纲》，10月由中共中央公布。","k":["**废除封建性及半封建性剥削的土地制度，实行耕者有其田**","**按乡村人口平分土地，土地归农民所有**","解放区土改使广大农民踊跃参军支前，**为解放战争胜利奠定了雄厚的群众基础**","经过土改运动，到1948年秋，1亿人口的解放区消灭了封建生产关系","土地制度改革使占中国人口绝大多数的农民进一步认识到中国共产党是他们自身利益的坚决维护者，因而自觉地在党的周围团结起来，为打败蒋介石、建立新中国奠定了深厚的群众基础"],"q":["易混：**减租减息（抗战）→《五四指示》（1946）→《中国土地法大纲》（1947）→《土地改革法》（1950）**"],"m":"","c":["sg"],"id":"1947c"},{"y":1947.98,"d":"1947年12月25日","t":"十二月会议·新民主主义三大经济纲领","ch":["史纲·第七章"],"p":"陕北米脂杨家沟","s":"完整提出新民主主义三大经济纲领","b":"中共中央在陕北米脂县杨家沟召开扩大会议，毛泽东作《目前形势和我们的任务》报告。","k":["**没收封建阶级的土地归农民所有**","**没收以蒋介石、宋子文、孔祥熙、陈立夫为首的垄断资本归新民主主义的国家所有**","**保护民族工商业**"],"q":["考法：**没收官僚资本具有民主革命和社会主义革命的双重性质**","考法：十二月会议所说的“转折点”是指人民解放军转入了全国规模的战略进攻，不是人民解放军占领南京，也不是战略决战时机成熟"],"m":"分地、收官、保民族","c":["sg"],"id":"1947d"},{"y":1948.7,"d":"1948年9月12日—1949年1月31日","t":"辽沈·淮海·平津三大战役","ch":["史纲·第七章"],"p":"东北·华东·华北","s":"战略决战，奠定了全国胜利的基础","b":"1948年秋人民解放军发展到280万人，解放区连成一片，中共中央决定同国民党军进行战略决战。","k":["辽沈战役（1948年9—11月）**解放东北全境**","淮海战役（1948年11月—1949年1月）以60万对80万，基本解放长江以北的华东、中原地区","平津战役（1948年11月—1949年1月）**北平和平解放，创造了“北平方式”**","三大战役**共歼灭和改编国民党军154万余人，国民党赖以维持其统治的主要军事力量基本被消灭**"],"q":["考法：解决国民党残余军队的三种方式——**天津方式（战斗解决）、北平方式（和平改编）、绥远方式（暂维原状，以后改编）**"],"m":"辽沈先打，淮海居中，平津收官","c":["sg"],"id":"1948b"},{"y":1949.2,"d":"1949年3月5—13日","t":"七届二中全会","ch":["史纲·第七章"],"p":"河北平山西柏坡","s":"为新中国的建立作了政治上、思想上的准备","b":"在全国胜利前夕，党在西柏坡召开七届二中全会，规划胜利后的建国方针。","k":["**党的工作重心由乡村移到城市，开始由城市到乡村并由城市领导乡村的时期**","提出**使中国稳步地由农业国转变为工业国、由新民主主义国家转变为社会主义国家**的发展方向","指出全国胜利后，国内的基本矛盾是工人阶级和资产阶级的矛盾，国外的基本矛盾是中国和帝国主义国家的矛盾","**提出“两个务必”：务必使同志们继续地保持谦虚、谨慎、不骄、不躁的作风，务必使同志们继续地保持艰苦奋斗的作风**","全会规定了党在全国胜利后在政治、经济、外交方面应当采取的基本政策，**提出“另起炉灶”的方针，同时正式确立“打扫干净屋子再请客”的外交方针**","毛泽东告诫全党，夺取全国胜利，这只是万里长征走完了第一步，中国革命以后的道路更长，工作更伟大，更艰苦"],"q":["考法：1949年3月23日党中央离开西柏坡前往北平，毛泽东称之为**“进京赶考”**"],"m":"","c":["sg"],"id":"1949a"},{"y":1949.31,"d":"1949年4月21—23日","t":"渡江战役·南京解放","ch":["史纲·第七章"],"p":"长江中下游·南京","s":"宣告国民党反动统治的覆灭","b":"国民党政府拒绝在《国内和平协定》上签字，国共和谈破裂。","k":["4月21日毛泽东、朱德发布《向全国进军的命令》，人民解放军在千里战线上强渡长江","**4月23日南京解放，延续22年的国民党反动统治宣告覆灭**","1949年元旦蒋介石发表求和声明，企图借和平谈判争取喘息时间并布置长江防线。","1月14日毛泽东发表关于时局的声明，提出惩办战争罪犯、废除伪宪法和伪法统、改编一切反动军队等八项和平条件，谈判4月1日开始，因国民党政府拒绝在国内和平协定上签字而破裂。","第二、第三野战军在东起江阴、西至湖口长达1000多里的战线上强渡长江，摧毁国民党经营三个半月的长江防线。"],"q":["考法：毛泽东《七律·人民解放军占领南京》——**“宜将剩勇追穷寇，不可沽名学霸王”**"],"m":"","c":["sg"],"id":"1949b"},{"y":1949.5,"d":"1949年6月30日","t":"《论人民民主专政》","ch":["史纲·第七章"],"p":"北平","s":"系统论述人民民主专政理论，为新中国奠定理论基础","b":"新中国成立前夕，毛泽东发表《论人民民主专政》，总结新民主主义革命的基本经验，阐明新中国的国家性质。","k":["提出人民民主专政的概念：**工人阶级（经过共产党）领导的、以工农联盟为基础的人民民主专政**","提出团结民族资产阶级，利用一切于国计民生有利的城乡资本主义因素","**提出建国后“一边倒”的外交方针**"],"q":["易混：《将革命进行到底》（1948）第一次公开使用人民民主专政概念；《论人民民主专政》（1949）系统论述人民民主专政理论"],"m":"","c":["sg"],"id":"1949e"},{"y":1949.73,"d":"1949年9月21—30日","t":"新政协·《共同纲领》","ch":["史纲·第七章"],"p":"北平","s":"完成了建立新中国的各项准备","b":"1948年中共中央发布“五一口号”，号召召开新的政治协商会议，各民主党派和无党派民主人士热烈响应，走上与共产党合作的道路。1949年6月毛泽东发表《论人民民主专政》。","k":["中国人民政治协商会议第一届全体会议**代行全国人民代表大会的职权**","通过《中国人民政治协商会议共同纲领》，**起临时宪法的作用，规定新中国实行人民民主专政**","选举毛泽东为中央人民政府主席；定都北平并改名北京，以五星红旗为国旗，以《义勇军进行曲》为代国歌，采用公元纪年","1948年4月30日中共中央“五一口号”提出迅速召开政治协商会议、成立民主联合政府，**揭开了中国共产党同各党派、各团体、各族各界人士协商建国的序幕，奠定了中国共产党领导的多党合作和政治协商制度的基础**"],"q":["易混：1949年新政协代行人大职权、通过《共同纲领》；1954年第一届全国人大才通过第一部《中华人民共和国宪法》","易混：“占人类总数四分之一的中国人从此站起来了”出自政协第一届全体会议开幕词（9月21日），不是开国大典","**易混：人民政协是中国共产党领导的以工农联盟为基础的人民民主统一战线的组织形式（不是国家机关）**","易混：新政协的召开**标志着中国共产党领导的多党合作和政治协商制度正式确立，标志着爱国统一战线和全国人民大团结在组织上完全形成**"],"m":"","c":["sg"],"id":"1949c"},{"y":1949.75,"d":"1949年10月1日","t":"中华人民共和国成立","ch":["史纲·第八章"],"p":"北京天安门","s":"新民主主义革命取得伟大胜利","b":"10月1日下午，开国大典在北京天安门广场隆重举行，毛泽东宣告中华人民共和国中央人民政府成立。","k":["**结束了一百多年来中国被侵略被奴役的屈辱历史，真正实现了民族独立**","**中国人民从此站起来了，成为国家、社会和自己命运的主人**","实现了从几千年封建专制政治向人民民主的伟大飞跃","**为实现中华民族伟大复兴创造了根本社会条件**"],"q":["考法：**新中国成立标志着半殖民地半封建社会的结束和新民主主义社会的建立**，中国进入从新民主主义向社会主义过渡的时期"],"m":"","c":["sg"],"id":"1949d"},{"y":1950.49,"d":"1950年6月28日","t":"《中华人民共和国土地改革法》","ch":["史纲·第八章"],"p":"新解放区","s":"在新解放区彻底废除封建土地制度；这次土改是我国历史上规模最大、历次土改运动中进行得最好的一次","b":"新中国成立时，占全国人口多数的新解放区还没有进行土地改革。1950年6月中央人民政府公布《土地改革法》，规定这次土改的目的是废除地主阶级封建剥削的土地所有制，实行农民的土地所有制，解放农村生产力，发展农业生产，为新中国的工业化开辟道路。","k":["**废除地主阶级封建剥削的土地所有制，实行农民的土地所有制**","**由征收富农多余土地改为保存富农经济，以孤立地主、保护中农**","到1952年底，除部分少数民族地区外，全国基本完成土改，延续两千多年的封建土地制度被彻底摧毁"],"q":["**易混：《中国土地法大纲》（1947）征收富农多余土地财产；《土地改革法》（1950）保存富农经济**"],"m":"","c":["sg"],"id":"1950a"},{"y":1950.8,"d":"1950年10月19日","t":"抗美援朝战争","ch":["史纲·第八章"],"p":"朝鲜半岛","s":"打出了国威军威，赢得了和平建设的环境","b":"1950年6月朝鲜内战爆发，美国出兵干涉并派第七舰队侵入台湾海峡；美军越过三八线，战火烧到鸭绿江边。应朝鲜请求，党中央作出抗美援朝、保家卫国的决策。","k":["10月19日中国人民志愿军跨过鸭绿江，10月25日打响第一仗，后定为抗美援朝纪念日","1953年7月27日朝鲜停战协定签字","美国侵略军把朝鲜战争的战火烧到鸭绿江边时，中国政府毅然作出抗美援朝的决策。","中朝两国人民及其军队经过近三年的艰苦作战以及谈判斗争，最终迫使美国代表在停战协定上签字。","抗美援朝战争有力地打破了美国军队不可战胜的神话，人民军队战斗力威震世界。","抗美援朝战争极大促进了国防和军队现代化，有力推动了世界和平与人类进步事业。"],"q":["**考法：抗美援朝战争伟大胜利，是中国人民站起来后屹立于世界东方的宣言书**"],"m":"","c":["sg"],"id":"1950b"},{"y":1953.45,"d":"1953年6月15日","t":"过渡时期总路线·“一五”计划","ch":["史纲·第八章"],"p":"全国","s":"“一化三改”：社会主义建设与社会主义改造同时并举","b":"1952年底国民经济恢复任务基本完成。1953年6月毛泽东在中央政治局会议上提出过渡时期总路线，同年底正式向全党全国公布。","k":["**在一个相当长的时期内，逐步实现国家的社会主义工业化，并逐步实现对农业、手工业和资本主义工商业的社会主义改造**","主体是社会主义工业化，两翼是三大改造，体现了发展生产力与变革生产关系的有机统一","**1953年开始实施第一个五年计划，以156个建设项目为中心进行工业建设，1957年超额完成**","1953年6月毛泽东正式提出过渡时期总路线和总任务，同年12月形成完整表述，1954年2月党的七届四中全会通过决议正式批准。","1952年9月毛泽东提出用十年到十五年时间基本上完成向社会主义过渡，而不是十年以后才开始过渡；此前党内共识是先用三个五年计划搞工业化再过渡，一般估计要15年到20年。","过渡时期之所以必要且需要相当长的时间，是因为我国经济和文化落后，且有极其广大的个体农业、手工业和占国民经济很大比重的资本主义工商业需要改造。","提出总路线的现实依据之一是到1952年国营工业产值在全国工业总产值中的比重已增加到56%。","一五计划确定的经济建设指导方针突出的核心要点是集中主要力量发展重工业，建立国家工业化和国防现代化的初步基础。","1956年年底三大改造基本完成，社会主义公有制成为我国社会的经济基础，标志着中国历史上长达数千年的阶级剥削制度的结束和社会主义基本制度的确立。"],"q":["**易混：1953年过渡时期总路线（一化三改）vs 1958年社会主义建设总路线（鼓足干劲、力争上游、多快好省）**","最初设想是先完成工业化、然后进行社会主义改造，新的认识变为工业化建设和社会主义改造同时进行。"],"m":"一化三改，一体两翼","c":["sg"],"id":"1953a"},{"y":1954.71,"d":"1954年9月15日","t":"第一届全国人大·“五四宪法”","ch":["史纲·第八章"],"p":"北京","s":"人民代表大会制度在全国范围内建立","b":"第一届全国人民代表大会第一次会议在北京召开。","k":["**通过《中华人民共和国宪法》，这是我国第一部社会主义类型的宪法**","**人民代表大会制度成为我国的根本政治制度**","1954年宪法体现了人民民主原则和社会主义原则。","在1954年第一届全国人民代表大会召开前，中国人民政治协商会议代行全国人民代表大会职权。"],"q":["**易混：根本政治制度＝人民代表大会制度；基本政治制度＝中国共产党领导的多党合作和政治协商制度、民族区域自治制度、基层群众自治制度**","三大改造前通过的《中国人民政治协商会议共同纲领》在一个时期内起着新中国临时宪法的作用，但它还不是社会主义类型的宪法。"],"m":"","c":["sg"],"id":"1954a"},{"y":1956.32,"d":"1956年4月25日","t":"《论十大关系》","ch":["史纲·第八章"],"p":"北京","s":"以毛泽东为主要代表的中国共产党人开始探索中国自己的社会主义建设道路的标志，是党探索中国社会主义建设道路的良好开端","b":"苏共二十大暴露了苏联模式的问题。毛泽东用一个多月时间听取国务院34个部门的汇报后，在中央政治局扩大会议上作报告。","k":["**提出“以苏为鉴”，强调把马克思列宁主义基本原理同中国具体实际进行“第二次结合”**","**基本方针：调动一切积极因素为社会主义事业服务**","论述了重工业和轻工业、农业，沿海工业和内地工业，中央和地方，汉族和少数民族，中国和外国等十个方面的关系","**提出以农业为基础、以工业为主导，以农轻重为序发展国民经济的总方针**","**提出一整套“两条腿走路”的方针：重工业和轻工业、中央工业和地方工业、沿海工业和内地工业、大型企业和小型企业同时并举**"],"q":["**易混：“双百”方针针对科学文化工作；“长期共存、互相监督”针对共产党与民主党派的关系**","易混：**把马克思列宁主义基本原理同中国具体实际进行“第二次结合”是1956年4月《论十大关系》提出的，不是中共八大提出的**；《论十大关系》为同年9月中共八大的召开作了理论准备"],"m":"","c":["sg"],"id":"1956a"},{"y":1956.71,"d":"1956年9月15日","t":"中共八大","ch":["史纲·第八章"],"p":"北京","s":"为全面建设社会主义指明了方向","b":"社会主义改造即将基本完成，党在执政条件下召开第一次全国代表大会。","k":["**国内主要矛盾已经是人民对于建立先进的工业国的要求同落后的农业国的现实之间的矛盾，是人民对于经济文化迅速发展的需要同当前经济文化不能满足人民需要的状况之间的矛盾**","**党和人民的主要任务是集中力量发展社会生产力，尽快把我国从落后的农业国变为先进的工业国**","**经济建设方针：既反保守又反冒进，在综合平衡中稳步前进**","陈云提出“三个主体、三个补充”的设想"],"q":["**易混：主要矛盾表述——八大（1956）；1981年历史决议“人民日益增长的物质文化需要同落后的社会生产之间的矛盾”；十九大（2017）“人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾”**","易混：“第二次结合”是《论十大关系》（1956年4月）提出的，不是八大提出的；1958年社会主义建设总路线是八大二次会议通过的，不是八大"],"m":"","c":["sg"],"id":"1956b"},{"y":1956.96,"d":"1956年底","t":"三大改造基本完成·社会主义基本制度确立","ch":["史纲·第八章"],"p":"全国","s":"我国进入社会主义初级阶段","b":"1955年下半年起农业合作化迅速推进，带动手工业和资本主义工商业改造形成高潮；1956年初出现全行业公私合营高潮。","k":["**农业：互助组（社会主义萌芽）→ 初级社（半社会主义）→ 高级社（完全社会主义），坚持自愿互利、典型示范、国家帮助**","**资本主义工商业：和平赎买，经过国家资本主义由初级形式（加工订货、统购包销、经销代销）到高级形式（公私合营），全行业公私合营后实行“定息”**","**社会主义基本制度的确立，是中国历史上最深刻最伟大的社会变革，为当代中国一切发展进步奠定了根本政治前提和制度基础**","不足：1955年夏季以后要求过急，工作过粗，改变过快，形式过于简单划一"],"q":["**易混：个别企业公私合营时利润按“四马分肥”分配（国家所得税、企业公积金、工人福利费、资方红利）；全行业公私合营后改为“定息”**"],"m":"","c":["sg"],"id":"1956c"},{"y":1957.16,"d":"1957年2月27日","t":"《关于正确处理人民内部矛盾的问题》","ch":["史纲·第八章"],"p":"北京","s":"把正确处理人民内部矛盾作为国家政治生活的主题","b":"1956年国际上发生波匈事件，国内也出现少数人闹事的情况。毛泽东在最高国务会议上讲话，6月经整理后公开发表。","k":["**社会主义社会的基本矛盾仍然是生产关系和生产力、上层建筑和经济基础之间的矛盾，它们既相适应又相矛盾，可以通过社会主义制度本身不断得到解决**","**严格区分敌我矛盾和人民内部矛盾两类不同性质的矛盾：前者用专政的方法，后者用民主的方法（团结—批评—团结）**","同年整风运动中开展的反右派斗争被严重扩大化，造成了不幸的后果","**解决人民内部矛盾的各领域方针：科学文化领域实行“百花齐放、百家争鸣”，民族之间实行民族平等、团结互助，共产党和民主党派之间实行“长期共存、互相监督”**"],"q":["**考法：处理人民内部矛盾的方法——政治思想领域“团结—批评—团结”，物质利益分配“统筹兼顾、适当安排”**","**易混：“长期共存、互相监督、肝胆相照、荣辱与共”十六字方针是十二大增加的，不是毛泽东提出的；毛泽东提出的是“长期共存、互相监督”八字方针**"],"m":"","c":["sg"],"id":"1957a"},{"y":1958.34,"d":"1958年5月5日","t":"社会主义建设总路线·“大跃进”·人民公社化运动","ch":["史纲·第八章"],"p":"全国","s":"急于求成的严重失误","b":"八大二次会议正式通过“鼓足干劲、力争上游、多快好省地建设社会主义”的总路线，随后全国掀起“大跃进”和人民公社化运动。","k":["**以高指标、瞎指挥、浮夸风和“共产风”为主要标志的“左”倾错误严重泛滥**","**人民公社“一大二公”，搞平均主义和无偿调拨**","1959年庐山会议后期错误地开展“反右倾”斗争，加上自然灾害和苏联背信弃义撕毁合同，国民经济在1959—1961年发生严重困难"],"q":["考法：教训——社会主义建设必须从实际出发，尊重客观经济规律，不能急于求成"],"m":"","c":["sg"],"id":"1958a"},{"y":1962.03,"d":"1962年1月11日—2月7日","t":"七千人大会·国民经济调整","ch":["史纲·第八章"],"p":"北京","s":"初步总结“大跃进”以来的经验教训","b":"1961年1月八届九中全会正式通过对国民经济实行“调整、巩固、充实、提高”的八字方针。","k":["**1962年初扩大的中央工作会议（七千人大会）开展批评与自我批评，发扬党内民主**","到1965年国民经济调整任务全面完成"],"q":["**易混：八字方针是“调整、巩固、充实、提高”，不要与1979年的“调整、改革、整顿、提高”混淆**","长期共存、互相监督，肝胆相照、荣辱与共十六字方针是改革开放后十二大提出的，要与调整、巩固、充实、提高八字方针区分开。"],"m":"","c":["sg"],"id":"1962a"},{"y":1964.79,"d":"1964年10月16日、12月21日","t":"第一颗原子弹爆炸·明确“四个现代化”","ch":["史纲·第八章"],"p":"新疆罗布泊·北京","s":"社会主义建设取得重大成就，明确现代化目标","b":"1964年10月16日我国第一颗原子弹爆炸成功；12月三届全国人大一次会议召开。","k":["**周恩来在政府工作报告中提出，在不太长的历史时期内，把我国建设成为具有现代农业、现代工业、现代国防和现代科学技术的社会主义强国**","提出“两步走”设想：先建立一个独立的比较完整的工业体系和国民经济体系，再全面实现四个现代化"],"q":["**易混：1954年一届全国人大提出工业、农业、交通运输业和国防现代化；1964年三届全国人大一次会议明确农业、工业、国防和科学技术现代化目标**"],"m":"","c":["sg"],"id":"1964a"},{"y":1966.37,"d":"1966年5月16日—1976年10月","t":"“文化大革命”","ch":["史纲·第八章"],"p":"全国","s":"一场给党、国家和各族人民带来严重灾难的内乱","b":"1966年5月中央政治局扩大会议通过《五一六通知》，8月八届十一中全会通过《关于无产阶级文化大革命的决定》，“文化大革命”全面发动。","k":["**1981年历史决议指出：“文化大革命”是一场由领导者错误发动，被反革命集团利用，给党、国家和各族人民带来严重灾难的内乱**","**1976年10月中央政治局执行党和人民的意志，一举粉碎“四人帮”，结束了“文化大革命”**","1981年党的十一届六中全会通过《关于建国以来党的若干历史问题的决议》，标志着党和国家指导思想上拨乱反正的完成。","1978年关于真理标准问题的大讨论成为正本清源、拨乱反正和改革开放的思想先导。"],"q":["**易混：“文化大革命”不是也不可能是任何意义上的革命或社会进步；要把毛泽东晚年的错误同经过长期历史检验形成为科学理论的毛泽东思想区别开来**","毛泽东晚年的错误有主观因素和个人责任，还在于复杂的国内国际的社会历史原因，应该全面、历史、辩证地看待和分析。"],"m":"","c":["sg"],"id":"1966a"},{"y":1971.82,"d":"1971年10月25日","t":"恢复联合国合法席位·外交新局面","ch":["史纲·第八章"],"p":"美国纽约·北京","s":"外交工作打开新局面","b":"中国国际地位不断提高，许多亚非拉国家支持恢复新中国在联合国的合法权利。","k":["**1971年10月第26届联合国大会通过第2758号决议，恢复中华人民共和国在联合国的一切合法权利**","**1972年2月美国总统尼克松访华，中美发表《联合公报》（上海公报）；1979年1月1日中美正式建交**","**1972年9月中日两国建交；1974年毛泽东提出划分“三个世界”的战略思想**"],"q":["中间地带、三个世界划分都是毛泽东提出的，不要和邓小平混淆。"],"m":"","c":["sg"],"id":"1971a"},{"y":1978.36,"d":"1978年5月11日","t":"真理标准问题大讨论","ch":["史纲·第九章"],"p":"北京","s":"一场马克思主义的思想解放运动","b":"粉碎“四人帮”后，“两个凡是”（凡是毛主席作出的决策都坚决维护，凡是毛主席的指示都始终不渝地遵循）的方针严重束缚人们的思想。","k":["**《光明日报》发表特约评论员文章《实践是检验真理的唯一标准》，引发全国范围的大讨论**","**冲破了“两个凡是”的严重束缚，为十一届三中全会的召开作了思想准备**","**为重新确立解放思想、实事求是的思想路线奠定了基础**"],"q":["考法：真理标准问题讨论是马克思主义认识论（实践是检验真理的唯一标准）在中国现实中的运用"],"m":"","c":["sg"],"id":"1978a"},{"y":1978.9,"d":"1978年11月24日起","t":"农村改革·家庭联产承包责任制","ch":["史纲·第九章"],"p":"安徽凤阳小岗村等","s":"经济体制改革首先在农村取得突破","b":"1978年11月，安徽省凤阳县小岗村开创了家庭联产承包责任制的先河，农民自发实行包产到户、包干到户。","k":["**1982年1月1日，党历史上第一个关于农村工作的一号文件正式出台，明确指出包产到户、包干到户都是社会主义集体经济的生产责任制**","**家庭联产承包责任制的实质是打破人民公社体制下土地集体所有、集体经营的旧的农业耕作模式，实现土地集体所有权和经营权的分离，确立土地集体所有制基础上以户为单位的家庭承包经营的新型农业耕作模式**","家庭联产承包责任制在全国普遍推行，人民公社体制随之废除"],"q":["考法：改革从农村开始，1984年十二届三中全会后改革重点转向城市"],"m":"","c":["sg"],"id":"1978c"},{"y":1978.97,"d":"1978年12月18—22日","t":"十一届三中全会","ch":["史纲·第九章"],"p":"北京","s":"新中国成立以来党的历史上具有深远意义的伟大转折","b":"全会前召开的中央工作会议上，邓小平作《解放思想，实事求是，团结一致向前看》讲话，实际上成为全会的主题报告。","k":["**重新确立了解放思想、实事求是的思想路线**","**停止使用“以阶级斗争为纲”的错误口号，作出把党和国家工作中心转移到经济建设上来、实行改革开放的历史性决策**","**开启了改革开放和社会主义现代化建设新时期，实际上形成了以邓小平为核心的党的第二代中央领导集体**","提出实现民主制度化、法律化的任务，决定健全党的民主集中制，健全党规党法，严肃党纪；增选中央领导机构成员，成立中央纪律检查委员会"],"q":["**考法：十一届三中全会是中国特色社会主义理论体系形成发展的起点**","**易混：科学评价毛泽东并概括毛泽东思想的科学体系和活的灵魂，是1981年十一届六中全会《关于建国以来党的若干历史问题的决议》，不是十一届三中全会**"],"m":"伟大转折：思想路线、工作中心、改革开放","c":["sg"],"id":"1978b"},{"y":1979.24,"d":"1979年3月30日","t":"坚持四项基本原则","ch":["史纲·第九章"],"p":"北京","s":"立国之本","b":"改革开放初期，社会上出现怀疑和否定社会主义道路、党的领导等错误思潮。邓小平在党的理论工作务虚会上作《坚持四项基本原则》讲话。","k":["**必须坚持社会主义道路，坚持无产阶级专政（人民民主专政），坚持共产党的领导，坚持马列主义、毛泽东思想**","**四项基本原则是立国之本，改革开放是强国之路**","**邓小平首次提出“四项基本原则”的概念，指出坚持四项基本原则“是实现四个现代化的根本前提”**"],"q":["**易混：“一个中心、两个基本点”到1987年十三大才被完整概括为党在社会主义初级阶段的基本路线**"],"m":"","c":["sg"],"id":"1979a"},{"y":1980.65,"d":"1980年8月26日","t":"设立经济特区","ch":["史纲·第九章"],"p":"深圳·珠海·汕头·厦门","s":"对外开放迈出重要步伐","b":"1979年7月中央决定对广东、福建两省实行特殊政策和灵活措施；1980年决定在深圳、珠海、汕头、厦门试办经济特区，8月26日深圳经济特区正式成立。","k":["1984年开放大连、上海等14个沿海港口城市；1988年设立海南省并建立经济特区；1990年开发开放上海浦东","**逐步形成经济特区—沿海开放城市—沿海经济开放区—沿江和内陆开放城市—沿边开放城市的全方位对外开放格局**"],"q":["考法：对外开放是我国的基本国策"],"m":"","c":["sg"],"id":"1980a"},{"y":1981.49,"d":"1981年6月27日","t":"第二个历史决议","ch":["史纲·第九章"],"p":"北京","s":"党在指导思想上完成了拨乱反正","b":"十一届六中全会通过《关于建国以来党的若干历史问题的决议》。","k":["**彻底否定“文化大革命”的理论和实践**","**实事求是地评价毛泽东的历史地位：他的功绩是主要的，错误是次要的**","**科学论述了毛泽东思想，概括了贯穿其中的立场、观点和方法——毛泽东思想活的灵魂：实事求是、群众路线、独立自主**","**对我国社会主义主要矛盾作了规范表述：人民日益增长的物质文化需要同落后的社会生产之间的矛盾**","**第一次提出我国社会主义制度还处于初级的阶段**","提出“计划经济为主、市场调节为辅”的方针"],"q":["**易混：三个历史决议——1945年《关于若干历史问题的决议》、1981年《关于建国以来党的若干历史问题的决议》、2021年《中共中央关于党的百年奋斗重大成就和历史经验的决议》**","**考法：《决议》解决了两个相互联系的重大历史课题：一是科学评价毛泽东的历史地位和毛泽东思想的科学体系，二是根据新的实际和发展要求实行改革开放、确立中国社会主义现代化建设正确道路**"],"m":"活的灵魂：实事求是、群众路线、独立自主","c":["sg"],"id":"1981a"},{"y":1982.67,"d":"1982年9月1日","t":"中共十二大","ch":["史纲·第九章"],"p":"北京","s":"第一次明确提出“建设有中国特色的社会主义”","b":"邓小平在大会开幕词中总结历史经验。","k":["**提出“把马克思主义的普遍真理同我国的具体实际结合起来，走自己的道路，建设有中国特色的社会主义”**","提出到20世纪末力争使全国工农业年总产值翻两番的目标","同年12月五届全国人大五次会议通过现行宪法（“八二宪法”）"],"q":["考法：“走自己的道路”是对新中国成立以来历史经验的基本总结","易混：邓小平理论主题形成于十二大，轮廓形成于十三大，走向成熟于南方谈话，“邓小平理论”正式提出于十五大并写入党章"],"m":"","c":["sg"],"id":"1982a"},{"y":1984.81,"d":"1984年10月20日","t":"十二届三中全会·经济体制改革决定","ch":["史纲·第九章"],"p":"北京","s":"改革重点由农村转向城市","b":"全会通过《中共中央关于经济体制改革的决定》。","k":["**提出社会主义经济是公有制基础上的有计划的商品经济，突破了把计划经济同商品经济对立起来的传统观念**","改革开放开始后一个很长时期内，我国经济体制改革的核心问题是如何正确认识和处理计划与市场的关系，传统观念认为计划经济是社会主义的基本特征，市场经济是资本主义特有的东西。"],"q":["**易混：改革目标的演进——计划经济为主、市场调节为辅（十二大）→ 有计划的商品经济（1984）→ 社会主义市场经济体制（1992年十四大）**"],"m":"","c":["sg"],"id":"1984a"},{"y":1987.82,"d":"1987年10月25日","t":"中共十三大","ch":["史纲·第九章"],"p":"北京","s":"系统阐述社会主义初级阶段理论","b":"大会召开时，改革开放已经进行了将近十年。","k":["**我国正处在并将长期处在社会主义初级阶段：一是我国已经是社会主义社会，二是我国的社会主义社会还处在初级阶段**","**概括党在社会主义初级阶段的基本路线：以经济建设为中心，坚持四项基本原则，坚持改革开放（“一个中心、两个基本点”）**","提出“三步走”发展战略：第一步从1981年到1990年，国民生产总值翻一番，解决人民的温饱问题；第二步从1991年到20世纪末，国民生产总值再翻一番，人民生活达到小康水平；第三步到21世纪中叶，国民生产总值再翻两番，人民生活比较富裕，基本实现现代化","**第一次对中国特色社会主义理论进行系统的概括，标志着邓小平理论轮廓的形成**"],"q":["**易混：社会主义初级阶段特指我国从1956年生产资料私有制的社会主义改造基本完成到社会主义现代化基本实现的整个历史阶段**"],"m":"一个中心、两个基本点；三步走","c":["sg"],"id":"1987a"},{"y":1992.05,"d":"1992年1月18日—2月21日","t":"邓小平南方谈话","ch":["史纲·第九章"],"p":"武昌·深圳·珠海·上海","s":"又一个解放思想、实事求是的宣言书","b":"东欧剧变、苏联解体前后，一些人对改革开放产生了姓“资”姓“社”的疑问。邓小平视察南方并发表重要谈话。","k":["**计划多一点还是市场多一点，不是社会主义与资本主义的本质区别，计划和市场都是经济手段**","**社会主义的本质：解放生产力，发展生产力，消灭剥削，消除两极分化，最终达到共同富裕**","**判断标准：是否有利于发展社会主义社会的生产力，是否有利于增强社会主义国家的综合国力，是否有利于提高人民的生活水平（“三个有利于”）**","**“发展才是硬道理”**"],"q":["**考法：南方谈话和十四大标志着邓小平理论走向成熟**"],"m":"三个有利于，发展是硬道理","c":["sg"],"id":"1992a"},{"y":1992.78,"d":"1992年10月12日","t":"中共十四大","ch":["史纲·第九章"],"p":"北京","s":"确立社会主义市场经济体制的改革目标","b":"在南方谈话精神推动下，改革开放和现代化建设进入新的阶段。","k":["**明确我国经济体制改革的目标是建立社会主义市场经济体制**","**确立邓小平建设有中国特色社会主义理论在全党的指导地位**"],"q":["**易混：十四大称“邓小平建设有中国特色社会主义理论”；十五大正式使用“邓小平理论”并确立为党的指导思想**","**考法：以邓小平南方谈话和党的十四大为标志，改革开放和现代化建设事业进入从计划经济体制向社会主义市场经济体制转变的新阶段**"],"m":"","c":["sg"],"id":"1992b"},{"y":1997.5,"d":"1997年7月1日、1999年12月20日","t":"香港、澳门回归祖国","ch":["史纲·第九章"],"p":"香港·澳门","s":"“一国两制”的成功实践","b":"“一国两制”构想最初为解决台湾问题提出，首先运用于解决香港、澳门问题。1984年中英、1987年中葡分别签署关于香港、澳门问题的联合声明。","k":["**1997年7月1日中国政府恢复对香港行使主权，1999年12月20日恢复对澳门行使主权**","**实行“港人治港”“澳人治澳”、高度自治**","香港、澳门特别行政区享有高度自治权，包括行政管理权、立法权、独立的司法权和终审权。","一国两制的根本宗旨是维护国家主权、安全、发展利益，保持香港、澳门长期繁荣稳定。","宪法和基本法共同构成特别行政区的宪制基础，基本法是根据宪法制定的基本法律，规定了在特别行政区实行的制度和政策。","要坚定落实爱国者治港、爱国者治澳原则，把特别行政区管治权牢牢掌握在爱国者手中。"],"q":["**考法：“一国两制”的前提是一个中国；台湾问题是中国的内政**","一国两制构想最早是针对台湾问题提出来的，后来被率先运用于解决香港和澳门问题；香港、澳门问题是历史上殖民主义侵略遗留下来的问题，台湾问题是国内战争遗留下来的问题，两者性质不同。","一国是本，两制从属和派生于一国，并统一于一国之内，国家的主体必须实行社会主义制度。"],"m":"","c":["sg"],"id":"1997a"},{"y":1997.7,"d":"1997年9月12日","t":"中共十五大","ch":["史纲·第九章"],"p":"北京","s":"把邓小平理论确立为党的指导思想","b":"邓小平于1997年2月逝世，党的十五大高举邓小平理论伟大旗帜。","k":["**正式使用“邓小平理论”的科学称谓，确立为党的指导思想并写入党章**","**明确公有制为主体、多种所有制经济共同发展是社会主义初级阶段的基本经济制度**","**提出依法治国、建设社会主义法治国家的基本方略**","非公有制经济是我国社会主义市场经济的重要组成部分"],"q":["**考法：邓小平理论的首要基本理论问题是“什么是社会主义、怎样建设社会主义”，精髓是解放思想、实事求是**"],"m":"","c":["sg"],"id":"1997b"},{"y":2000.15,"d":"2000年2月25日","t":"提出“三个代表”重要思想","ch":["史纲·第九章"],"p":"广东","s":"回答“建设什么样的党、怎样建设党”","b":"江泽民在广东考察时首次全面提出；2001年“七一”讲话作了系统阐述。","k":["**中国共产党始终代表中国先进生产力的发展要求，始终代表中国先进文化的前进方向，始终代表中国最广大人民的根本利益**","三个代表重要思想是在开创全面改革开放新局面、推进党的建设新的伟大工程、成功把中国特色社会主义推向21世纪的伟大实践中形成和发展起来的。","三个代表是我们党的立党之本、执政之基、力量之源，贯彻三个代表重要思想，关键在坚持与时俱进，核心在坚持党的先进性，本质在坚持执政为民。","发展是党执政兴国的第一要务，改革是动力、发展是目的、稳定是前提，实施引进来和走出去相结合的对外开放战略。"],"q":["**易混：邓小平理论——什么是社会主义、怎样建设社会主义；“三个代表”——建设什么样的党、怎样建设党；科学发展观——实现什么样的发展、怎样发展**","三个代表重要思想用一系列紧密联系、相互贯通的新思想新观点新论断，进一步回答了什么是社会主义、怎样建设社会主义的问题，创造性回答了建设什么样的党、怎样建设党的问题。"],"m":"生产力、先进文化、根本利益","c":["sg"],"id":"2000a"},{"y":2001.95,"d":"2001年12月11日","t":"加入世界贸易组织","ch":["史纲·第九章"],"p":"瑞士日内瓦·北京","s":"对外开放进入新阶段","b":"经过约15年的谈判，中国正式成为世贸组织成员。","k":["**标志着我国对外开放进入在更大范围、更宽领域、更深层次上参与经济全球化的新阶段**","加入世界贸易组织后，我国深度参与国际分工，融入国际大循环，形成市场和资源两头在外的发展格局，对抓住经济全球化机遇快速提升经济实力、改善人民生活发挥了重要作用。"],"q":["考法：入世是对外开放从有限范围、有限领域向全方位、多层次、宽领域转变的标志"],"m":"","c":["sg"],"id":"2001a"},{"y":2002.85,"d":"2002年11月8日","t":"中共十六大","ch":["史纲·第九章"],"p":"北京","s":"把“三个代表”重要思想确立为党的指导思想","b":"新世纪召开的第一次党的全国代表大会。","k":["**确立“三个代表”重要思想为党的指导思想并写入党章**","**提出在21世纪头二十年全面建设惠及十几亿人口的更高水平的小康社会**","**提出“两个毫不动摇”：毫不动摇地巩固和发展公有制经济，毫不动摇地鼓励、支持和引导非公有制经济发展**"],"q":["易混：十六大“全面建设小康社会”；十八大改为“全面建成小康社会”"],"m":"","c":["sg"],"id":"2002a"},{"y":2007.79,"d":"2007年10月15日","t":"中共十七大","ch":["史纲·第九章"],"p":"北京","s":"把科学发展观写入党章","b":"改革开放即将走过三十年，大会全面总结了改革开放的宝贵经验。","k":["**第一次明确提出“中国特色社会主义理论体系”，包括邓小平理论、“三个代表”重要思想以及科学发展观等重大战略思想**","基本路线奋斗目标增加“和谐”，成为富强民主文明和谐","科学发展观的第一要义是推动经济社会发展，核心立场是以人为本，基本要求是全面协调可持续，根本方法是统筹兼顾。","科学发展观进一步回答了什么是社会主义、怎样建设社会主义和建设什么样的党、怎样建设党的问题，创造性地回答了新形势下实现什么样的发展、怎样发展等重大问题。","构建社会主义和谐社会的总要求是民主法治、公平正义、诚信友爱、充满活力、安定有序、人与自然和谐相处。"],"q":["考法：中国特色社会主义道路、理论体系在十七大提出；十八大加上制度；十九大加上文化"],"m":"","c":["sg"],"id":"2007a"},{"y":2012.86,"d":"2012年11月8日","t":"中共十八大","ch":["史纲·第十章"],"p":"北京","s":"中国特色社会主义进入新时代的起点","b":"大会之后，十八届一中全会选举习近平为中共中央总书记。","k":["**把科学发展观同马克思列宁主义、毛泽东思想、邓小平理论、“三个代表”重要思想一道，确立为党必须长期坚持的指导思想**","**提出“五位一体”总体布局：经济建设、政治建设、文化建设、社会建设、生态文明建设**","提出道路自信、理论自信、制度自信；**倡导富强、民主、文明、和谐，自由、平等、公正、法治，爱国、敬业、诚信、友善的社会主义核心价值观**","2012年11月29日习近平在参观《复兴之路》展览时阐释了实现中华民族伟大复兴的中国梦","**提出“两个百年”奋斗目标：在中国共产党成立一百年时全面建成小康社会，在新中国成立一百年时建成富强民主文明和谐的社会主义现代化国家**"],"q":["易混：“三个自信”（十八大）→ 增加文化自信，形成“四个自信”（2016年“七一”讲话）"],"m":"","c":["sg"],"id":"2012a"},{"y":2013.68,"d":"2013年9月7日—11月12日","t":"全面深化改革·“一带一路”倡议","ch":["史纲·第十章"],"p":"北京·哈萨克斯坦·印度尼西亚","s":"开启全面深化改革和全方位对外开放新局面","b":"2013年9月、10月，习近平出访哈萨克斯坦和印度尼西亚时，先后提出共建“丝绸之路经济带”和“21世纪海上丝绸之路”。","k":["11月十八届三中全会通过《中共中央关于全面深化改革若干重大问题的决定》","**全面深化改革的总目标是完善和发展中国特色社会主义制度，推进国家治理体系和治理能力现代化**","**使市场在资源配置中起决定性作用和更好发挥政府作用**","此后形成“四个全面”战略布局：**全面建设社会主义现代化国家（原为全面建成小康社会）、全面深化改革、全面依法治国、全面从严治党**","**全面深化改革是“四个全面”战略布局中具有突破性和先导性的关键环节**"],"q":["易混：市场的作用——“基础性作用”（十四大）→“决定性作用”（十八届三中全会）","**易混：十八届三中全会也是划时代的，但“开启改革开放和社会主义现代化建设新时期”是十一届三中全会，“确定建立社会主义市场经济体制”是十四大，不要张冠李戴**"],"m":"","c":["sg"],"id":"2013a"},{"y":2015.82,"d":"2015年10月26日","t":"十八届五中全会·新发展理念","ch":["史纲·第十章"],"p":"北京","s":"提出创新、协调、绿色、开放、共享的新发展理念","b":"我国经济发展进入新常态，需要用新的发展理念引领发展方式转变。","k":["创新是引领发展的第一动力，协调是持续健康发展的内在要求，绿色是永续发展的必要条件，开放是国家繁荣发展的必由之路，共享是中国特色社会主义的本质要求","**坚持以人民为中心的发展思想**","创新发展注重的是解决发展动力问题，协调发展注重的是解决发展不平衡问题，绿色发展注重的是解决人与自然和谐共生问题，开放发展注重的是解决发展内外联动问题，共享发展注重的是解决社会公平正义的问题。","新发展理念是指挥棒、红绿灯，是引领我国发展全局深刻变革的科学指引，必须完整、准确、全面地理解和把握。","把握新发展理念要从根本宗旨上把握，坚持以人民为中心的发展思想，让现代化建设成果更多更公平惠及全体人民。"],"q":["考法：新发展理念回答了关于发展的目的、动力、方式、路径等一系列理论和实践问题"],"m":"创新、协调、绿色、开放、共享","c":["sg"],"id":"2015a"},{"y":2017.8,"d":"2017年10月18日","t":"中共十九大","ch":["史纲·第十章"],"p":"北京","s":"中国特色社会主义进入新时代","b":"经过长期努力，我国发展站到了新的历史起点上。","k":["**作出中国特色社会主义进入新时代的重大政治论断**","**我国社会主要矛盾已经转化为人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾**","**确立习近平新时代中国特色社会主义思想为党的指导思想并写入党章**","**新时代“两步走”：2020年到2035年基本实现社会主义现代化；2035年到本世纪中叶建成富强民主文明和谐美丽的社会主义现代化强国**","**揭示中国共产党人的初心和使命，就是为中国人民谋幸福、为中华民族谋复兴**"],"q":["**易混：主要矛盾变了，但我国仍处于并将长期处于社会主义初级阶段的基本国情没有变，我国是世界最大发展中国家的国际地位没有变**"],"m":"新时代、新矛盾、新思想、新目标","c":["sg"],"id":"2017a"},{"y":2018.19,"d":"2018年3月11日","t":"宪法修正案","ch":["史纲·第十章"],"p":"北京","s":"把党的理论创新成果载入国家根本法","b":"十三届全国人大一次会议通过《中华人民共和国宪法修正案》。","k":["**把习近平新时代中国特色社会主义思想载入宪法**","**在宪法正文中写入“中国共产党领导是中国特色社会主义最本质的特征”**","增加有关监察委员会的规定，国家监察委员会成立"],"q":[],"m":"","c":["sg"],"id":"2018a"},{"y":2020.82,"d":"2020年10月26日","t":"十九届五中全会·新发展格局","ch":["史纲·第十章"],"p":"北京","s":"擘画“十四五”规划和2035年远景目标","b":"在全面建成小康社会胜利在望之际，全会审议通过关于“十四五”规划和2035年远景目标的建议。","k":["**提出加快构建以国内大循环为主体、国内国际双循环相互促进的新发展格局**","**明确到2035年基本实现社会主义现代化的远景目标**","构建新发展格局是把握未来发展主动权的战略性布局和先手棋，不是被迫之举和权宜之计。","构建新发展格局是开放的国内国际双循环，不是封闭的国内单循环，以国内大循环为主体是针对全国而言的，不能各自为政、画地为牢。","构建新发展格局最本质的特征是实现高水平的自立自强，构建新发展格局必须保证经济循环畅通无阻，实现生产、分配、流通、消费各环节有机衔接。","构建新发展格局的基本立足点是满足国内需求，战略基点是扩大内需，主线是深化供给侧结构性改革，战略支撑是科技自立自强。","到2035年基本实现社会主义现代化的总体目标包括经济实力、科技实力、综合国力大幅跃升，基本实现新型工业化、信息化、城镇化、农业现代化，基本实现国家治理体系和治理能力现代化。"],"q":["考法：新发展阶段明确了历史方位，新发展理念明确了指导原则，新发展格局明确了路径选择"],"m":"","c":["sg"],"id":"2020a"},{"y":2021.5,"d":"2021年7月1日","t":"庆祝建党百年·全面建成小康社会","ch":["史纲·第十章"],"p":"北京天安门","s":"实现第一个百年奋斗目标","b":"2021年2月全国脱贫攻坚总结表彰大会宣告：现行标准下9899万农村贫困人口全部脱贫，832个贫困县全部摘帽。","k":["**习近平宣告：我们实现了第一个百年奋斗目标，在中华大地上全面建成了小康社会，历史性地解决了绝对贫困问题**","提出伟大建党精神：**坚持真理、坚守理想，践行初心、担当使命，不怕牺牲、英勇斗争，对党忠诚、不负人民**","**强调坚持把马克思主义基本原理同中国具体实际相结合、同中华优秀传统文化相结合（“两个结合”）**","全面建成小康社会不是终点，而是新生活、新奋斗的起点。","全面建成小康社会、实现第一个百年奋斗目标之后，要乘势而上开启全面建设社会主义现代化国家新征程、向第二个百年奋斗目标进军，这标志着我国进入了一个新发展阶段。"],"q":[],"m":"","c":["sg"],"id":"2021a"},{"y":2021.85,"d":"2021年11月8日","t":"第三个历史决议","ch":["史纲·第十章"],"p":"北京","s":"全面总结党的百年奋斗重大成就和历史经验","b":"十九届六中全会通过《中共中央关于党的百年奋斗重大成就和历史经验的决议》。","k":["总结“十个坚持”的历史经验：**坚持党的领导、人民至上、理论创新、独立自主、中国道路、胸怀天下、开拓创新、敢于斗争、统一战线、自我革命**","**指出党确立习近平同志党中央的核心、全党的核心地位，确立习近平新时代中国特色社会主义思想的指导地位（“两个确立”）**","党的十九大、十九届六中全会提出的十个明确、十四个坚持、十三个方面成就，概括了习近平新时代中国特色社会主义思想的主要内容。","十个明确是习近平新时代中国特色社会主义思想的主体内容，十四个坚持构成了新时代坚持和发展中国特色社会主义的基本方略，十三个方面成就全景式地展示了习近平新时代中国特色社会主义思想的理论与实践成果。","两个确立是新时代党和国家事业取得历史性成就、发生历史性变革的决定性因素，是党和人民应对一切不确定性的最大确定性、最大底气、最大保证。"],"q":["**易混：马克思主义中国化的理论成果——毛泽东思想、中国特色社会主义理论体系、习近平新时代中国特色社会主义思想**","深刻领悟两个确立的决定性意义，要增强四个意识（政治意识、大局意识、核心意识、看齐意识）、坚定四个自信（道路自信、理论自信、制度自信、文化自信）、做到两个维护（坚决维护习近平总书记党中央核心、全党核心地位，坚决维护党中央权威和集中统一领导）。"],"m":"","c":["sg"],"id":"2021b"},{"y":2022.79,"d":"2022年10月16日","t":"中共二十大","ch":["史纲·第十章"],"p":"北京","s":"以中国式现代化全面推进中华民族伟大复兴","b":"大会在全党全国各族人民迈上全面建设社会主义现代化国家新征程的关键时刻召开。","k":["**中心任务：团结带领全国各族人民全面建成社会主义现代化强国、实现第二个百年奋斗目标，以中国式现代化全面推进中华民族伟大复兴**","中国式现代化是**人口规模巨大、全体人民共同富裕、物质文明和精神文明相协调、人与自然和谐共生、走和平发展道路的现代化**","“六个必须坚持”：**人民至上、自信自立、守正创新、问题导向、系统观念、胸怀天下**"],"q":["**考法：中国式现代化的本质要求共九条，第一条是坚持中国共产党领导，第二条是坚持中国特色社会主义**","**考法：“三个务必”是习近平总书记在党的二十大报告中提出的**"],"m":"","c":["sg"],"id":"2022a"}]}</script>
+<script>/* Wobble (skevy/wobble, MIT) — 弹簧物理：小球跟随与节点切换 */
+var Wobble=function(t){"use strict";var i=Object.assign||function(t){for(var i,e=1,n=arguments.length;e<n;e++){i=arguments[e];for(var r in i)Object.prototype.hasOwnProperty.call(i,r)&&(t[r]=i[r])}return t};function e(t,i){if(!t)throw new Error(i)}function n(t,i){return void 0!==t&&null!==t?t:i}var r=function(){function t(t){void 0===t&&(t={}),this._listeners=[],this._currentAnimationStep=0,this._currentTime=0,this._springTime=0,this._currentValue=0,this._currentVelocity=0,this._isAnimating=!1,this._oscillationVelocityPairs=[],this._config={fromValue:n(t.fromValue,0),toValue:n(t.toValue,1),stiffness:n(t.stiffness,100),damping:n(t.damping,10),mass:n(t.mass,1),initialVelocity:n(t.initialVelocity,0),overshootClamping:n(t.overshootClamping,!1),allowsOverdamping:n(t.allowsOverdamping,!1),restVelocityThreshold:n(t.restVelocityThreshold,.001),restDisplacementThreshold:n(t.restDisplacementThreshold,.001)},this._currentValue=this._config.fromValue,this._currentVelocity=this._config.initialVelocity}return t.prototype.start=function(){var t=this,i=this._config,e=i.fromValue,n=i.toValue,r=i.initialVelocity;return e===n&&0===r||(this._reset(),this._isAnimating=!0,this._currentAnimationStep||(this._notifyListeners("onStart"),this._currentAnimationStep=requestAnimationFrame(function(i){t._step(Date.now())}))),this},t.prototype.stop=function(){return this._isAnimating?(this._isAnimating=!1,this._notifyListeners("onStop"),this._currentAnimationStep&&(cancelAnimationFrame(this._currentAnimationStep),this._currentAnimationStep=0),this):this},Object.defineProperty(t.prototype,"currentValue",{get:function(){return this._currentValue},enumerable:!0,configurable:!0}),Object.defineProperty(t.prototype,"currentVelocity",{get:function(){return this._currentVelocity},enumerable:!0,configurable:!0}),Object.defineProperty(t.prototype,"isAtRest",{get:function(){return this._isSpringAtRest()},enumerable:!0,configurable:!0}),Object.defineProperty(t.prototype,"isAnimating",{get:function(){return this._isAnimating},enumerable:!0,configurable:!0}),t.prototype.updateConfig=function(t){this._advanceSpringToTime(Date.now());var e={fromValue:this._currentValue,initialVelocity:this._currentVelocity};return this._config=i({},this._config,e,t),this._reset(),this},t.prototype.onStart=function(t){return this._listeners.push({onStart:t}),this},t.prototype.onUpdate=function(t){return this._listeners.push({onUpdate:t}),this},t.prototype.onStop=function(t){return this._listeners.push({onStop:t}),this},t.prototype.removeListener=function(t){return this._listeners=this._listeners.reduce(function(i,e){return-1!==Object.values(e).indexOf(t)||i.push(e),i},[]),this},t.prototype.removeAllListeners=function(){return this._listeners=[],this},t.prototype._reset=function(){this._currentTime=Date.now(),this._springTime=0,this._currentValue=this._config.fromValue,this._currentVelocity=this._config.initialVelocity},t.prototype._notifyListeners=function(t){var i=this;this._listeners.forEach(function(e){var n=e[t];"function"==typeof n&&n(i)})},t.prototype._step=function(t){var i=this;this._advanceSpringToTime(t,!0),this._isAnimating&&(this._currentAnimationStep=requestAnimationFrame(function(t){return i._step(Date.now())}))},t.prototype._advanceSpringToTime=function(i,n){if(void 0===n&&(n=!1),this._isAnimating){var r=i-this._currentTime;r>t.MAX_DELTA_TIME_MS&&(r=t.MAX_DELTA_TIME_MS),this._springTime+=r;var s=this._config.damping,o=this._config.mass,a=this._config.stiffness,h=this._config.fromValue,u=this._config.toValue,c=-this._config.initialVelocity;e(o>0,"Mass value must be greater than 0"),e(a>0,"Stiffness value must be greater than 0"),e(s>0,"Damping value must be greater than 0");var l=s/(2*Math.sqrt(a*o)),p=Math.sqrt(a/o)/1e3,_=p*Math.sqrt(1-l*l),f=p*Math.sqrt(l*l-1),m=u-h;l>1&&!this._config.allowsOverdamping&&(l=1);var g=0,y=0,V=this._springTime;if(l<1)g=u-(v=Math.exp(-l*p*V))*((c+l*p*m)/_*Math.sin(_*V)+m*Math.cos(_*V)),y=l*p*v*(Math.sin(_*V)*(c+l*p*m)/_+m*Math.cos(_*V))-v*(Math.cos(_*V)*(c+l*p*m)-_*m*Math.sin(_*V));else if(1===l){g=u-(v=Math.exp(-p*V))*(m+(c+p*m)*V),y=v*(c*(V*p-1)+V*m*(p*p))}else{var v;g=u-(v=Math.exp(-l*p*V))*((c+l*p*m)*Math.sinh(f*V)+f*m*Math.cosh(f*V))/f,y=v*l*p*(Math.sinh(f*V)*(c+l*p*m)+m*f*Math.cosh(f*V))/f-v*(f*Math.cosh(f*V)*(c+l*p*m)+f*f*m*Math.sinh(f*V))/f}if(this._currentTime=i,this._currentValue=g,this._currentVelocity=y,n&&(this._notifyListeners("onUpdate"),this._isAnimating))return this._isSpringOvershooting()||this._isSpringAtRest()?(0!==a&&(this._currentValue=u,this._currentVelocity=0,this._notifyListeners("onUpdate")),void this.stop()):void 0}},t.prototype._isSpringOvershooting=function(){var t=this._config,i=t.stiffness,e=t.fromValue,n=t.toValue,r=!1;return t.overshootClamping&&0!==i&&(r=e<n?this._currentValue>n:this._currentValue<n),r},t.prototype._isSpringAtRest=function(){var t=this._config,i=t.stiffness,e=t.toValue,n=t.restDisplacementThreshold,r=t.restVelocityThreshold,s=Math.abs(this._currentVelocity)<=r;return 0!==i&&Math.abs(e-this._currentValue)<=n&&s},t.MAX_DELTA_TIME_MS=1/60*1e3*4,t}();return t.Spring=r,t}({});
+//# sourceMappingURL=wobble.browser.min.js.map
+</script>
+<script>/* Lenis (darkroomengineering/lenis, MIT) — 桌面滚轮惯性 */
+function t(t,e,i){return Math.max(t,Math.min(e,i))}var e=class{isRunning=!1;value=0;from=0;to=0;currentTime=0;lerp;duration;easing;onUpdate;advance(e){if(!this.isRunning)return;let i=!1;if(this.duration&&this.easing){this.currentTime+=e;const s=t(0,this.currentTime/this.duration,1);i=s>=1;const o=i?1:this.easing(s);this.value=this.from+(this.to-this.from)*o}else this.lerp?(this.value=function(t,e,i,s){return function(t,e,i){return(1-i)*t+i*e}(t,e,1-Math.exp(-i*s))}(this.value,this.to,60*this.lerp,e),Math.round(this.value)===this.to&&(this.value=this.to,i=!0)):(this.value=this.to,i=!0);i&&this.stop(),this.onUpdate?.(this.value,i)}stop(){this.isRunning=!1}fromTo(t,e,{lerp:i,duration:s,easing:o,onStart:n,onUpdate:r}){this.from=this.value=t,this.to=e,this.lerp=i,this.duration=s,this.easing=o,this.currentTime=0,this.isRunning=!0,n?.(),this.onUpdate=r}};var i=class{constructor(t,e,{autoResize:i=!0,debounce:s=250}={}){this.wrapper=t,this.content=e,i&&(this.debouncedResize=function(t,e){let i;return function(...s){let o=this;clearTimeout(i),i=setTimeout((()=>{i=void 0,t.apply(o,s)}),e)}}(this.resize,s),this.wrapper instanceof Window?window.addEventListener("resize",this.debouncedResize,!1):(this.wrapperResizeObserver=new ResizeObserver(this.debouncedResize),this.wrapperResizeObserver.observe(this.wrapper)),this.contentResizeObserver=new ResizeObserver(this.debouncedResize),this.contentResizeObserver.observe(this.content)),this.resize()}width=0;height=0;scrollHeight=0;scrollWidth=0;debouncedResize;wrapperResizeObserver;contentResizeObserver;destroy(){this.wrapperResizeObserver?.disconnect(),this.contentResizeObserver?.disconnect(),this.wrapper===window&&this.debouncedResize&&window.removeEventListener("resize",this.debouncedResize,!1)}resize=()=>{this.onWrapperResize(),this.onContentResize()};onWrapperResize=()=>{this.wrapper instanceof Window?(this.width=window.innerWidth,this.height=window.innerHeight):(this.width=this.wrapper.clientWidth,this.height=this.wrapper.clientHeight)};onContentResize=()=>{this.wrapper instanceof Window?(this.scrollHeight=this.content.scrollHeight,this.scrollWidth=this.content.scrollWidth):(this.scrollHeight=this.wrapper.scrollHeight,this.scrollWidth=this.wrapper.scrollWidth)};get limit(){return{x:this.scrollWidth-this.width,y:this.scrollHeight-this.height}}},s=class{events={};emit(t,...e){let i=this.events[t]||[];for(let t=0,s=i.length;t<s;t++)i[t]?.(...e)}on(t,e){return this.events[t]?.push(e)||(this.events[t]=[e]),()=>{this.events[t]=this.events[t]?.filter((t=>e!==t))}}off(t,e){this.events[t]=this.events[t]?.filter((t=>e!==t))}destroy(){this.events={}}},o=100/6,n={passive:!1},r=class{constructor(t,e={wheelMultiplier:1,touchMultiplier:1}){this.element=t,this.options=e,window.addEventListener("resize",this.onWindowResize,!1),this.onWindowResize(),this.element.addEventListener("wheel",this.onWheel,n),this.element.addEventListener("touchstart",this.onTouchStart,n),this.element.addEventListener("touchmove",this.onTouchMove,n),this.element.addEventListener("touchend",this.onTouchEnd,n)}touchStart={x:0,y:0};lastDelta={x:0,y:0};window={width:0,height:0};emitter=new s;on(t,e){return this.emitter.on(t,e)}destroy(){this.emitter.destroy(),window.removeEventListener("resize",this.onWindowResize,!1),this.element.removeEventListener("wheel",this.onWheel,n),this.element.removeEventListener("touchstart",this.onTouchStart,n),this.element.removeEventListener("touchmove",this.onTouchMove,n),this.element.removeEventListener("touchend",this.onTouchEnd,n)}onTouchStart=t=>{const{clientX:e,clientY:i}=t.targetTouches?t.targetTouches[0]:t;this.touchStart.x=e,this.touchStart.y=i,this.lastDelta={x:0,y:0},this.emitter.emit("scroll",{deltaX:0,deltaY:0,event:t})};onTouchMove=t=>{const{clientX:e,clientY:i}=t.targetTouches?t.targetTouches[0]:t,s=-(e-this.touchStart.x)*this.options.touchMultiplier,o=-(i-this.touchStart.y)*this.options.touchMultiplier;this.touchStart.x=e,this.touchStart.y=i,this.lastDelta={x:s,y:o},this.emitter.emit("scroll",{deltaX:s,deltaY:o,event:t})};onTouchEnd=t=>{this.emitter.emit("scroll",{deltaX:this.lastDelta.x,deltaY:this.lastDelta.y,event:t})};onWheel=t=>{let{deltaX:e,deltaY:i,deltaMode:s}=t;e*=1===s?o:2===s?this.window.width:1,i*=1===s?o:2===s?this.window.height:1,e*=this.options.wheelMultiplier,i*=this.options.wheelMultiplier,this.emitter.emit("scroll",{deltaX:e,deltaY:i,event:t})};onWindowResize=()=>{this.window={width:window.innerWidth,height:window.innerHeight}}},l=t=>Math.min(1,1.001-Math.pow(2,-10*t)),Lenis=class{_isScrolling=!1;_isStopped=!1;_isLocked=!1;_preventNextNativeScrollEvent=!1;_resetVelocityTimeout=null;__rafID=null;isTouching;time=0;userData={};lastVelocity=0;velocity=0;direction=0;options;targetScroll;animatedScroll;animate=new e;emitter=new s;dimensions;virtualScroll;constructor({wrapper:t=window,content:e=document.documentElement,eventsTarget:s=t,smoothWheel:o=!0,syncTouch:n=!1,syncTouchLerp:h=.075,touchInertiaMultiplier:a=35,duration:c,easing:p,lerp:d=.1,infinite:u=!1,orientation:m="vertical",gestureOrientation:v="vertical",touchMultiplier:g=1,wheelMultiplier:w=1,autoResize:S=!0,prevent:f,virtualScroll:y,overscroll:E=!0,autoRaf:T=!1,anchors:z=!1,autoToggle:b=!1,allowNestedScroll:_=!1,__experimental__naiveDimensions:L=!1}={}){window.lenisVersion="1.3.4",t&&t!==document.documentElement||(t=window),"number"==typeof c&&"function"!=typeof p?p=l:"function"==typeof p&&"number"!=typeof c&&(c=1),this.options={wrapper:t,content:e,eventsTarget:s,smoothWheel:o,syncTouch:n,syncTouchLerp:h,touchInertiaMultiplier:a,duration:c,easing:p,lerp:d,infinite:u,gestureOrientation:v,orientation:m,touchMultiplier:g,wheelMultiplier:w,autoResize:S,prevent:f,virtualScroll:y,overscroll:E,autoRaf:T,anchors:z,autoToggle:b,allowNestedScroll:_,__experimental__naiveDimensions:L},this.dimensions=new i(t,e,{autoResize:S}),this.updateClassName(),this.targetScroll=this.animatedScroll=this.actualScroll,this.options.wrapper.addEventListener("scroll",this.onNativeScroll,!1),this.options.wrapper.addEventListener("scrollend",this.onScrollEnd,{capture:!0}),this.options.anchors&&this.options.wrapper===window&&this.options.wrapper.addEventListener("click",this.onClick,!1),this.options.wrapper.addEventListener("pointerdown",this.onPointerDown,!1),this.virtualScroll=new r(s,{touchMultiplier:g,wheelMultiplier:w}),this.virtualScroll.on("scroll",this.onVirtualScroll),this.options.autoToggle&&this.rootElement.addEventListener("transitionend",this.onTransitionEnd,{passive:!0}),this.options.autoRaf&&(this.__rafID=requestAnimationFrame(this.raf))}destroy(){this.emitter.destroy(),this.options.wrapper.removeEventListener("scroll",this.onNativeScroll,!1),this.options.wrapper.removeEventListener("scrollend",this.onScrollEnd,{capture:!0}),this.options.wrapper.removeEventListener("pointerdown",this.onPointerDown,!1),this.options.anchors&&this.options.wrapper===window&&this.options.wrapper.removeEventListener("click",this.onClick,!1),this.virtualScroll.destroy(),this.dimensions.destroy(),this.cleanUpClassName(),this.__rafID&&cancelAnimationFrame(this.__rafID)}on(t,e){return this.emitter.on(t,e)}off(t,e){return this.emitter.off(t,e)}onScrollEnd=t=>{t instanceof CustomEvent||"smooth"!==this.isScrolling&&!1!==this.isScrolling||t.stopPropagation()};dispatchScrollendEvent=()=>{this.options.wrapper.dispatchEvent(new CustomEvent("scrollend",{bubbles:this.options.wrapper===window,detail:{lenisScrollEnd:!0}}))};onTransitionEnd=t=>{if(t.propertyName.includes("overflow")){const t=this.isHorizontal?"overflow-x":"overflow-y",e=getComputedStyle(this.rootElement)[t];["hidden","clip"].includes(e)?this.stop():this.start()}};setScroll(t){this.isHorizontal?this.options.wrapper.scrollTo({left:t,behavior:"instant"}):this.options.wrapper.scrollTo({top:t,behavior:"instant"})}onClick=t=>{const e=t.composedPath().find((t=>t instanceof HTMLAnchorElement&&(t.getAttribute("href")?.startsWith("#")||t.getAttribute("href")?.startsWith("/#")||t.getAttribute("href")?.startsWith("./#"))));if(e){const t=e.getAttribute("href");if(t){const e="object"==typeof this.options.anchors&&this.options.anchors?this.options.anchors:void 0;let i=`#${t.split("#")[1]}`;["#","/#","./#","#top","/#top","./#top"].includes(t)&&(i=0),this.scrollTo(i,e)}}};onPointerDown=t=>{1===t.button&&this.reset()};onVirtualScroll=t=>{if("function"==typeof this.options.virtualScroll&&!1===this.options.virtualScroll(t))return;const{deltaX:e,deltaY:i,event:s}=t;if(this.emitter.emit("virtual-scroll",{deltaX:e,deltaY:i,event:s}),s.ctrlKey)return;if(s.lenisStopPropagation)return;const o=s.type.includes("touch"),n=s.type.includes("wheel");this.isTouching="touchstart"===s.type||"touchmove"===s.type;const r=0===e&&0===i;if(this.options.syncTouch&&o&&"touchstart"===s.type&&r&&!this.isStopped&&!this.isLocked)return void this.reset();const l="vertical"===this.options.gestureOrientation&&0===i||"horizontal"===this.options.gestureOrientation&&0===e;if(r||l)return;let h=s.composedPath();h=h.slice(0,h.indexOf(this.rootElement));const a=this.options.prevent;if(h.find((t=>t instanceof HTMLElement&&("function"==typeof a&&a?.(t)||t.hasAttribute?.("data-lenis-prevent")||o&&t.hasAttribute?.("data-lenis-prevent-touch")||n&&t.hasAttribute?.("data-lenis-prevent-wheel")||this.options.allowNestedScroll&&this.checkNestedScroll(t,{deltaX:e,deltaY:i})))))return;if(this.isStopped||this.isLocked)return void s.preventDefault();if(!(this.options.syncTouch&&o||this.options.smoothWheel&&n))return this.isScrolling="native",this.animate.stop(),void(s.lenisStopPropagation=!0);let c=i;"both"===this.options.gestureOrientation?c=Math.abs(i)>Math.abs(e)?i:e:"horizontal"===this.options.gestureOrientation&&(c=e),(!this.options.overscroll||this.options.infinite||this.options.wrapper!==window&&(this.animatedScroll>0&&this.animatedScroll<this.limit||0===this.animatedScroll&&i>0||this.animatedScroll===this.limit&&i<0))&&(s.lenisStopPropagation=!0),s.preventDefault();const p=o&&this.options.syncTouch,d=o&&"touchend"===s.type&&Math.abs(c)>5;d&&(c=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+c,{programmatic:!1,...p?{lerp:d?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this.options.duration,easing:this.options.easing}})};resize(){this.dimensions.resize(),this.animatedScroll=this.targetScroll=this.actualScroll,this.emit()}emit(){this.emitter.emit("scroll",this)}onNativeScroll=()=>{if(null!==this._resetVelocityTimeout&&(clearTimeout(this._resetVelocityTimeout),this._resetVelocityTimeout=null),this._preventNextNativeScrollEvent)this._preventNextNativeScrollEvent=!1;else if(!1===this.isScrolling||"native"===this.isScrolling){const t=this.animatedScroll;this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity,this.velocity=this.animatedScroll-t,this.direction=Math.sign(this.animatedScroll-t),this.isStopped||(this.isScrolling="native"),this.emit(),0!==this.velocity&&(this._resetVelocityTimeout=setTimeout((()=>{this.lastVelocity=this.velocity,this.velocity=0,this.isScrolling=!1,this.emit()}),400))}};reset(){this.isLocked=!1,this.isScrolling=!1,this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity=0,this.animate.stop()}start(){this.isStopped&&(this.reset(),this.isStopped=!1,this.emit())}stop(){this.isStopped||(this.reset(),this.isStopped=!0,this.emit())}raf=t=>{const e=t-(this.time||t);this.time=t,this.animate.advance(.001*e),this.options.autoRaf&&(this.__rafID=requestAnimationFrame(this.raf))};scrollTo(e,{offset:i=0,immediate:s=!1,lock:o=!1,duration:n=this.options.duration,easing:r=this.options.easing,lerp:h=this.options.lerp,onStart:a,onComplete:c,force:p=!1,programmatic:d=!0,userData:u}={}){if(!this.isStopped&&!this.isLocked||p){if("string"==typeof e&&["top","left","start"].includes(e))e=0;else if("string"==typeof e&&["bottom","right","end"].includes(e))e=this.limit;else{let t;if("string"==typeof e?t=document.querySelector(e):e instanceof HTMLElement&&e?.nodeType&&(t=e),t){if(this.options.wrapper!==window){const t=this.rootElement.getBoundingClientRect();i-=this.isHorizontal?t.left:t.top}const s=t.getBoundingClientRect();e=(this.isHorizontal?s.left:s.top)+this.animatedScroll}}if("number"==typeof e){if(e+=i,e=Math.round(e),this.options.infinite){if(d){this.targetScroll=this.animatedScroll=this.scroll;const t=e-this.animatedScroll;t>this.limit/2?e-=this.limit:t<-this.limit/2&&(e+=this.limit)}}else e=t(0,e,this.limit);if(e===this.targetScroll)return a?.(this),void c?.(this);if(this.userData=u??{},s)return this.animatedScroll=this.targetScroll=e,this.setScroll(this.scroll),this.reset(),this.preventNextNativeScrollEvent(),this.emit(),c?.(this),this.userData={},void requestAnimationFrame((()=>{this.dispatchScrollendEvent()}));d||(this.targetScroll=e),"number"==typeof n&&"function"!=typeof r?r=l:"function"==typeof r&&"number"!=typeof n&&(n=1),this.animate.fromTo(this.animatedScroll,e,{duration:n,easing:r,lerp:h,onStart:()=>{o&&(this.isLocked=!0),this.isScrolling="smooth",a?.(this)},onUpdate:(t,e)=>{this.isScrolling="smooth",this.lastVelocity=this.velocity,this.velocity=t-this.animatedScroll,this.direction=Math.sign(this.velocity),this.animatedScroll=t,this.setScroll(this.scroll),d&&(this.targetScroll=t),e||this.emit(),e&&(this.reset(),this.emit(),c?.(this),this.userData={},requestAnimationFrame((()=>{this.dispatchScrollendEvent()})),this.preventNextNativeScrollEvent())}})}}}preventNextNativeScrollEvent(){this._preventNextNativeScrollEvent=!0,requestAnimationFrame((()=>{this._preventNextNativeScrollEvent=!1}))}checkNestedScroll(t,{deltaX:e,deltaY:i}){const s=Date.now(),o=t._lenis??={};let n,r,l,h,a,c,p,d;const u=this.options.gestureOrientation;if(s-(o.time??0)>2e3){o.time=Date.now();const e=window.getComputedStyle(t);o.computedStyle=e;const i=e.overflowX,s=e.overflowY;if(n=["auto","overlay","scroll"].includes(i),r=["auto","overlay","scroll"].includes(s),o.hasOverflowX=n,o.hasOverflowY=r,!n&&!r)return!1;if("vertical"===u&&!r)return!1;if("horizontal"===u&&!n)return!1;a=t.scrollWidth,c=t.scrollHeight,p=t.clientWidth,d=t.clientHeight,l=a>p,h=c>d,o.isScrollableX=l,o.isScrollableY=h,o.scrollWidth=a,o.scrollHeight=c,o.clientWidth=p,o.clientHeight=d}else l=o.isScrollableX,h=o.isScrollableY,n=o.hasOverflowX,r=o.hasOverflowY,a=o.scrollWidth,c=o.scrollHeight,p=o.clientWidth,d=o.clientHeight;if(!n&&!r||!l&&!h)return!1;if(!("vertical"!==u||r&&h))return!1;if(!("horizontal"!==u||n&&l))return!1;let m,v,g,w,S,f;if("horizontal"===u)m="x";else if("vertical"===u)m="y";else{0!==e&&n&&l&&(m="x"),0!==i&&r&&h&&(m="y")}if(!m)return!1;if("x"===m)v=t.scrollLeft,g=a-p,w=e,S=n,f=l;else{if("y"!==m)return!1;v=t.scrollTop,g=c-d,w=i,S=r,f=h}return(w>0?v<g:v>0)&&S&&f}get rootElement(){return this.options.wrapper===window?document.documentElement:this.options.wrapper}get limit(){return this.options.__experimental__naiveDimensions?this.isHorizontal?this.rootElement.scrollWidth-this.rootElement.clientWidth:this.rootElement.scrollHeight-this.rootElement.clientHeight:this.dimensions.limit[this.isHorizontal?"x":"y"]}get isHorizontal(){return"horizontal"===this.options.orientation}get actualScroll(){const t=this.options.wrapper;return this.isHorizontal?t.scrollX??t.scrollLeft:t.scrollY??t.scrollTop}get scroll(){return this.options.infinite?(t=this.animatedScroll,e=this.limit,(t%e+e)%e):this.animatedScroll;var t,e}get progress(){return 0===this.limit?1:this.scroll/this.limit}get isScrolling(){return this._isScrolling}set isScrolling(t){this._isScrolling!==t&&(this._isScrolling=t,this.updateClassName())}get isStopped(){return this._isStopped}set isStopped(t){this._isStopped!==t&&(this._isStopped=t,this.updateClassName())}get isLocked(){return this._isLocked}set isLocked(t){this._isLocked!==t&&(this._isLocked=t,this.updateClassName())}get isSmooth(){return"smooth"===this.isScrolling}get className(){let t="lenis";return this.options.autoToggle&&(t+=" lenis-autoToggle"),this.isStopped&&(t+=" lenis-stopped"),this.isLocked&&(t+=" lenis-locked"),this.isScrolling&&(t+=" lenis-scrolling"),"smooth"===this.isScrolling&&(t+=" lenis-smooth"),t}updateClassName(){this.cleanUpClassName(),this.rootElement.className=`${this.rootElement.className} ${this.className}`.trim()}cleanUpClassName(){this.rootElement.className=this.rootElement.className.replace(/lenis(-\w+)?/g,"").trim()}};globalThis.Lenis=Lenis,globalThis.Lenis.prototype=Lenis.prototype;//# sourceMappingURL=lenis.min.js.map
+</script>
+<script>/* AutoAnimate (formkit/auto-animate, MIT) — 目录条目 FLIP 滑位；原 index.mjs 已转经典脚本 IIFE，暴露 window.autoAnimate */
+(()=>{var j=new Set,d=new WeakMap,T=new WeakMap,h=new WeakMap,C=new WeakMap,k=new WeakMap,S=new WeakMap,E=new WeakMap,y=new WeakMap,W=new WeakSet,u,z=0,X=0,w="__aa_tgt",N="__aa_del",B="__aa_new",q=(t)=>{let e=nt(t);if(e)e.forEach((i)=>ot(i))},Z=(t)=>{t.forEach((e)=>{if(e.target===u)tt();if(d.has(e.target))M(e.target)})};function Q(t){let e=t.getBoundingClientRect(),i=(u===null||u===void 0?void 0:u.clientWidth)||0,n=(u===null||u===void 0?void 0:u.clientHeight)||0;return e.bottom<0||e.top>n||e.right<0||e.left>i}function Y(t){let e=C.get(t);e===null||e===void 0||e.disconnect();let i=d.get(t),n=0,o=5;if(!i)i=x(t),d.set(t,i);let{offsetWidth:r,offsetHeight:s}=u,c=[i.top-o,r-(i.left+o+i.width),s-(i.top+o+i.height),i.left-o].map((f)=>`${-1*Math.floor(f)}px`).join(" "),l=new IntersectionObserver(()=>{++n>1&&M(t)},{root:u,threshold:1,rootMargin:c});l.observe(t),C.set(t,l)}function M(t,e=!0){clearTimeout(y.get(t));let i=L(t),n=e?P(i)?500:i.duration:0;y.set(t,setTimeout(async()=>{let o=h.get(t);try{await(o===null||o===void 0?void 0:o.finished),d.set(t,x(t)),Y(t)}catch{}},n))}function tt(){clearTimeout(y.get(u)),y.set(u,setTimeout(()=>{j.forEach((t)=>A(t,(e)=>U(()=>M(e))))},100))}function et(t){setTimeout(()=>{S.set(t,setInterval(()=>U(M.bind(null,t)),2000))},Math.round(2000*Math.random()))}function U(t){if(typeof requestIdleCallback==="function")requestIdleCallback(()=>t());else requestAnimationFrame(()=>t())}var v,G=typeof window<"u"&&"ResizeObserver"in window;if(G)u=document.documentElement,new MutationObserver(q),v=new ResizeObserver(Z),window.addEventListener("scroll",()=>{X=window.scrollY,z=window.scrollX}),v.observe(u);function nt(t){if(t.reduce((n,o)=>[...n,...Array.from(o.addedNodes),...Array.from(o.removedNodes)],[]).every((n)=>n.nodeName==="#comment"))return!1;return t.reduce((n,o)=>{if(n===!1)return!1;if(o.target instanceof Element){if(R(o.target),!n.has(o.target)){n.add(o.target);for(let r=0;r<o.target.children.length;r++){let s=o.target.children.item(r);if(!s)continue;if(N in s)return!1;R(o.target,s),n.add(s)}}if(o.removedNodes.length)for(let r=0;r<o.removedNodes.length;r++){let s=o.removedNodes[r];if(N in s)return!1;if(s instanceof Element)n.add(s),R(o.target,s),T.set(s,[o.previousSibling,o.nextSibling])}}return n},new Set)}function R(t,e){if(!e&&!(w in t))Object.defineProperty(t,w,{value:t});else if(e&&!(w in e))Object.defineProperty(e,w,{value:t})}function ot(t){var e,i;let n=t.isConnected,o=d.has(t);if(n&&T.has(t))T.delete(t);if(((e=h.get(t))===null||e===void 0?void 0:e.playState)!=="finished")(i=h.get(t))===null||i===void 0||i.cancel();if(B in t)I(t);else if(o&&n)rt(t);else if(o&&!n)st(t);else I(t)}function m(t){return Number(t.replace(/[^0-9.\-]/g,""))}function it(t){let e=t.parentElement;while(e){if(e.scrollLeft||e.scrollTop)return{x:e.scrollLeft,y:e.scrollTop};e=e.parentElement}return{x:0,y:0}}function x(t){let e=t.getBoundingClientRect(),{x:i,y:n}=it(t);return{top:e.top+n,left:e.left+i,width:e.width,height:e.height}}function V(t,e,i){let{width:n,height:o}=e,{width:r,height:s}=i,a=getComputedStyle(t);if(a.getPropertyValue("box-sizing")==="content-box"){let l=m(a.paddingTop)+m(a.paddingBottom)+m(a.borderTopWidth)+m(a.borderBottomWidth),f=m(a.paddingLeft)+m(a.paddingRight)+m(a.borderRightWidth)+m(a.borderLeftWidth);n-=f,r-=f,o-=l,s-=l}return[n,r,o,s].map(Math.round)}function L(t){return w in t&&E.has(t[w])?E.get(t[w]):{duration:250,easing:"ease-in-out"}}function J(t){if(w in t)return t[w];return}function H(t){let e=J(t);return e?W.has(e):!1}function A(t,...e){e.forEach((i)=>i(t,E.has(t)));for(let i=0;i<t.children.length;i++){let n=t.children.item(i);if(n)e.forEach((o)=>o(n,E.has(n)))}}function D(t){if(Array.isArray(t))return t;return[t]}function P(t){return typeof t==="function"}function rt(t){let e=d.get(t),i=x(t);if(!H(t))return d.set(t,i);if(Q(t)){d.set(t,i),Y(t);return}let n;if(!e)return;let o=L(t);if(typeof o!=="function"){let r=e.left-i.left,s=e.top-i.top,a=e.left+e.width-(i.left+i.width);if(e.top+e.height-(i.top+i.height)==0)s=0;if(a==0)r=0;let[l,f,O,p]=V(t,e,i),g={transform:`translate(${r}px, ${s}px)`},b={transform:"translate(0, 0)"};if(l!==f)g.width=`${l}px`,b.width=`${f}px`;if(O!==p)g.height=`${O}px`,b.height=`${p}px`;n=t.animate([g,b],{duration:o.duration,easing:o.easing})}else{let[r]=D(o(t,"remain",e,i));n=new Animation(r),n.play()}h.set(t,n),d.set(t,i),n.addEventListener("finish",M.bind(null,t,!1),{once:!0})}function I(t){if(B in t)delete t[B];let e=x(t);d.set(t,e);let i=L(t);if(!H(t))return;if(Q(t)){Y(t);return}let n;if(typeof i!=="function")n=t.animate([{transform:"scale(.98)",opacity:0},{transform:"scale(0.98)",opacity:0,offset:0.5},{transform:"scale(1)",opacity:1}],{duration:i.duration*1.5,easing:"ease-in"});else{let[o]=D(i(t,"add",e));n=new Animation(o),n.play()}h.set(t,n),n.addEventListener("finish",M.bind(null,t,!1),{once:!0})}function F(t,e){var i;t.remove(),d.delete(t),T.delete(t),h.delete(t),(i=C.get(t))===null||i===void 0||i.disconnect(),setTimeout(()=>{if(N in t)delete t[N];if(Object.defineProperty(t,B,{value:!0,configurable:!0}),e&&t instanceof HTMLElement)for(let n in e)t.style[n]=""},0)}function st(t){var e;if(!T.has(t)||!d.has(t))return;let[i,n]=T.get(t);Object.defineProperty(t,N,{value:!0,configurable:!0});let{scrollX:o,scrollY:r}=window;if(n&&n.parentNode&&n.parentNode instanceof Element)n.parentNode.insertBefore(t,n);else if(i&&i.parentNode)i.parentNode.appendChild(t);else(e=J(t))===null||e===void 0||e.appendChild(t);if(!H(t))return F(t);let[s,a,c,l]=ct(t),f=L(t),O=d.get(t);if(o!==z||r!==X)at(t,o,r,f);let p,g={position:"absolute",top:`${s}px`,left:`${a}px`,width:`${c}px`,height:`${l}px`,margin:"0",pointerEvents:"none",transformOrigin:"center",zIndex:"100"};if(!P(f))Object.assign(t.style,g),p=t.animate([{transform:"scale(1)",opacity:1},{transform:"scale(.98)",opacity:0}],{duration:f.duration,easing:"ease-out"});else{let[b,_]=D(f(t,"remove",O));if((_===null||_===void 0?void 0:_.styleReset)!==!1)g=(_===null||_===void 0?void 0:_.styleReset)||g,Object.assign(t.style,g);p=new Animation(b),p.play()}h.set(t,p),p.addEventListener("finish",()=>F(t,g),{once:!0})}function at(t,e,i,n){let o=z-e,r=X-i,s=document.documentElement.style.scrollBehavior;if(getComputedStyle(u).scrollBehavior==="smooth")document.documentElement.style.scrollBehavior="auto";if(window.scrollTo(window.scrollX+o,window.scrollY+r),!t.parentElement)return;let c=t.parentElement,{clientHeight:l,clientWidth:f}=c,O=performance.now();function p(){requestAnimationFrame(()=>{if(!P(n)){let g=l-c.clientHeight,b=f-c.clientWidth;if(O+n.duration>performance.now())window.scrollTo({left:window.scrollX-b,top:window.scrollY-g}),l=c.clientHeight,f=c.clientWidth,p();else document.documentElement.style.scrollBehavior=s}})}p()}function ct(t){var e;let i=d.get(t),[n,,o]=V(t,i,x(t)),r=t.parentElement;while(r&&(getComputedStyle(r).position==="static"||r instanceof HTMLBodyElement))r=r.parentElement;if(!r)r=document.body;let s=getComputedStyle(r),a=!h.has(t)||((e=h.get(t))===null||e===void 0?void 0:e.playState)==="finished"?x(r):d.get(r),c=Math.round(i.top-a.top)-m(s.borderTopWidth),l=Math.round(i.left-a.left)-m(s.borderLeftWidth);return[c,l,n,o]}function K(t,e={}){if(G&&v){if(!(window.matchMedia("(prefers-reduced-motion: reduce)").matches&&!P(e)&&!e.disrespectUserMotionPreference)){if(W.add(t),getComputedStyle(t).position==="static")Object.assign(t.style,{position:"relative"});if(A(t,M,et,(s)=>v===null||v===void 0?void 0:v.observe(s)),P(e))E.set(t,e);else E.set(t,{duration:250,easing:"ease-in-out",...e});let r=new MutationObserver(q);r.observe(t,{childList:!0}),k.set(t,r),j.add(t)}}return Object.freeze({parent:t,enable:()=>{W.add(t)},disable:()=>{W.delete(t),A(t,(n)=>{let o=h.get(n);try{o===null||o===void 0||o.cancel()}catch{}h.delete(n);let r=y.get(n);if(r)clearTimeout(r);y.delete(n);let s=S.get(n);if(s)clearInterval(s);S.delete(n)})},isEnabled:()=>W.has(t),destroy:()=>{W.delete(t),j.delete(t),E.delete(t);let n=k.get(t);n===null||n===void 0||n.disconnect(),k.delete(t),A(t,(o)=>{v===null||v===void 0||v.unobserve(o);let r=h.get(o);try{r===null||r===void 0||r.cancel()}catch{}h.delete(o);let s=C.get(o);s===null||s===void 0||s.disconnect(),C.delete(o);let a=S.get(o);if(a)clearInterval(a);S.delete(o);let c=y.get(o);if(c)clearTimeout(c);y.delete(o),d.delete(o),T.delete(o)})}})}window.autoAnimate=K;})();
+</script>
+<script>
+(function(){
+'use strict';
+var D;
+try{D=JSON.parse(document.getElementById('sz-data').textContent);}catch(err){document.getElementById('detail').innerHTML='<p class="empty">数据加载失败，请刷新重试。</p>';return;}
+const EV=D.events,CH=D.chapters,ER=D.eras;
+const COURSE=D.courses.sg,ERASET=ER[COURSE.set],LIST=EV;
+const BY={};EV.forEach(e=>{BY[e.id]=e;});
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.prototype.slice.call((r||document).querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const IC={
+  star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6L12 16.6l-5 2.6.9-5.6-4-3.9 5.6-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+  starF:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6L12 16.6l-5 2.6.9-5.6-4-3.9 5.6-.8z" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+  check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.3 4.3L19 7.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  badge:'<svg class="master-badge" viewBox="0 0 64 64" aria-hidden="true"><circle class="master-ring" cx="32" cy="32" r="24"/><path class="master-check" d="M20 33 L28 41 L44 25"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.6A8.2 8.2 0 1 1 10.4 4 6.6 6.6 0 0 0 20 13.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.3-6-6.3-11A6.3 6.3 0 0 1 18.3 10c0 5-6.3 11-6.3 11z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+  play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6L18 12z" fill="currentColor"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h3v12H8zM13 6h3v12h-3z" fill="currentColor"/></svg>',
+};
+const LS='sizheng-timeline-v1';
+let saved={},storageOK=true;
+try{const probe=LS+'-check';localStorage.setItem(probe,'1');localStorage.removeItem(probe);saved=JSON.parse(localStorage.getItem(LS)||'{}')||{};}catch(_){saved={};storageOK=false;}
+const savedCur=typeof saved.cur==='string'?saved.cur:((saved.cur&&saved.cur.sg)||'');
+const S={cur:savedCur,theme:(saved.theme==='light'||saved.theme==='dark')?saved.theme:null,ribbonHide:!!saved.ribbonHide,star:Object.assign({},saved.star),done:Object.assign({},saved.done),f:'all',ch:'',q:'',playing:false,speed:[0.5,1,2,3].indexOf(saved.speed)>=0?saved.speed:1};
+function save(){try{localStorage.setItem(LS,JSON.stringify({cur:S.cur,theme:S.theme,ribbonHide:S.ribbonHide,star:S.star,done:S.done,speed:S.speed}));}catch(_){storageOK=false;const el=$('.storage-note');if(el)el.textContent='当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。';}}
+
+const yr=e=>Math.floor(e.y);
+function eraOf(e){const set=ERASET;for(const r of set){if(e.y>=r.from&&e.y<r.to)return r;}return set[set.length-1];}
+function chParts(c){const i=c.indexOf('·'),cn=c.slice(0,i),chap=c.slice(i+1);return {c:c,cn:cn,chap:chap,name:(CH[cn]||{})[chap]||''};}
+function myChaps(e){return e.ch.map(chParts);}
+function curId(){if(S.cur&&BY[S.cur])return S.cur;return LIST[0].id;}
+function cur(){return BY[curId()];}
+function shortDate(e){const d=e.d,p=yr(e)+'年';if(d.indexOf(p)!==0)return d;const rest=d.slice(p.length);if(!rest)return p;if(!/^\d/.test(rest))return d;return rest;}
+function terms(){return S.q.trim().toLowerCase().split(/\s+/).filter(Boolean);}
+function hay(e){if(!e._h){e._h=[e.t,e.d,e.p,e.s,e.b,e.m].concat(e.k,e.q,myChaps(e).map(x=>x.cn+x.chap+x.name)).join('\n').toLowerCase();}return e._h;}
+function filtered(){return S.f!=='all'||!!S.ch||terms().length>0;}
+let VIS=[];
+function computeVis(){const T=terms();VIS=LIST.filter(e=>{if(S.f==='star'&&!S.star[e.id])return false;if(S.ch&&e.ch.indexOf(S.ch)<0)return false;if(T.length){const h=hay(e);for(const t of T){if(h.indexOf(t)<0)return false;}}return true;});return VIS;}
+function hl(text){const T=terms();const s=esc(text);if(!T.length)return s;const re=new RegExp(T.map(t=>esc(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'gi');return s.replace(re,m=>'<mark>'+m+'</mark>');}
+function fmt(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong class="hl">$1</strong>');}
+function navList(){const id=curId();if(filtered()&&VIS.some(e=>e.id===id))return VIS;return LIST;}
+function neighbor(d){const L=navList(),i=L.findIndex(e=>e.id===curId());const j=i+d;return (i>=0&&j>=0&&j<L.length)?L[j]:null;}
+const isNarrow=()=>window.matchMedia('(max-width: 760px)').matches;
+
+/* ---------- 目录 ---------- */
+function renderChSel(){
+  const cn=COURSE.prefix,cnt={};
+  LIST.forEach(e=>e.ch.forEach(c=>{cnt[c]=(cnt[c]||0)+1;}));
+  let h='<option value="">全部章节</option>';
+  Object.keys(CH[cn]).forEach(chap=>{const c=cn+'·'+chap;if(cnt[c])h+='<option value="'+esc(c)+'">'+esc(chap+' '+CH[cn][chap])+'（'+cnt[c]+'）</option>';});
+  const sel=$('#chSel');sel.innerHTML=h;sel.value=S.ch;
+  $('#selWrap').classList.toggle('on',!!S.ch);
+}
+function flagsHTML(e){return (S.star[e.id]?'<i class="fs" title="重点">'+IC.starF+'</i>':'')+(S.done[e.id]?'<i class="fd" title="已掌握">'+IC.check+'</i>':'');}
+function itemInner(e){
+  const chs=myChaps(e).map(x=>x.chap).join(' / ');
+  return '<span class="it-y">'+yr(e)+'</span><span class="it-m"><span class="it-t">'+hl(e.t)+'</span><span class="it-s">'+esc(shortDate(e))+(chs?' · '+esc(chs):'')+'</span></span><span class="it-f">'+flagsHTML(e)+'</span>';
+}
+function itemHTML(e,id){
+  return '<button class="item" type="button" data-ripplet data-id="'+e.id+'"'+(e.id===id?' aria-current="true"':'')+'>'+itemInner(e)+'</button>';
+}
+function emptyHTML(){
+  let msg,act;
+  if(terms().length){msg='没有找到与“'+esc(S.q.trim())+'”相关的节点。<br>换个关键词试试，比如人名、会议或著作。';act='<button class="btn" type="button" data-ripplet data-act="clearq">清除搜索</button>';}
+  else if(S.f==='star'){msg='还没有标为重点的节点。<br>在详情页点「重点」就能收藏到这里。';act='<button class="btn" type="button" data-ripplet data-act="all">查看全部</button>';}
+  else{msg='这一章暂时没有节点。';act='<button class="btn" type="button" data-ripplet data-act="allch">全部章节</button>';}
+  return '<div class="empty"><p>'+msg+'</p>'+act+'</div>';
+}
+function updateCap(){const n=LIST.length;$('#cap').textContent=filtered()?('筛选出 '+VIS.length+' / '+n+' 个节点'):(COURSE.name+' · '+n+' 个节点');}
+/* 目录渲染：节点复用（条目按 id、分组按时代 key 缓存成真实 DOM 节点），
+   筛选/搜索时只做增删移，不再整段 innerHTML 重建——AutoAnimate 才能看到位置变化并滑过去。
+   AutoAnimate 只挂每个分组的 .items 容器（条目永远不跨时代，组内增删移即是全部变化）。 */
+const itemEls=new Map(),grpEls=new Map();let emptyEl=null;
+function buildItem(e,id){
+  const t=document.createElement('template');t.innerHTML=itemHTML(e,id);
+  return t.content.firstElementChild;
+}
+function buildGroup(r){
+  const g=document.createElement('div');g.className='grp';g.dataset.era=r.k;
+  g.innerHTML='<div class="era-h"><span class="dot"></span><span class="en">'+esc(r.name)+'</span><span class="yr"></span></div><div class="items"></div>';
+  if(window.autoAnimate){try{window.autoAnimate($('.items',g),{duration:250,easing:'ease-out'});}catch(_){}}
+  return g;
+}
+function renderList(){
+  computeVis();updateCap();
+  const list=$('#list'),id=curId();
+  if(!emptyEl)emptyEl=document.createElement('div');
+  if(!VIS.length){
+    grpEls.forEach(g=>g.remove());grpEls.clear();
+    const staleBar=$('.sel-bar',list);if(staleBar)staleBar.style.height='0px';
+    emptyEl.innerHTML=emptyHTML();if(emptyEl.parentNode!==list)list.appendChild(emptyEl);
+    if(lenisList)lenisList.resize();
+    return;
+  }
+  if(emptyEl.parentNode)emptyEl.remove();
+  const groups=[];let g=null;
+  VIS.forEach(e=>{const r=eraOf(e);if(!g||g.r!==r){g={r:r,items:[]};groups.push(g);}g.items.push(e);});
+  const seenG=new Set(),seenI=new Set();
+  groups.forEach(gr=>{
+    seenG.add(gr.r.k);
+    let ge=grpEls.get(gr.r.k);
+    if(!ge){ge=buildGroup(gr.r);grpEls.set(gr.r.k,ge);}
+    $('.yr',ge).textContent=gr.r.range+' · '+gr.items.length;
+    const box=$('.items',ge);
+    gr.items.forEach(e=>{
+      seenI.add(e.id);
+      let el=itemEls.get(e.id);
+      if(!el){el=buildItem(e,id);itemEls.set(e.id,el);}
+      else el.innerHTML=itemInner(e);
+      if(e.id===id)el.setAttribute('aria-current','true');else el.removeAttribute('aria-current');
+      box.appendChild(el);
+    });
+    Array.prototype.slice.call(box.children).forEach(ch=>{if(!seenI.has(ch.dataset.id))ch.remove();});
+    list.appendChild(ge);
+  });
+  grpEls.forEach((ge,k)=>{if(!seenG.has(k)){ge.remove();grpEls.delete(k);}});
+  if(lenisList)lenisList.resize();
+  requestAnimationFrame(()=>moveSelBar(false));
+}
+function ensureVisible(el,center){
+  const list=$('#list');if(!el||!list)return;
+  const lr=list.getBoundingClientRect(),r=el.getBoundingClientRect();
+  const top=r.top-lr.top+list.scrollTop,head=70;
+  if(center){list.scrollTop=Math.max(0,top-list.clientHeight/2+r.height/2);return;}
+  if(r.top<lr.top+head)list.scrollTop=top-head-4;else if(r.bottom>lr.bottom)list.scrollTop=top+r.height-list.clientHeight+4;
+}
+function markList(scroll){
+  const id=curId();
+  $$('#list .item[aria-current]').forEach(x=>x.removeAttribute('aria-current'));
+  const el=$('#list .item[data-id="'+id+'"]');
+  if(el){el.setAttribute('aria-current','true');moveSelBar(true);if(scroll)ensureVisible(el,false);}
+}
+function refreshFlags(id){const el=$('#list .item[data-id="'+id+'"] .it-f');if(el)el.innerHTML=flagsHTML(BY[id]);}
+
+/* ---------- 详情 ---------- */
+function tipHTML(x){const m=/^(易混|考法)：/.exec(x);return m?'<li><span class="k">'+m[1]+'</span>'+fmt(x.slice(m[0].length))+'</li>':'<li>'+fmt(x)+'</li>';}
+function pnBtn(x,dir){
+  const lab=dir==='prev'?'<span class="pn-arrow">←</span> 上一个':'下一个 <span class="pn-arrow">→</span>';
+  if(!x)return '<button class="'+dir+'" type="button" data-ripplet disabled><small>'+(dir==='prev'?'已经是第一个':'已经是最后一个')+'</small></button>';
+  return '<button class="'+dir+'" type="button" data-ripplet data-go="'+x.id+'"><small>'+lab+'</small><b>'+yr(x)+' '+esc(x.t)+'</b></button>';
+}
+function actsHTML(e){
+  const st=!!S.star[e.id],dn=!!S.done[e.id];
+  return '<button class="btn sm star-btn'+(st?' on-star':'')+'" type="button" data-act="star" data-ripplet aria-pressed="'+st+'">'+(st?IC.starF:IC.star)+'<span>重点</span></button>'+
+         '<button class="btn sm done-btn'+(dn?' on-done':'')+'" type="button" data-act="done" data-ripplet aria-pressed="'+dn+'">'+(dn?IC.badge:IC.check)+'<span>'+(dn?'已掌握':'标为掌握')+'</span></button>';
+}
+let lastDir=null;
+function cardHTML(){
+  const e=cur(),r=eraOf(e);
+  const tags=e.ch.map(chParts);
+  let h='<article class="card" data-era="'+r.k+'" aria-labelledby="ev-t">';
+  h+='<div class="crumb"><span class="dot"></span><span>'+esc(r.name)+'</span><span class="yr">'+esc(r.range)+'</span></div>';
+  h+='<div class="head"><div class="year">'+yr(e)+'</div><div class="when"><span class="date">'+esc(e.d)+'</span>'+(e.p?'<span class="place">'+IC.pin+'<span>'+esc(e.p)+'</span></span>':'')+'</div><div class="acts" id="acts">'+actsHTML(e)+'</div></div>';
+  h+='<h2 class="title" id="ev-t">'+esc(e.t)+'</h2>';
+  if(tags.length)h+='<div class="tags">'+tags.map(x=>'<button class="tag here" type="button" data-ripplet data-ch="'+esc(x.c)+'" title="筛选本章全部节点"><b>'+esc(x.cn+' · '+x.chap)+'</b><span>'+esc(x.name)+'</span></button>').join('')+'</div>';
+  h+='<p class="sig"><span class="lab">意义</span>'+fmt(e.s)+'</p>';
+  const WS='<div class="wave-sep" aria-hidden="true"></div>';
+  h+=WS+'<section class="blk"><h3 class="lab">背景</h3><p class="bg">'+fmt(e.b)+'</p></section>';
+    h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ol></section>';
+    if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map(tipHTML).join('')+'</ul></section>';
+    if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn">'+fmt(e.m)+'</p></section>';
+  h+='<nav class="pn" aria-label="上一个和下一个">'+pnBtn(neighbor(-1),'prev')+pnBtn(neighbor(1),'next')+'</nav>';
+  h+='<p class="note">章节对应马工程重点教材2023年版。此为复习提要，不替代教材，请以你的课程与考试大纲为准。<br><span class="storage-note">'+(storageOK?'重点与掌握记录仅保存在当前浏览器，不会跨设备同步。':'当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。')+'</span></p></article>';
+  return h;
+}
+function renderDetail(){
+  const nd=navDir;navDir=null;lastDir=nd;
+  const e=cur(),h=cardHTML();
+  const d=$('#detail'),same=d.dataset.id===e.id,st=d.scrollTop;
+  d.innerHTML=h;d.dataset.id=e.id;
+  if(same){d.scrollTop=st;}else{d.scrollTop=0;const c=$('.card',d);if(c&&!vtBusy)c.classList.add(nd==='next'?'enter-next':nd==='prev'?'enter-prev':'enter');$('#live').textContent=yr(e)+'年 '+e.t;}
+  if(lenisDetail)lenisDetail.resize();
+}
+
+/* ---------- 时间带 ---------- */
+let POS=[],trackW=800,curEls=null;
+function cacheCurEls(){const tr=$('#track');curEls={line:$('.cur-line',tr),dot:$('.cur-dot',tr),lab:$('.cur-lab',tr),fill:$('.rail-fill',tr),ticks:$$('.tick',tr)};}
+/* 小球定位：只写 transform（translateX / 进度条 scaleX），走合成层，不读布局、不触发重排。
+   轨道宽度在 layoutRibbon / 尺寸变化时缓存到 trackW，每帧直接用缓存值算像素偏移。 */
+/* 直线轨道：中心线恒在 y=27，轨道 SVG、小球、节点圆点共用这条直线，视觉上严丝合缝。 */
+function railPath(){
+  return 'M0 27L'+Math.max(1,Math.round(trackW))+' 27';
+}
+function paintBall(p){
+  if(!curEls)cacheCurEls();if(!curEls)return;
+  const x=p*trackW,tx='translateX('+x.toFixed(2)+'px)';
+  if(curEls.line)curEls.line.style.transform=tx;
+  if(curEls.dot)curEls.dot.style.transform=tx;
+  if(curEls.fill)curEls.fill.style.strokeDasharray=(p*100).toFixed(2)+' 100';
+  const lab=curEls.lab;
+  if(lab){const f=x<24,l=!f&&(trackW-x)<24;
+    if(lab.classList.contains('first')!==f)lab.classList.toggle('first',f);
+    if(lab.classList.contains('last')!==l)lab.classList.toggle('last',l);
+    lab.style.transform=tx+(f?'':l?' translateX(-100%)':' translateX(-50%)');}
+  if(curEls.ticks)curEls.ticks.forEach(t=>{const hide=Math.abs(+t.dataset.p-p)*trackW<48;if(t.classList.contains('hide')!==hide)t.classList.toggle('hide',hide);});
+}
+function layoutRibbon(){
+  const L=LIST,N=L.length,tr=$('#track');
+  trackW=tr.clientWidth||trackW;
+  const pad=12/trackW,inset=p=>pad+(1-2*pad)*p;
+  /* 节点等距：位置只由序号决定，与真实年份间隔无关，游标每步移动距离相同 */
+  POS=L.map((e,i)=>inset((i+0.5)/N));
+  const set=ERASET;
+  const wd=railPath();
+  let h='<div class="ribbon-meta"><span class="era-current"></span><span class="ribbon-count"></span></div><svg class="rail-svg" viewBox="0 0 '+Math.max(1,Math.round(trackW))+' 72" preserveAspectRatio="none" aria-hidden="true"><path class="rail-w" d="'+wd+'"/><path class="rail-fill" pathLength="100" stroke-dasharray="0 100" d="'+wd+'"/></svg>';
+  set.forEach(r=>{
+    let a=-1,b=-1;L.forEach((e,i)=>{if(e.y>=r.from&&e.y<r.to){if(a<0)a=i;b=i;}});
+    if(a<0)return;
+    const x0=inset(a/N),x1=inset((b+1)/N);
+    h+='<div class="band" data-era="'+r.k+'" style="left:'+(x0*100).toFixed(3)+'%;width:'+((x1-x0)*100).toFixed(3)+'%"><span class="bl">'+esc(r.short)+'</span><span class="bb"></span></div>';
+  });
+  const tk=[{y:yr(L[0]),p:POS[0]}];
+  set.forEach(r=>{if(r.tick&&r.from>L[0].y&&r.from<L[N-1].y){let n=0;while(n<N&&L[n].y<r.from)n++;tk.push({y:r.tick,p:inset(n/N)});}});
+  tk.push({y:yr(L[N-1]),p:POS[N-1]});
+  const w=trackW,kept=[];
+  tk.forEach((t,i)=>{if(kept.length&&(t.p-kept[kept.length-1].p)*w<50){if(i===tk.length-1)kept.pop();else return;}kept.push(t);});
+  h+=kept.map(t=>'<span class="tick'+(t.p*w<24?' first':(1-t.p)*w<24?' last':'')+'" data-p="'+t.p+'" style="left:'+(t.p*100).toFixed(3)+'%">'+t.y+'</span>').join('');
+  h+=L.map((e,i)=>'<span class="dot-e" data-i="'+i+'" data-era="'+eraOf(e).k+'" style="left:'+(POS[i]*100).toFixed(3)+'%;top:27px"></span>').join('');
+  h+='<span class="cur-line"></span><span class="cur-dot"></span><span class="cur-lab"></span>';
+  tr.innerHTML=h;cacheCurEls();
+  tr.setAttribute('aria-valuemin','1');tr.setAttribute('aria-valuemax',String(N));
+  paintDots();updateCursor();
+}
+function paintDots(){
+  const L=LIST,vis=filtered()?new Set(VIS.map(e=>e.id)):null;
+  $$('#track .dot-e').forEach(d=>{const e=L[+d.dataset.i];d.classList.toggle('done',!!S.done[e.id]);d.classList.toggle('dim',!!vis&&!vis.has(e.id));});
+}
+function updateCursor(){
+  const L=LIST,id=curId(),i=L.findIndex(e=>e.id===id);if(i<0||!POS.length)return;
+  const tr=$('#track'),p=POS[i],e=L[i],r=eraOf(e);
+  if(!curEls)cacheCurEls();
+  if(curEls)[curEls.line,curEls.dot,curEls.lab].forEach(el=>{if(el)el.setAttribute('data-era',r.k);});
+  if(!S.playing)setBall(p);
+  $$('.dot-e',tr).forEach(d=>d.classList.toggle('now',+d.dataset.i===i));
+  const pcEl=$('#playCount');if(pcEl)swapText(pcEl,(i+1)+' / '+L.length);
+  const lab=curEls&&curEls.lab;if(lab)lab.textContent=yr(e);
+  $('.era-current',tr).textContent=r.short;$('.era-current',tr).setAttribute('data-era',r.k);$('.ribbon-count',tr).textContent=(i+1)+' / '+L.length;
+  tr.setAttribute('aria-valuenow',String(i+1));tr.setAttribute('aria-valuetext',e.d+' '+e.t);
+}
+function bindTrack(){
+  const tr=$('#track');let drag=false,px=null,raf=0;
+  const pick=()=>{raf=0;if(px==null)return;const rc=tr.getBoundingClientRect(),t=(px-rc.left)/rc.width,L=LIST;
+    const vis=filtered()&&VIS.length?new Set(VIS.map(e=>e.id)):null;let bi=-1,bd=9;
+    POS.forEach((p,i)=>{if(vis&&!vis.has(L[i].id))return;const d=Math.abs(p-t);if(d<bd){bd=d;bi=i;}});
+    if(bi>=0&&L[bi].id!==curId())select(L[bi].id,{from:'ribbon'});};
+  const queue=x=>{px=x;if(!raf)raf=requestAnimationFrame(pick);};
+  tr.addEventListener('pointerdown',ev=>{if(ev.button>0)return;drag=true;try{tr.setPointerCapture(ev.pointerId);}catch(_){}queue(ev.clientX);});
+  tr.addEventListener('pointermove',ev=>{if(drag)queue(ev.clientX);});
+  const end=()=>{drag=false;};
+  tr.addEventListener('pointerup',end);tr.addEventListener('pointercancel',end);tr.addEventListener('lostpointercapture',end);
+  tr.addEventListener('keydown',ev=>{const L=navList();
+    if(ev.key==='Home'){ev.preventDefault();select(L[0].id);}
+    else if(ev.key==='End'){ev.preventDefault();select(L[L.length-1].id);}
+    else if(ev.key==='ArrowUp'){ev.preventDefault();step(1);}
+    else if(ev.key==='ArrowDown'){ev.preventDefault();step(-1);}});
+}
+
+/* ---------- 交互 ---------- */
+let navDir=null,vtBusy=false;
+function setSwap(id,name){const w=document.getElementById(id);if(!w)return;$$('.ic',w).forEach(ic=>ic.classList.toggle('on',ic.dataset.icon===name));}
+function starBurst(starEl){
+  if(reducedMotion())return;
+  $$('.star-burst-particle',starEl).forEach(p=>p.remove());
+  const N=8;
+  for(let i=0;i<N;i++){
+    const p=document.createElement('span');p.className='star-burst-particle';
+    p.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z"/></svg>';
+    const angle=(i/N)*Math.PI*2+Math.random()*0.6,dist=26+Math.random()*18;
+    const dx=Math.cos(angle)*dist,dy=Math.sin(angle)*dist;
+    p.style.transitionDuration='500ms';p.style.transitionTimingFunction='cubic-bezier(0.22, 1, 0.36, 1)';
+    starEl.appendChild(p);
+    requestAnimationFrame(()=>{p.style.transform='translate('+dx.toFixed(1)+'px, '+dy.toFixed(1)+'px) scale('+(0.6+Math.random()*0.6).toFixed(2)+') rotate('+((Math.random()*120-60)|0)+'deg)';p.style.opacity='0';});
+    p.addEventListener('transitionend',()=>p.remove(),{once:true});
+    setTimeout(()=>{if(p.parentNode)p.remove();},700);
+  }
+}
+function ensurePill(wrap){let p=$('.mv-pill',wrap);if(!p){p=document.createElement('span');p.className='mv-pill';p.setAttribute('aria-hidden','true');wrap.insertBefore(p,wrap.firstChild);}return p;}
+function movePill(wrap,btn,animate){
+  if(!wrap||!btn)return;const pill=ensurePill(wrap);
+  const apply=()=>{pill.style.transform='translate('+btn.offsetLeft+'px, '+btn.offsetTop+'px)';pill.style.width=btn.offsetWidth+'px';pill.style.height=btn.offsetHeight+'px';};
+  if(!animate){const prev=pill.style.transition;pill.style.transition='none';apply();void pill.offsetWidth;pill.style.transition=prev;}else apply();
+}
+function syncPills(animate){
+  movePill($('.filters'),$('.chip[aria-pressed="true"]'),animate);
+  movePill($('.speed'),$('.speed button[aria-pressed="true"]'),animate);
+}
+function moveSelBar(animate){
+  const list=$('#list');if(!list)return;
+  let bar=$('.sel-bar',list);
+  if(!bar){bar=document.createElement('span');bar.className='sel-bar';bar.setAttribute('aria-hidden','true');list.appendChild(bar);}
+  const item=$('#list .item[aria-current]');
+  if(!item){bar.style.height='0px';return;}
+  const grp=item.closest('.grp');if(grp)bar.setAttribute('data-era',grp.dataset.era);
+  const y=item.offsetTop+(grp?grp.offsetTop:0)+9,h=Math.max(0,item.offsetHeight-18);
+  const apply=()=>{bar.style.transform='translateY('+y+'px)';bar.style.height=h+'px';};
+  if(!animate){const prev=bar.style.transition;bar.style.transition='none';apply();void bar.offsetWidth;bar.style.transition=prev;}else apply();
+}
+function swapText(el,txt){
+  if(!el)return;
+  if(!el.textContent||el.textContent===txt){el.textContent=txt;return;}
+  if(reducedMotion()||!el.animate||el._swp){el.textContent=txt;return;}
+  el._swp=true;
+  const out=el.animate([{opacity:1,filter:'blur(0px)',transform:'translateY(0)'},{opacity:0,filter:'blur(2px)',transform:'translateY(-4px)'}],{duration:120,easing:'cubic-bezier(0.22, 1, 0.36, 1)',fill:'forwards'});
+  out.onfinish=()=>{el.textContent=txt;const inn=el.animate([{opacity:0,filter:'blur(2px)',transform:'translateY(4px)'},{opacity:1,filter:'blur(0px)',transform:'translateY(0)'}],{duration:130,easing:'cubic-bezier(0.22, 1, 0.36, 1)',fill:'forwards'});inn.onfinish=()=>{el._swp=false;};};
+}
+function dissolveClear(){
+  const s=$('.search');if(!S.q||reducedMotion()){setQ('');return;}
+  s.classList.add('is-clearing');
+  setTimeout(()=>{setQ('');s.classList.remove('is-clearing');},200);
+}
+
+function updateProg(){const L=LIST,n=L.filter(e=>S.done[e.id]).length;swapText($('#prog .txt'),(isNarrow()?'':'已掌握 ')+n+'/'+L.length);$('#prog').setAttribute('aria-label','已掌握 '+n+' 个，共 '+L.length+' 个节点');$('#prog .bar i').style.width=(n/L.length*100).toFixed(1)+'%';$('#prog').title=COURSE.full+'：已掌握 '+n+' 个，共 '+L.length+' 个节点';}
+function setHash(){const h='#'+curId();if(location.hash!==h){try{history.replaceState(null,'',h);}catch(_){}}}
+function fromHash(){const m=/^#(?:sg\/)?(\d{4}[a-h])?$/.exec(location.hash||'');if(!m)return false;if(m[1]&&BY[m[1]])S.cur=m[1];return true;}
+function select(id,o){
+  o=o||{};const e=BY[id];if(!e)return;
+  if(!o.auto)stopPlay();
+  const NL=navList(),oi=NL.findIndex(e=>e.id===curId()),ni=NL.findIndex(e=>e.id===id);navDir=(oi>=0&&ni>oi)?'next':(oi>=0&&ni<oi)?'prev':null;
+  S.cur=id;save();
+  const swap=()=>{renderDetail();if(immersiveOn)renderOverlayCard(false);};
+  /* View Transitions：手动切节点时让标题/年份做共享元素过渡；沉浸中（覆盖层已有自己的交叉过渡）、
+     播放自动推进、无此 API 的老浏览器都走原路径硬切，不叠加两套过渡 */
+  if(!immersiveOn&&!o.auto&&document.startViewTransition&&!reducedMotion()){
+    vtBusy=true;
+    try{document.startViewTransition(()=>{swap();vtBusy=false;});}
+    catch(_){vtBusy=false;swap();}
+  }else swap();
+  markList(o.from!=='list');updateCursor();setHash();
+  if(o.from==='list'&&isNarrow())closeSide();
+}
+function step(d){const x=neighbor(d);if(x){select(x.id,{auto:step.auto});return true;}return false;}
+let pillsInit=false;
+function renderAll(){
+  renderChSel();renderList();renderDetail();layoutRibbon();updateProg();setHash();
+  ensureVisible($('#list .item[aria-current]'),true);syncPills(pillsInit);pillsInit=true;
+}
+function afterFilter(){renderList();paintDots();renderDetail();ensureVisible($('#list .item[aria-current]'),false);}
+function setFilter(f){S.f=f;$$('.chip').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.f===f)));syncPills(true);if(f==='star'){const c=$('.chip[data-f="star"]');if(c&&!reducedMotion()){c.classList.remove('is-pop');void c.offsetWidth;c.classList.add('is-pop');}}afterFilter();}
+function setQ(v){S.q=v;const q=$('#q');if(q.value!==v)q.value=v;$('#clearQ').hidden=!v;$('#kbd').style.display=v?'none':'';afterFilter();}
+function setCh(c){S.ch=c;renderChSel();afterFilter();}
+function toggle(kind){
+  const e=cur(),m=kind==='star'?S.star:S.done;
+  if(m[e.id])delete m[e.id];else m[e.id]=1;save();
+  refreshFlags(e.id);paintDots();updateProg();
+  const a=$('#acts');if(a){a.innerHTML=actsHTML(e);
+    if(!reducedMotion()){
+      if(kind==='star'){const sb=$('[data-act="star"]',a);if(sb){if(m[e.id]){sb.classList.add('is-pop');starBurst(sb);}else sb.classList.add('is-unpop');}}
+      if(kind==='done'&&m[e.id]){const db=$('[data-act="done"]',a);if(db)db.classList.add('just-done');}
+    }}
+  if(kind==='star'&&S.f==='star'){renderList();paintDots();}
+}
+function tagClick(c){
+  stopPlay();
+  S.ch=c;save();renderAll();
+  if(isNarrow())openSide();
+}
+/* 播放：小球匀速连续滑动。位置按导航序号线性推进（每个节点一份相同时长，1× = 6 秒，
+   与真实年份间隔无关），逐帧用 requestAnimationFrame 只更新 transform：
+   小球 translateX、进度条 scaleX，均已 will-change 提升到合成层，不写 left/width、不触发重排；
+   不用 CSS 过渡、不用缓动、不分段跳跃；球到达某节点时才激活该节点。
+   速度只改变每份时长的长短，逐帧按当前 dwell() 推进，调速时位置保持连续。 */
+const BASE_DWELL=6000,SPEEDS=[0.5,1,2,3];
+let playRaf=0,playLast=0,playPos=-1,playIdxs=[];
+function dwell(){return BASE_DWELL/S.speed;}
+function paintPlayPos(p){setBall(p);}
+/* Wobble 弹簧跟随：小球改弹簧追目标（stiffness 170 / damping 19，带一点 overshoot 再落稳），
+   替代原匀速线性。只做标量弹簧（轨道进度 p），onUpdate 里写 transform，不碰 scrollTop。
+   播放时逐帧 updateConfig 改 toValue 连续跟随；切节点时同一弹簧直接改目标，不重建、不跳变。 */
+let ballSpring=null,ballPrimed=false;
+function setBall(p){
+  if(!ballPrimed){
+    ballPrimed=true;paintBall(p);
+    if(ballSpring)ballSpring.updateConfig({fromValue:p,toValue:p});
+    return;
+  }
+  if(!ballSpring||reducedMotion()){paintBall(p);return;}
+  const tr=$('#track');if(tr)tr.classList.add('springy');
+  ballSpring.updateConfig({toValue:p});
+  ballSpring.start();
+}
+function initBallSpring(){
+  if(!window.Wobble||!Wobble.Spring||reducedMotion())return;
+  try{
+    ballSpring=new Wobble.Spring({fromValue:0,toValue:0,stiffness:170,damping:19,mass:1,restDisplacementThreshold:0.0004,restVelocityThreshold:0.0004});
+    ballSpring.onUpdate(s=>{paintBall(s.currentValue);});
+    ballSpring.onStop(()=>{const tr=$('#track');if(tr)tr.classList.remove('springy');});
+  }catch(_){ballSpring=null;}
+}
+function playFrame(ts){
+  playRaf=0;if(!S.playing)return;
+  if(!playLast)playLast=ts;
+  const dt=Math.min(250,ts-playLast);playLast=ts;
+  const L=navList(),N=L.length;
+  if(!N||!POS.length){setPlay(false);return;}
+  const full=LIST;
+  playIdxs=L.map(e=>full.indexOf(e));
+  playPos+=dt/dwell();
+  if(playPos>=N-1){
+    playPos=N-1;paintPlayPos(POS[playIdxs[N-1]]);
+    if(curId()!==L[N-1].id)select(L[N-1].id,{auto:true});
+    setPlay(false);return;
+  }
+  const k=Math.floor(playPos);
+  if(L[k]&&curId()!==L[k].id)select(L[k].id,{auto:true});
+  const a=POS[playIdxs[k]],b=POS[playIdxs[k+1]];
+  paintPlayPos(a+(b-a)*(playPos-k));
+  if(S.playing)playRaf=requestAnimationFrame(playFrame);
+}
+function startPlay(){
+  const L=navList();if(!L.length||!POS.length)return;
+  const full=LIST;
+  playIdxs=L.map(e=>full.indexOf(e));
+  let k=L.findIndex(e=>e.id===curId());if(k<0)k=0;
+  /* 暂停后继续：若球还停在当前节点的这一段里，从原位置接着滑，不跳回节点 */
+  if(playPos<k||playPos>=k+1)playPos=k;
+  playLast=0;
+  paintPlayPos(playPos>=L.length-1?POS[playIdxs[L.length-1]]:POS[playIdxs[k]]+(POS[playIdxs[Math.min(k+1,L.length-1)]]-POS[playIdxs[k]])*(playPos-k));
+  playRaf=requestAnimationFrame(playFrame);
+}
+function setPlay(on){
+  S.playing=on;const b=$('#playBtn');b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',on?'暂停自动播放':'自动播放');if(!b.dataset.built){b.dataset.built='1';b.innerHTML='<span class="icon-swap" id="playSwap"><span class="ic" data-icon="play">'+IC.play+'</span><span class="ic" data-icon="pause">'+IC.pause+'</span></span>';}setSwap('playSwap',on?'pause':'play');
+  $('#app').classList.toggle('playing',on);
+  if(playRaf){cancelAnimationFrame(playRaf);playRaf=0;}
+  if(on)startPlay();
+}
+function stopPlay(){if(S.playing)setPlay(false);playPos=-1;}
+function updateSpeedUI(){$$('.speed button').forEach(b=>b.setAttribute('aria-pressed',String(parseFloat(b.dataset.speed)===S.speed)));}
+function setSpeed(v){
+  if(SPEEDS.indexOf(v)<0||v===S.speed){updateSpeedUI();return;}
+  S.speed=v;save();updateSpeedUI();syncPills(true);
+  /* 播放中调速立即生效：逐帧推进按新的 dwell() 计算，球的位置不跳变、速度均匀切换 */
+}
+function effectiveTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
+function updateThemeBtn(){const b=$('#themeBtn');if(!b)return;const dark=effectiveTheme()==='dark';b.setAttribute('aria-pressed',String(dark));if(!b.dataset.built){b.dataset.built='1';b.innerHTML='<span class="icon-swap" id="themeSwap"><span class="ic" data-icon="moon">'+IC.moon+'</span><span class="ic" data-icon="sun">'+IC.sun+'</span></span><span class="btn-lab"></span>';}setSwap('themeSwap',dark?'sun':'moon');$('.btn-lab',b).textContent=dark?'浅色':'深色';b.title=dark?'当前为深色主题，点击切换到浅色':'当前为浅色主题，点击切换到深色';}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;updateThemeBtn();}
+function updateRibbonBtn(){const b=$('#ribbonBtn');$('#app').classList.toggle('ribbon-off',S.ribbonHide);b.setAttribute('aria-pressed',String(S.ribbonHide));setSwap('ribSwap',S.ribbonHide?'expand':'collapse');$('.btn-lab',b).textContent=S.ribbonHide?'展开时间轴':'收起时间轴';b.title=S.ribbonHide?'展开页面底部的时间轴条':'收起页面底部的时间轴条';}
+let immersiveOn=false,immHideTimer=0;
+const reducedMotion=()=>{try{return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(_){return false;}};
+/* 沉浸阅读 = 独立覆盖层：内容用与正文相同的 cardHTML() 渲染进覆盖层（去掉重复 id），
+   底层 .app 布局完全不动、不加类、不参与动画；进/出只切换覆盖层的 .show
+   （opacity + translateY 过渡）。退出键是覆盖层的子元素，覆盖层显示期间恒可见、可点。 */
+/* 悬浮翻页按钮与计数：按当前导航列表同步禁用态（首/尾）和「n / 总数」，
+   在每次渲染覆盖层时调用，点击翻页后立刻反映新位置 */
+function syncImmNav(){
+  const L=navList(),i=L.findIndex(e=>e.id===curId());
+  const c=$('#immCount');if(c)c.textContent=(i>=0?String(i+1):'0')+' / '+L.length;
+  const pv=$('#immPrev'),nx=$('#immNext');
+  if(pv)pv.disabled=!(i>0);
+  if(nx)nx.disabled=!(i>=0&&i<L.length-1);
+}
+let immSwapTimer=0,immSwapSeq=0;
+function renderOverlayCard(keepScroll){
+  const ov=$('#immDetail');if(!ov)return;
+  const sc=$('#immScroll');
+  syncImmNav();
+  const paint=()=>{ov.innerHTML=cardHTML().replace(' id="acts"','').replace(' id="ev-t"',' id="ev-t-imm"').replace('aria-labelledby="ev-t"','aria-labelledby="ev-t-imm"');};
+  if(keepScroll){immSwapSeq++;clearTimeout(immSwapTimer);const st=sc.scrollTop;paint();sc.scrollTop=st;return;}
+  /* 翻页交叉过渡：覆盖层已显示且有方向时，先让旧页用 opacity + transform 淡出滑走（160ms），
+     再换入新页走 enter-next / enter-prev（420ms）淡入；全程只动合成层属性，不闪、不跳。
+     连点时以序号作废过期回调，只落最后一页。 */
+  const old=$('.card',ov),dir=lastDir,shown=$('#immOverlay').classList.contains('show');
+  if(shown&&old&&!reducedMotion()&&(dir==='next'||dir==='prev')){
+    const seq=++immSwapSeq;
+    old.classList.add(dir==='next'?'page-out-next':'page-out-prev');
+    clearTimeout(immSwapTimer);
+    immSwapTimer=setTimeout(()=>{
+      if(seq!==immSwapSeq||!immersiveOn)return;
+      paint();sc.scrollTop=0;
+      const c=$('.card',ov);if(c)c.classList.add(dir==='next'?'enter-next':'enter-prev');
+    },165);
+    return;
+  }
+  immSwapSeq++;clearTimeout(immSwapTimer);
+  paint();sc.scrollTop=0;
+  const c=$('.card',ov);if(c&&!reducedMotion())c.classList.add(dir==='prev'?'enter-prev':dir==='next'?'enter-next':'enter');
+}
+/* 沉浸全屏（best-effort）：Fullscreen API 只能由用户手势触发，这里挂在「沉浸阅读」点击里顺手调；
+   浏览器拒绝（iframe 权限、iOS 限制）时静默放弃，沉浸覆盖层本身不受影响；退出沉浸时同步退出全屏 */
+function fsEnter(){
+  try{
+    if(document.fullscreenElement)return;
+    const el=document.documentElement;
+    if(!el.requestFullscreen)return;
+    const r=el.requestFullscreen({navigationUI:'hide'});
+    if(r&&r.catch)r.catch(()=>{try{const r2=el.requestFullscreen();if(r2&&r2.catch)r2.catch(()=>{});}catch(__){}});
+  }catch(_){try{document.documentElement.requestFullscreen();}catch(__){}}
+}
+function fsExit(){try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();}catch(_){}}
+function enterImmersive(){
+  if(immersiveOn)return;immersiveOn=true;
+  if(sideOpen())closeSide();
+  setSwap('immSwap','exit');
+  $('#immersiveBtn').setAttribute('aria-pressed','true');
+  renderOverlayCard(false);
+  const ov=$('#immOverlay');clearTimeout(immHideTimer);ov.hidden=false;void ov.offsetWidth;ov.classList.add('show');
+  $('#app').inert=true;
+  $('#immersiveExit').focus({preventScroll:true});
+  fsEnter();
+}
+function exitImmersive(){
+  if(!immersiveOn)return;immersiveOn=false;
+  setSwap('immSwap','enter');
+  $('#immersiveBtn').setAttribute('aria-pressed','false');
+  $('#app').inert=false;
+  const ov=$('#immOverlay');ov.classList.remove('show');clearTimeout(immHideTimer);immHideTimer=setTimeout(()=>{if(!immersiveOn)ov.hidden=true;},660);
+  fsExit();
+  $('#immersiveBtn').focus({preventScroll:true});
+}
+let drawerReturn=null;
+function syncInert(){
+  const s=$('#side'),narrow=isNarrow(),opened=narrow&&s.classList.contains('open'),hide=narrow&&!opened;
+  s.inert=hide;s.setAttribute('aria-hidden',String(hide));
+  if(opened){s.setAttribute('role','dialog');s.setAttribute('aria-modal','true');}else{s.removeAttribute('role');s.removeAttribute('aria-modal');}
+  ['.top','#detail','.ribbon'].forEach(sel=>{$(sel).inert=opened;});
+}
+function openSide(){drawerReturn=document.activeElement;$('#side').classList.add('open');$('#scrim').classList.add('show');$('#menuBtn').setAttribute('aria-expanded','true');syncInert();ensureVisible($('#list .item[aria-current]'),true);if(isNarrow())$('#closeSide').focus({preventScroll:true});}
+function closeSide(){const was=$('#side').classList.contains('open');$('#side').classList.remove('open');$('#scrim').classList.remove('show');$('#menuBtn').setAttribute('aria-expanded','false');syncInert();if(was&&isNarrow())(drawerReturn&&drawerReturn.isConnected?drawerReturn:$('#menuBtn')).focus({preventScroll:true});}
+const sideOpen=()=>$('#side').classList.contains('open');
+
+$$('.chip').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.f)));
+$('#q').addEventListener('input',ev=>setQ(ev.target.value));
+$('#q').addEventListener('keydown',ev=>{if(ev.key==='Enter'){const f=VIS[0];if(f)select(f.id,{from:'list'});ev.target.blur();}});
+$('#clearQ').addEventListener('click',()=>{dissolveClear();$('#q').focus();});
+$('#chSel').addEventListener('change',ev=>setCh(ev.target.value));
+$('#chSel').addEventListener('click',()=>{const w=$('#selWrap');w.classList.remove('pop');void w.offsetWidth;w.classList.add('pop');});
+$('#list').addEventListener('click',ev=>{
+  const it=ev.target.closest('.item');if(it){select(it.dataset.id,{from:'list'});return;}
+  const b=ev.target.closest('button[data-act]');if(!b)return;
+  if(b.dataset.act==='clearq')setQ('');else if(b.dataset.act==='all')setFilter('all');else if(b.dataset.act==='allch')setCh('');
+});
+$('#detail').addEventListener('click',ev=>{
+  const b=ev.target.closest('button');if(!b||b.disabled)return;
+  if(b.dataset.go){select(b.dataset.go);return;}
+  if(b.dataset.ch){tagClick(b.dataset.ch);return;}
+  const a=b.dataset.act;
+  if(a==='star'||a==='done')toggle(a);
+});
+$('#themeBtn').addEventListener('click',()=>{const next=effectiveTheme()==='dark'?'light':'dark';S.theme=next;applyTheme(next);save();});
+if(window.matchMedia){const mqT=window.matchMedia('(prefers-color-scheme: dark)');if(mqT.addEventListener)mqT.addEventListener('change',e=>{if(!S.theme)applyTheme(e.matches?'dark':'light');});}
+$('#ribbonBtn').addEventListener('click',()=>{S.ribbonHide=!S.ribbonHide;save();updateRibbonBtn();if(!S.ribbonHide)requestAnimationFrame(()=>{layoutRibbon();updateCursor();});});
+$('#immersiveBtn').addEventListener('click',enterImmersive);
+$('#immersiveExit').addEventListener('click',()=>exitImmersive());
+$('#immPrev').addEventListener('click',()=>step(-1));
+$('#immNext').addEventListener('click',()=>step(1));
+/* 覆盖层内的交互与正文一致：上/下一页走 select（自动同步两处），章节标签先退出沉浸再筛选，
+   重点/掌握走 toggle 更新状态后就地重渲染覆盖层卡片（保持滚动位置）并补同款动效 */
+$('#immDetail').addEventListener('click',ev=>{
+  const b=ev.target.closest('button');if(!b||b.disabled)return;
+  if(b.dataset.go){select(b.dataset.go);return;}
+  if(b.dataset.ch){const c=b.dataset.ch;exitImmersive();tagClick(c);return;}
+  const a=b.dataset.act;
+  if(a==='star'||a==='done'){
+    toggle(a);renderOverlayCard(true);
+    if(!reducedMotion()){
+      const nb=$('#immDetail [data-act="'+a+'"]');
+      if(nb&&a==='star'){if(S.star[curId()]){nb.classList.add('is-pop');starBurst(nb);}else nb.classList.add('is-unpop');}
+      if(nb&&a==='done'&&S.done[curId()])nb.classList.add('just-done');
+    }
+  }
+});
+$('#playBtn').addEventListener('click',()=>{if(!S.playing){const L=navList();if(L.length&&L[L.length-1].id===curId())select(L[0].id);}setPlay(!S.playing);});
+$$('.speed button').forEach(b=>b.addEventListener('click',()=>setSpeed(parseFloat(b.dataset.speed))));
+$('#menuBtn').addEventListener('click',()=>sideOpen()?closeSide():openSide());
+$('#closeSide').addEventListener('click',closeSide);
+$('#scrim').addEventListener('click',closeSide);
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='Tab'&&isNarrow()&&sideOpen()){
+    const focusable=$$('button:not(:disabled),input,select,[tabindex="0"]',$('#side')).filter(e=>e.getClientRects().length),first=focusable[0],last=focusable[focusable.length-1];
+    if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus();}
+    else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus();}
+  }
+  const t=ev.target,typing=/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable;
+  if(ev.key==='Escape'){
+    if(immersiveOn){exitImmersive();ev.preventDefault();return;}
+    if(sideOpen()){closeSide();ev.preventDefault();return;}
+    if(t.id==='q'){if(S.q)setQ('');else t.blur();ev.preventDefault();}
+    return;
+  }
+  if(typing||ev.metaKey||ev.ctrlKey||ev.altKey)return;
+  if(ev.key==='/'){ev.preventDefault();if(isNarrow())openSide();$('#q').focus();}
+  else if(ev.key==='ArrowLeft'){ev.preventDefault();step(-1);}
+  else if(ev.key==='ArrowRight'){ev.preventDefault();step(1);}
+});
+window.addEventListener('hashchange',()=>{const i=S.cur;if(fromHash()&&S.cur!==i){S.ch='';renderAll();}});
+let rz=0;
+window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{layoutRibbon();syncPills(false);moveSelBar(false);syncInert();updateProg();if(!isNarrow())closeSide();},120);});
+
+/* ripplet.js (luncheon/ripplet.js) inline declarative port: pointerdown on [data-ripplet],
+   ripple spreads from the touch point (350ms, ease-soft), clears on pointerup/leave (600ms fade).
+   The ripple lives in its own overflow:hidden wrap so host overflow stays visible (star particles). */
+document.addEventListener('pointerdown',ev=>{
+  if(reducedMotion())return;
+  const host=ev.target&&ev.target.closest?ev.target.closest('[data-ripplet]'):null;
+  if(!host||host.disabled)return;
+  let wrap=$('.ripplet-wrap',host);
+  if(!wrap){wrap=document.createElement('span');wrap.className='ripplet-wrap';wrap.setAttribute('aria-hidden','true');host.appendChild(wrap);}
+  $$('.ripplet-ripple',wrap).forEach(r=>r.remove());
+  const rc=host.getBoundingClientRect(),d=Math.max(rc.width,rc.height)*2.2;
+  const r=document.createElement('span');r.className='ripplet-ripple';
+  r.style.width=r.style.height=d+'px';
+  r.style.left=(ev.clientX-rc.left-d/2)+'px';r.style.top=(ev.clientY-rc.top-d/2)+'px';
+  wrap.appendChild(r);
+  r.animate([{transform:'scale(0)',opacity:.16},{transform:'scale(1)',opacity:.16}],{duration:350,easing:'cubic-bezier(0.22, 1, 0.36, 1)',fill:'forwards'});
+  let cleared=false;
+  const clear=()=>{if(cleared)return;cleared=true;const f=r.animate([{opacity:.16},{opacity:0}],{duration:600,easing:'cubic-bezier(0.22, 1, 0.36, 1)',fill:'forwards'});f.onfinish=()=>r.remove();};
+  host.addEventListener('pointerup',clear,{once:true});
+  host.addEventListener('pointerleave',clear,{once:true});
+  setTimeout(clear,1200);
+},{passive:true});
+document.addEventListener('touchstart',function(){},{passive:true});
+
+/* Lenis 桌面滚轮惯性：只接细指针（桌面端）+ 非 reduced-motion，触屏（iPad）原生动量不接。
+   本页窗口不滚动，滚动都在 .detail / .list 容器内，故每个容器一个 wrapper 模式实例；
+   用 autoRaf 自驱动，不与播放 rAF 叠加；不叠加 CSS scroll-behavior:smooth（本页也没有）。
+   内容高度变化后由 renderList / renderDetail 调 resize() 同步 limit。 */
+let lenisList=null,lenisDetail=null;
+function initLenis(){
+  if(!window.Lenis||reducedMotion())return;
+  if(!window.matchMedia||!window.matchMedia('(pointer: fine)').matches)return;
+  try{
+    lenisDetail=new Lenis({wrapper:$('#detail'),content:$('#detail'),autoRaf:true,lerp:0.11,syncTouch:false});
+    lenisList=new Lenis({wrapper:$('#list'),content:$('#list'),autoRaf:true,lerp:0.11,syncTouch:false});
+  }catch(_){lenisDetail=null;lenisList=null;}
+}
+
+fromHash();
+updateThemeBtn();updateRibbonBtn();updateSpeedUI();setPlay(false);syncInert();initBallSpring();renderAll();bindTrack();initLenis();
+})();
+</script>
+</body>
+</html>
