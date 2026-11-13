@@ -101,6 +101,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 .bg-blobs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .blob{position:absolute;display:block;filter:blur(30px);opacity:.32;background:linear-gradient(135deg,rgba(59,130,246,.55),rgba(147,197,253,.32))}
 .blob-a{width:340px;height:340px;left:-90px;top:15%;border-radius:32% 68% 63% 37%/38% 34% 66% 62%;animation:blobMorphA 17s ease-in-out infinite alternate}
+/* 翻页拖动 / 弹簧落定期间（html.paging）与沉浸打开期间（html.imm-on）暂停背景 blob 的 morph：
+   两团 30px 高斯模糊的大元素持续变形会让所有 backdrop-filter 表面逐帧重采样，是滑动掉帧的隐形主因；
+   暂停后背景静止（沉浸时本就被覆盖层盖住），滑动只剩翻页条自身的 transform 在动 */
+html.paging .blob,html.imm-on .blob{animation-play-state:paused}
 .blob-b{width:260px;height:260px;right:-70px;bottom:6%;border-radius:62% 38% 33% 67%/60% 64% 36% 40%;animation:blobMorphB 21s ease-in-out infinite alternate}
 @keyframes blobMorphA{from{border-radius:32% 68% 63% 37%/38% 34% 66% 62%;transform:rotate(0deg) scale(1)}to{border-radius:58% 42% 38% 62%/45% 60% 40% 55%;transform:rotate(24deg) scale(1.08)}}
 @keyframes blobMorphB{from{border-radius:62% 38% 33% 67%/60% 64% 36% 40%;transform:rotate(0deg) scale(1)}to{border-radius:38% 62% 57% 43%/52% 38% 62% 48%;transform:rotate(-20deg) scale(1.1)}}
@@ -128,8 +132,8 @@ button,[role="button"],a,input,select,summary,.btn,.chip,.item,.tag,.pn button,.
 .top::after{border-radius:999px}
 .immersive-exit::after{border-radius:999px}
 [data-theme="light"] .top::after,[data-theme="light"] .immersive-exit::after{mix-blend-mode:normal}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-overlay,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
-@media (prefers-reduced-transparency:reduce){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-overlay,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-bg,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-transparency:reduce){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-bg,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* 液态玻璃（复刻 rdev/liquid-glass-react 的 SVG 滤镜做法，MIT）：只给顶栏胶囊与底部时间轴胶囊。
    结构与原库一致：胶囊内一层 .lg-warp 承接 backdrop 模糊+饱和，再由 filter:url() 的
@@ -458,12 +462,34 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
 .card.enter-prev{animation:pagePrev var(--dur-page) var(--ease-immersive) both}
 @keyframes pageNext{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
 @keyframes pagePrev{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+/* 退出沉浸时主页同步到沉浸里翻到的新页：与覆盖层 640ms 淡出同帧启动、同曲线，
+   新页在覆盖层下方一边淡入一边轻滑到位，覆盖层淡尽时主页已稳稳落在新页上 */
+.card.imm-sync-next{animation:immSyncNext var(--dur-immersive) var(--ease-immersive) both}
+.card.imm-sync-prev{animation:immSyncPrev var(--dur-immersive) var(--ease-immersive) both}
+.card.imm-sync{animation:immSync var(--dur-immersive) var(--ease-immersive) both}
+@keyframes immSyncNext{from{opacity:.2;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes immSyncPrev{from{opacity:.2;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes immSync{from{opacity:.2}to{opacity:1}}
 /* 左右滑跟手翻页条：横向锁定后临时盖在滚动视口上的一条横带，恰好一屏高、两页宽，
    左页 / 右页并排；拖动时整条 1:1 跟手平移（只写 transform，走合成层），松手由 Wobble
    弹簧滑到目标页或回弹，落定后立刻拆除、底下真实内容无缝接续。带身 pointer-events:none，
    不接管点击；纵向滚动仍由容器原生负责（touch-action:pan-y 不变）。 */
-.pager-strip{position:absolute;left:0;display:flex;overflow:hidden;pointer-events:none;z-index:5;will-change:transform}
-.pager-page{flex:none;height:100%;overflow:hidden}
+.pager-strip{position:absolute;left:0;display:flex;overflow:hidden;pointer-events:none;z-index:5;will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;contain:layout paint}
+/* 翻页条是静态快照：克隆卡内一切逐帧重绘源在条内一律关停——backdrop-filter 逐帧重采样、
+   box-shadow / text-shadow 光栅化、transition / animation 逐帧求值，条内都不需要；
+   底色本身带 alpha，关掉这些在滑动的几百毫秒里看不出差别，落定拆条后真实卡片原样 */
+.pager-strip *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;transition:none!important;animation:none!important}
+/* 翻页期间的重绘面收到最小（都在建条那一帧一次性切换、落定拆条后自动恢复）：
+   - 压在翻页条上方的胶囊（顶/底栏、沉浸计数、退出键）与液态玻璃折射层关 backdrop-filter / filter，
+     免得逐帧重采样下方移动的条身；
+   - 正文面 .detail 自身的 backdrop-filter 也关：它是翻页条的祖先，WebKit 会把带 backdrop-filter 的
+     祖先与其后代合成在同一组里，条身平移可能连带整个正文面逐帧重绘——关掉后条身是独立合成层，
+     每帧只剩它自己的 transform 在动；
+   - 背景 blob（30px 高斯模糊的大图层）翻页期间整层隐藏，不进合成 */
+html.paging .top,html.paging .ribbon,html.paging .imm-count,html.paging .immersive-exit,html.paging .detail{-webkit-backdrop-filter:none;backdrop-filter:none}
+html.paging .lg-warp{filter:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+html.paging .blob{visibility:hidden}
+.pager-page{flex:none;height:100%;overflow:hidden;position:relative;contain:paint}
 .pager-page .card{will-change:auto}
 
 .search:focus-within>svg{color:var(--accent)}
@@ -503,9 +529,21 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
    本节写在样式表最后：同优先级时后写者胜，确保退出键的 absolute 定位不被
    [data-ripplet]{position:relative} 等规则覆盖（旧 bug：退出键被压成 relative，
    排到 100vh 应用下方、屏幕之外）。 */
-.imm-overlay{position:fixed;inset:0;z-index:80;background:var(--glass-strong);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);opacity:0;transform:translateY(18px);visibility:hidden;pointer-events:none;will-change:opacity,transform;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),background-color 140ms linear,visibility 0s linear var(--dur-immersive)}
-.imm-overlay.show{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),background-color 140ms linear,visibility 0s linear 0s}
+.imm-overlay{position:fixed;inset:0;z-index:80;background:transparent;opacity:0;transform:translateY(18px);visibility:hidden;pointer-events:none;will-change:opacity,transform;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),visibility 0s linear var(--dur-immersive)}
+.imm-overlay.show{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),visibility 0s linear 0s}
 .imm-overlay[hidden]{display:none}
+/* 沉浸的磨砂背景独立成 .imm-bg 一层：只承接 backdrop 模糊+底色，不做滚动容器的祖先。
+   以前模糊挂在覆盖层本体上，层内正文一滚动 / 翻页，WebKit 就逐帧重采样整屏 18px 模糊，
+   背景跟着内容一起抖、帧率掉得最厉害。背景层因此独立出来、静止不动：翻页时它纹丝不动
+   （画面与合成缓存都不变），只有翻页条在上层平移；沉浸里翻到哪页，模糊背景始终是进沉浸那一刻的样子。
+   它必须是覆盖层的同级（body 直下、z-index 低一层），不能做覆盖层的子元素：覆盖层带
+   will-change:opacity,transform，是一个 Backdrop Root，子元素的 backdrop-filter 只能采样
+   隔离组内部、采不到组外的主页面——模糊会静默失效，只剩半透明底色盖着清晰的主页面文字
+   （上一版正是这样把模糊弄丢的）。同级独立层则直接模糊它下面的主页面，磨砂效果与改版前一致；
+   进 / 出与覆盖层同帧同曲线淡入淡出，退出时在它淡尽的过程中露出已同步到新页的主页面。 */
+.imm-bg{position:fixed;inset:0;z-index:79;background:var(--glass-strong);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);pointer-events:none;opacity:0;visibility:hidden;transition:opacity var(--dur-immersive) var(--ease-immersive),visibility 0s linear var(--dur-immersive)}
+.imm-bg.show{opacity:1;visibility:visible;transition:opacity var(--dur-immersive) var(--ease-immersive),visibility 0s linear 0s}
+.imm-bg[hidden]{display:none}
 .imm-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:transparent}
 #immDetail{position:relative}
 .imm-scroll .card{margin-bottom:0;padding-top:26px;padding-bottom:96px}
@@ -581,6 +619,7 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
   </footer>
   <div class="vh" id="live" aria-live="polite"></div>
 </div>
+<div class="imm-bg" id="immBg" aria-hidden="true" hidden></div>
 <div class="imm-overlay" id="immOverlay" role="dialog" aria-modal="true" aria-label="沉浸阅读" hidden>
   <div class="imm-scroll" id="immScroll" data-lenis-prevent><div id="immDetail"></div></div>
   <nav class="imm-nav" id="immNav" aria-label="沉浸阅读进度">
@@ -739,11 +778,6 @@ function refreshFlags(id){const el=$('#list .item[data-id="'+id+'"] .it-f');if(e
 
 /* ---------- 详情 ---------- */
 function tipHTML(x){const m=/^(易混|考法)：/.exec(x);return m?'<li><span class="k">'+m[1]+'</span>'+fmt(x.slice(m[0].length))+'</li>':'<li>'+fmt(x)+'</li>';}
-function pnBtn(x,dir){
-  const lab=dir==='prev'?'<span class="pn-arrow">←</span> 上一个':'下一个 <span class="pn-arrow">→</span>';
-  if(!x)return '<button class="'+dir+'" type="button" data-ripplet disabled><small>'+(dir==='prev'?'已经是第一个':'已经是最后一个')+'</small></button>';
-  return '<button class="'+dir+'" type="button" data-ripplet data-go="'+x.id+'"><small>'+lab+'</small><b>'+yr(x)+' '+esc(x.t)+'</b></button>';
-}
 function actsHTML(e){
   const st=!!S.star[e.id],dn=!!S.done[e.id];
   return '<button class="btn sm star-btn'+(st?' on-star':'')+'" type="button" data-act="star" data-ripplet aria-pressed="'+st+'">'+(st?IC.starF:IC.star)+'<span>重点</span></button>'+
@@ -765,7 +799,6 @@ function cardHTMLFor(e,pv,nx){
     h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ol></section>';
     if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map(tipHTML).join('')+'</ul></section>';
     if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn">'+fmt(e.m)+'</p></section>';
-  h+='<nav class="pn" aria-label="上一个和下一个">'+pnBtn(pv,'prev')+pnBtn(nx,'next')+'</nav>';
   h+='<p class="note">章节对应马工程重点教材2023年版。此为复习提要，不替代教材，请以你的课程与考试大纲为准。<br><span class="storage-note">'+(storageOK?'重点与掌握记录仅保存在当前浏览器，不会跨设备同步。':'当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。')+'</span></p></article>';
   return h;
 }
@@ -897,17 +930,32 @@ function bindTrack(){
      抑制进入动画、无 View Transition、无整页重绘），侧栏 / 时间轴不重排。
    - 减少动态效果时不建条：松手过阈值直接 step(±1)（其余过渡本就被全局规则关掉）。
    - pointercancel（竖向接管 / 手势被打断）：拖动中直接拆条还原，绝不把页面
-     留在半翻状态；弹簧落定途中没有活动手势，cancel 不触发拆条。 */
+     留在半翻状态；弹簧落定途中没有活动手势，cancel 不触发拆条。
+   - 帧率（iPad 60fps 专项）：每帧只写一件事——翻页条的 transform（pointermove
+     合并进 rAF、弹簧落定走 paint，均为 translate3d 独立合成层）。为此建条起到
+     落定拆条止给 <html> 挂 .paging，把逐帧重绘源一次性关停：条内克隆卡的
+     backdrop-filter / 阴影 / 过渡 / 动画全关（条只是静态快照，见 .pager-strip
+     规则）；压在条上方的胶囊与液态玻璃折射层关 backdrop-filter / filter；正文面
+     .detail 自身的 backdrop-filter 也关（带 backdrop-filter 的祖先会让 WebKit 把
+     后代合成进同一组、条身平移连带整面重绘）；背景 blob 整层隐藏（沉浸侧覆盖层
+     模糊本就是独立 .imm-bg 层、不参与重绘，见覆盖层一节）。上一版的深度转场
+     （离场压暗 / 入场转亮 / 接缝阴影）已整体移除——三层整页罩层的 opacity 逐帧
+     写入同样在吃帧，顺滑优先于转场。落定弹簧保持 stiffness 290 / damping 30。 */
 function makePager(scroller,host,htmlFor,guard){
   if(!scroller||!host)return;
   let pid=null,sx=0,sy=0,mode=0,dir=0,target=null,W=0;
   let strip=null,curX=0,vel=0,samples=[],spring=null,pending=null,busy=false,stLock=0;
+  /* 跟手绘制合并到帧：pointermove 一帧内可来多次，逐次写 transform 是白白掉帧；
+     move 只记最新位移、挂一个 rAF 一帧画一次（弹簧落定走自己的 rAF、直接 paint）。
+     paint() 会作废排队中的 move 绘制，保证松手 / 弹簧的最终位置不被旧帧覆盖 */
+  let rafPaint=0,queuedX=null;
   function pushSample(x,t){
     samples.push({x:x,t:t});
     while(samples.length>2&&t-samples[0].t>120)samples.shift();
     if(samples.length>1){const a=samples[0],b=samples[samples.length-1];vel=(b.x-a.x)/Math.max(1,b.t-a.t);}
   }
-  function paint(x){curX=x;if(strip)strip.style.transform='translateX('+x.toFixed(1)+'px)';}
+  function paint(x){curX=x;if(rafPaint){cancelAnimationFrame(rafPaint);rafPaint=0;queuedX=null;}if(strip)strip.style.transform='translate3d('+x.toFixed(1)+'px,0,0)';}
+  function queuePaint(x){curX=x;queuedX=x;if(rafPaint)return;rafPaint=requestAnimationFrame(()=>{rafPaint=0;const qx=queuedX;queuedX=null;if(qx!==null&&strip)strip.style.transform='translate3d('+qx.toFixed(1)+'px,0,0)';});}
   function appliedDx(dx){
     if(!target)return dir>0?Math.max(-30,Math.min(0,dx*0.32)):Math.max(0,Math.min(30,dx*0.32));
     return dir>0?Math.max(-W,Math.min(0,dx)):Math.max(0,Math.min(W,dx));
@@ -949,10 +997,13 @@ function makePager(scroller,host,htmlFor,guard){
       strip.appendChild(curPage);strip.style.left='0px';
     }
     host.appendChild(strip);
+    document.documentElement.classList.add('paging');
     const real=host.querySelector(':scope > .card');if(real)real.style.visibility='hidden';
     paint(appliedDx(dx));
   }
   function teardown(){
+    if(rafPaint){cancelAnimationFrame(rafPaint);rafPaint=0;queuedX=null;}
+    document.documentElement.classList.remove('paging');
     if(strip){strip.remove();strip=null;}
     const real=host.querySelector(':scope > .card');if(real)real.style.removeProperty('visibility');
   }
@@ -968,7 +1019,7 @@ function makePager(scroller,host,htmlFor,guard){
     pending=commit?'commit':'back';busy=true;
     if(!window.Wobble||!Wobble.Spring){finishSettle();return;}
     try{
-      spring=new Wobble.Spring({fromValue:curX,toValue:toX,stiffness:340,damping:34,mass:1,initialVelocity:v0||0,overshootClamping:true,restDisplacementThreshold:0.5,restVelocityThreshold:0.02});
+      spring=new Wobble.Spring({fromValue:curX,toValue:toX,stiffness:290,damping:30,mass:1,initialVelocity:v0||0,overshootClamping:true,restDisplacementThreshold:0.5,restVelocityThreshold:0.02});
       spring.onUpdate(s=>paint(s.currentValue));
       spring.onStop(()=>finishSettle());
       spring.start();
@@ -1029,9 +1080,9 @@ function makePager(scroller,host,htmlFor,guard){
       else if((ay>=10&&ay>=ax*2.4)||(ax+ay>=26&&ay>ax*2))mode=2;
       return;
     }
-    /* 已锁定：竖向位置钉死在锁定值，本手势内页面不许再上下漂 */
+    /* 已锁定：竖向位置钉死在锁定值，本手势内页面不许再上下漂；跟手绘制走 queuePaint 合并到帧 */
     if(strip&&scroller.scrollTop!==stLock)scroller.scrollTop=stLock;
-    if(strip)paint(appliedDx(dx));else curX=dx;
+    if(strip)queuePaint(appliedDx(dx));else curX=dx;
   },{passive:true});
   window.addEventListener('pointerup',ev=>{
     if(ev.pointerId!==pid)return;
@@ -1125,7 +1176,7 @@ function select(id,o){
   if(!o.auto)stopPlay();
   const NL=navList(),oi=NL.findIndex(e=>e.id===curId()),ni=NL.findIndex(e=>e.id===id);navDir=(oi>=0&&ni>oi)?'next':(oi>=0&&ni<oi)?'prev':null;
   S.cur=id;save();
-  const swap=()=>{renderDetail();if(immersiveOn)renderOverlayCard(false);};
+  const swap=()=>{if(immersiveOn){/* 沉浸中翻页只换覆盖层卡片：主页（模糊背景的来源）冻结不更新，退出沉浸时再一并丝滑同步（见 syncMainAfterImmersive）。方向在此交接给 lastDir（原由 renderDetail 消费 navDir，沉浸路径不走它） */immMainStale=true;lastDir=navDir;renderOverlayCard(false);}else renderDetail();};
   /* 左右滑跟手翻页落定后的提交：翻页条已经把新页滑到位，这里只换内容、不再叠加任何过渡 */
   if(o.from==='pager'){pagerSwap=true;try{swap();}finally{pagerSwap=false;}}
   /* View Transitions：手动切节点时让标题/年份做共享元素过渡；沉浸中（覆盖层已有自己的交叉过渡）、
@@ -1135,7 +1186,9 @@ function select(id,o){
     try{document.startViewTransition(()=>{swap();vtBusy=false;});}
     catch(_){vtBusy=false;swap();}
   }else swap();
-  markList(o.from!=='list');updateCursor();setHash();
+  if(immersiveOn){/* 侧栏高亮 / 时间轴游标同属冻结的背景，一并推迟到退出沉浸时同步 */}
+  else{markList(o.from!=='list');updateCursor();}
+  setHash();
   if(o.from==='list'&&isNarrow())closeSide();
 }
 function step(d){const x=neighbor(d);if(x){select(x.id,{auto:step.auto});return true;}return false;}
@@ -1172,7 +1225,7 @@ function tagClick(c){
 const BASE_DWELL=6000,SPEEDS=[0.5,1,2,3];
 let playRaf=0,playLast=0,playPos=-1,playIdxs=[];
 function dwell(){return BASE_DWELL/S.speed;}
-function paintPlayPos(p){setBall(p);}
+function paintPlayPos(p){if(immersiveOn)return;/* 沉浸中主页冻结：游标也不动，退出时由 updateCursor 的弹簧一次滑到新位置 */setBall(p);}
 /* Wobble 弹簧跟随：小球改弹簧追目标（stiffness 170 / damping 19，带一点 overshoot 再落稳），
    替代原匀速线性。只做标量弹簧（轨道进度 p），onUpdate 里写 transform，不碰 scrollTop。
    播放时逐帧 updateConfig 改 toValue 连续跟随；切节点时同一弹簧直接改目标，不重建、不跳变。 */
@@ -1244,11 +1297,12 @@ function effectiveTheme(){return document.documentElement.getAttribute('data-the
 function updateThemeBtn(){const b=$('#themeBtn');if(!b)return;const dark=effectiveTheme()==='dark';b.setAttribute('aria-pressed',String(dark));if(!b.dataset.built){b.dataset.built='1';b.innerHTML='<span class="icon-swap" id="themeSwap"><span class="ic" data-icon="moon">'+IC.moon+'</span><span class="ic" data-icon="sun">'+IC.sun+'</span></span><span class="btn-lab"></span>';}setSwap('themeSwap',dark?'sun':'moon');$('.btn-lab',b).textContent=dark?'浅色':'深色';b.title=dark?'当前为深色主题，点击切换到浅色':'当前为浅色主题，点击切换到深色';}
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;updateThemeBtn();if(window.__ldFollow)window.__ldFollow(t);}
 function updateRibbonBtn(){const b=$('#ribbonBtn');$('#app').classList.toggle('ribbon-off',S.ribbonHide);b.setAttribute('aria-pressed',String(S.ribbonHide));setSwap('ribSwap',S.ribbonHide?'expand':'collapse');$('.btn-lab',b).textContent=S.ribbonHide?'展开时间轴':'收起时间轴';b.title=S.ribbonHide?'展开页面底部的时间轴条':'收起页面底部的时间轴条';}
-let immersiveOn=false,immHideTimer=0;
+let immersiveOn=false,immHideTimer=0,immBgTimer=0,immMainStale=false;
 const reducedMotion=()=>{try{return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(_){return false;}};
-/* 沉浸阅读 = 独立覆盖层：内容用与正文相同的 cardHTML() 渲染进覆盖层（去掉重复 id），
-   底层 .app 布局完全不动、不加类、不参与动画；进/出只切换覆盖层的 .show
-   （opacity + translateY 过渡）。退出键是覆盖层的子元素，覆盖层显示期间恒可见、可点。 */
+/* 沉浸阅读 = 独立覆盖层：内容用与正文相同的 cardHTML() 渲染进覆盖层（去掉重复 id）；
+   进/出只切换覆盖层的 .show（opacity + translateY 过渡）。沉浸期间底层 .app 冻结在
+   进入时的那一页——翻页只换覆盖层卡片，退出时才由 syncMainAfterImmersive 一次性
+   丝滑同步到新页。退出键是覆盖层的子元素，覆盖层显示期间恒可见、可点。 */
 /* 沉浸计数：翻页已改为左右滑动（无翻页按钮），这里只按当前导航列表同步
    底部计数胶囊的「n / 总数」，在每次渲染覆盖层时调用，滑动翻页后立刻反映新位置 */
 function syncImmNav(){
@@ -1281,12 +1335,28 @@ function fsEnter(){
   }catch(_){try{document.documentElement.requestFullscreen();}catch(__){}}
 }
 function fsExit(){try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();}catch(_){}}
+/* 退出沉浸时把主页同步到沉浸里翻到的那一页：沉浸期间主页一直冻结在进入时的
+   那一页（模糊背景不跟着翻页变），退出这一刻才渲染新页，并给新卡挂 imm-sync
+   动画——与覆盖层 640ms 淡出同帧启动、同曲线，覆盖层淡尽时主页已滑稳在新页；
+   侧栏高亮与时间轴游标也在同一刻补上（游标走它自己的弹簧滑过去）。没在沉浸里
+   翻过页（immMainStale 为假）时什么都不做，退出保持原样无多余动画 */
+function syncMainAfterImmersive(){
+  if(!immMainStale)return;immMainStale=false;
+  const dir=lastDir;navDir=dir;
+  renderDetail();
+  const c=$('.card',$('#detail'));
+  if(c&&!reducedMotion()){c.classList.remove('enter','enter-next','enter-prev');c.classList.add(dir==='prev'?'imm-sync-prev':dir==='next'?'imm-sync-next':'imm-sync');}
+  markList(false);updateCursor();
+}
 function enterImmersive(){
-  if(immersiveOn)return;immersiveOn=true;
+  if(immersiveOn)return;immersiveOn=true;immMainStale=false;
+  document.documentElement.classList.add('imm-on');
   if(sideOpen())closeSide();
   setSwap('immSwap','exit');
   $('#immersiveBtn').setAttribute('aria-pressed','true');
   renderOverlayCard(false);
+  /* 磨砂背景层与覆盖层同帧淡入：它独立于覆盖层（见 .imm-bg 注释），模糊的是冻结的主页面 */
+  const bg=$('#immBg');clearTimeout(immBgTimer);bg.hidden=false;void bg.offsetWidth;bg.classList.add('show');
   const ov=$('#immOverlay');clearTimeout(immHideTimer);ov.hidden=false;void ov.offsetWidth;ov.classList.add('show');
   $('#app').inert=true;
   $('#immersiveExit').focus({preventScroll:true});
@@ -1294,9 +1364,14 @@ function enterImmersive(){
 }
 function exitImmersive(){
   if(!immersiveOn)return;immersiveOn=false;
+  document.documentElement.classList.remove('imm-on');
+  syncMainAfterImmersive();
   setSwap('immSwap','enter');
   $('#immersiveBtn').setAttribute('aria-pressed','false');
   $('#app').inert=false;
+  /* 背景层与覆盖层同帧淡出：淡出过程中主页已同步到新页（syncMainAfterImmersive 在上面同帧跑），
+     磨砂层淡尽时新页正好滑稳——退出沉浸的丝滑过渡靠这一对淡出 + 主页的 imm-sync 动画 */
+  const bg=$('#immBg');bg.classList.remove('show');clearTimeout(immBgTimer);immBgTimer=setTimeout(()=>{if(!immersiveOn)bg.hidden=true;},660);
   const ov=$('#immOverlay');ov.classList.remove('show');clearTimeout(immHideTimer);immHideTimer=setTimeout(()=>{if(!immersiveOn)ov.hidden=true;},660);
   fsExit();
   $('#immersiveBtn').focus({preventScroll:true});
@@ -2027,7 +2102,7 @@ if(window.matchMedia){const mqT=window.matchMedia('(prefers-color-scheme: dark)'
 $('#ribbonBtn').addEventListener('click',()=>{S.ribbonHide=!S.ribbonHide;save();updateRibbonBtn();if(!S.ribbonHide)requestAnimationFrame(()=>{layoutRibbon();updateCursor();});});
 $('#immersiveBtn').addEventListener('click',enterImmersive);
 $('#immersiveExit').addEventListener('click',()=>exitImmersive());
-/* 覆盖层内的交互与正文一致：上/下一页走 select（自动同步两处），章节标签先退出沉浸再筛选，
+/* 覆盖层内的交互与正文一致：翻页走 select（沉浸中只换覆盖层、主页冻结，退出时同步），章节标签先退出沉浸再筛选，
    重点/掌握走 toggle 更新状态后就地重渲染覆盖层卡片（保持滚动位置）并补同款动效 */
 $('#immDetail').addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
