@@ -1230,15 +1230,17 @@ function css(lab, alpha){
   return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + alpha.toFixed(4) + ')';
 }
 var scaleBg    = makeScale(['#0E1016', '#3A3C44', '#8D8E93', '#E7E5E1']);
-/* 轨道配色与本页主题同色系：深端用深色 --sunk 的深蓝灰 #232F3D（去原纯黑 #06070B），
-   浅端用浅色 --sunk 的冷浅灰 #E8EDF3（去原米白暖调 #E2DFDA），中间两点同步换成蓝灰，
-   OKLab 分段插值在深浅之间走蓝灰系；旋钮玻璃、点阵（深端近白 / 浅端深褐）与边缘光
-   （深端蓝紫 / 浅端暖橙）在新轨道两端仍保持对比、清晰可辨 */
-var scaleTrack = makeScale(['#232F3D', '#4A5A6E', '#9AA9BB', '#E8EDF3']);
+/* 轨道与本页胶囊同款玻璃：不再实心填充，底色直接用胶囊 --glass-tint 的两端
+   （深端 rgb(13,20,32) α.01、浅端 rgb(255,255,255) α.005，与 CAPSULE_VARS 一致），
+   色相随 t 在 OKLab 里插值、alpha 在 draw 里同步插值；轨道形体靠细边框
+   （胶囊 --glass-border 两端：白 α.045 → α.12）+ 压淡的内外阴影勾勒，和顶栏胶囊融为一体。
+   旋钮、点阵（深端近白 / 浅端深褐）与边缘光（深端蓝紫 / 浅端暖橙）在透明轨道上
+   改由页面底色衬托，两端仍保持对比、清晰可辨 */
+var scaleTrack = makeScale(['#0D1420', '#FFFFFF']);
 var scaleEdge  = makeScale(['#8E9BFF', '#C9C4FF', '#FFFFFF', '#FFE2B0', '#FFB140']);
 var scaleDots  = makeScale(['#F4F6FF', '#E9ECF7', '#B9B3AA', '#5A4632']);
 var scaleGlassTop    = makeScale(['#3A3E4E', '#FFFFFF']);
-var scaleGlassBottom = makeScale(['#20222C', '#F2FEFA']);
+var scaleGlassBottom = makeScale(['#20222C', '#E8EDF3']);
 var W = 440, H = 280;
 var TRACK = { x: 60, y: 58, w: 320, h: 164, r: 58 };
 var KNOB = 140, KNOB_R = 46, TRAVEL = 156;
@@ -1384,12 +1386,13 @@ function draw(now){
   if (fixedEl) fixedEl.style.setProperty('--ld-edge', css(edgeLab));
   var kx = knobX(t), ky = KNOB_Y;
   var kcx = kx + KNOB / 2, kcy = ky + KNOB / 2;
+  /* 轨道投影压到胶囊 --glass-shadow 的量级（深 .08 / 浅 .03），不再是实心块的沉重投影 */
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.55, 0.12, t).toFixed(3) + ')';
-  ctx.shadowBlur = 26;
-  ctx.shadowOffsetY = 10;
+  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.08, 0.03, t).toFixed(3) + ')';
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetY = 6;
   rrPath(ctx, TRACK.x, TRACK.y, TRACK.w, TRACK.h, TRACK.r);
-  ctx.fillStyle = css(trackLab);
+  ctx.fillStyle = css(trackLab, lerp(0.01, 0.005, t));
   ctx.fill();
   ctx.restore();
   ctx.save();
@@ -1398,7 +1401,7 @@ function draw(now){
   var reflX = lerp(kx + 26, kx + KNOB - 26, ease);
   var reflY = lerp(ky + KNOB - 18, ky + 18, ease);
   var rg = ctx.createRadialGradient(reflX, reflY, 0, reflX, reflY, 110);
-  rg.addColorStop(0, css(edgeLab, lerp(0.34, 0.26, t)));
+  rg.addColorStop(0, css(edgeLab, lerp(0.16, 0.12, t)));
   rg.addColorStop(1, css(edgeLab, 0));
   ctx.fillStyle = rg;
   ctx.fillRect(TRACK.x, TRACK.y, TRACK.w, TRACK.h);
@@ -1408,36 +1411,38 @@ function draw(now){
   ctx.clip();
   ctx.beginPath();
   rrPath(ctx, TRACK.x - 6, TRACK.y - 6, TRACK.w + 12, TRACK.h + 12, TRACK.r + 6);
-  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.85, 0.22, t).toFixed(3) + ')';
-  ctx.shadowBlur = 18;
+  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.20, 0.06, t).toFixed(3) + ')';
+  ctx.shadowBlur = 12;
   ctx.shadowOffsetY = 7;
   ctx.lineWidth = 12;
   ctx.strokeStyle = 'rgba(0,0,0,0.9)';
   ctx.stroke();
   ctx.beginPath();
   rrPath(ctx, TRACK.x - 6, TRACK.y - 6, TRACK.w + 12, TRACK.h + 12, TRACK.r + 6);
-  ctx.shadowColor = 'rgba(255,255,255,' + lerp(0.05, 0.28, t).toFixed(3) + ')';
-  ctx.shadowBlur = 14;
+  ctx.shadowColor = 'rgba(255,255,255,' + lerp(0.04, 0.12, t).toFixed(3) + ')';
+  ctx.shadowBlur = 10;
   ctx.shadowOffsetY = -7;
   ctx.lineWidth = 10;
   ctx.strokeStyle = 'rgba(255,255,255,0.9)';
   ctx.stroke();
   ctx.restore();
+  /* 轨道细边框：用胶囊 --glass-border 的两端 alpha（白 .045 → .12），与胶囊同款 */
   rrPath(ctx, TRACK.x + 0.5, TRACK.y + 0.5, TRACK.w - 1, TRACK.h - 1, TRACK.r - 0.5);
-  ctx.strokeStyle = 'rgba(255,255,255,' + lerp(0.06, 0.55, t).toFixed(3) + ')';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(255,255,255,' + lerp(0.045, 0.12, t).toFixed(3) + ')';
+  ctx.lineWidth = 1.5;
   ctx.stroke();
+  /* 旋钮与胶囊同系的玻璃：渐变带 α.9 的轻微透光，形体靠投影与高光勾勒 */
+  var grad = ctx.createLinearGradient(0, ky, 0, ky + KNOB);
+  grad.addColorStop(0, css(scaleGlassTop(t), 0.9));
+  grad.addColorStop(1, css(scaleGlassBottom(t), 0.9));
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.48, 0.16, t).toFixed(3) + ')';
   ctx.shadowBlur = 24;
   ctx.shadowOffsetY = lerp(10, 7, t);
   rrPath(ctx, kx, ky, KNOB, KNOB, KNOB_R);
-  ctx.fillStyle = css(scaleGlassTop(t));
+  ctx.fillStyle = grad;
   ctx.fill();
   ctx.restore();
-  var grad = ctx.createLinearGradient(0, ky, 0, ky + KNOB);
-  grad.addColorStop(0, css(scaleGlassTop(t)));
-  grad.addColorStop(1, css(scaleGlassBottom(t)));
   rrPath(ctx, kx, ky, KNOB, KNOB, KNOB_R);
   ctx.fillStyle = grad;
   ctx.fill();
@@ -1449,7 +1454,7 @@ function draw(now){
   ctx.clip();
   var hx = lerp(lightPt[0], kcx, 0.45), hy = lerp(lightPt[1], kcy, 0.45);
   var hg = ctx.createRadialGradient(hx, hy, 0, hx, hy, 95);
-  hg.addColorStop(0, css(edgeLab, lerp(0.38, 0.30, t)));
+  hg.addColorStop(0, css(edgeLab, lerp(0.22, 0.18, t)));
   hg.addColorStop(1, css(edgeLab, 0));
   ctx.fillStyle = hg;
   ctx.fillRect(kx, ky, KNOB, KNOB);
@@ -1464,7 +1469,8 @@ function draw(now){
   ctx.lineWidth = 1;
   ctx.stroke();
   var halfLen = lerp(0.22, 0.19, t);
-  var baseA = lerp(0.9, 0.55, t);
+  /* 边缘光压淡：与压淡后的轨道辉光同量级，不再抢过整页玻璃的柔和感 */
+  var baseA = lerp(0.55, 0.36, t);
   var SEG = 90;
   ctx.save();
   if (t < 0.6) ctx.globalCompositeOperation = 'lighter';
@@ -1473,7 +1479,7 @@ function draw(now){
   for (pass = 0; pass < 2; pass++){
     var isCore = pass === 1;
     ctx.lineWidth = isCore ? 2.2 : 4.2;
-    ctx.shadowBlur = isCore ? 8 : 26;
+    ctx.shadowBlur = isCore ? 8 : 14;
     ctx.shadowColor = isCore ? 'rgba(255,255,255,0.9)' : css(edgeLab, 0.9);
     for (sIdx = 0; sIdx < SEG; sIdx++){
       var f = -1 + ((sIdx + 0.5) / SEG) * 2;
