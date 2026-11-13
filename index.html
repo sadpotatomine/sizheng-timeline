@@ -178,6 +178,21 @@ html.lg-on .top::before,html.lg-on .ribbon::before{content:"";position:absolute;
 .top .btn:not([aria-pressed="true"]):hover,.ribbon .btn:not([aria-pressed="true"]):hover{background:var(--on-glass-hover);box-shadow:0 4px 16px rgba(20,34,52,.07)}
 .icon-btn{width:44px;padding:0}
 .menu-btn,.drawer-head{display:none}
+/* 光明与黑暗滑块（最新版移植）——替换顶栏原主题按钮，位置与尺寸与原按钮一致：
+   原 .btn 高 44px；画布场景 440×280 里轨道实绘 320×164，按轨道高 = 44px 等比缩放，
+   stage 为 118×75.1，实绘轨道约 85.9×44（原按钮约 81×44）。布局槽高保持 44px，
+   stage 在槽内居中、只有透明画布边距溢出槽外，顶栏高度不变。
+   轨道内按钮两端按 440 坐标系规范：t=0 时 x=72、左缘距轨道左缘 12；t=1 时 x=228、右缘距轨道右缘 12。 */
+.ld-inline{flex:none;width:118px;height:44px;display:flex;align-items:center;justify-content:center;--ld-edge:#8e9bff}
+.ld-stage{position:relative;width:118px;height:75.1px;flex:none}
+.ld-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.ld-switch{position:absolute;left:13.6364%;top:20.7143%;width:72.7273%;height:58.5714%;min-height:0;margin:0;padding:0;border:0;background:transparent;border-radius:58px/58px;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ld-switch:active{cursor:grabbing}
+.ld-switch:focus{outline:none}
+.ld-switch:focus-visible{outline:2px solid var(--ld-edge);outline-offset:3px}
+.ld-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* 拖动 / 弹簧归位期间界面颜色逐帧由 t 插值写入：关掉全站过渡，避免插值被 150–320ms 过渡拖尾 */
+html.ld-live *,html.ld-live *::before,html.ld-live *::after{transition:none!important}
 
 /* 主体 */
 /* 主体一直铺到视口底边、从时间轴胶囊下穿过：不再给底栏预留整条空带（那条带只剩背景渐变，横贯全宽像一整块方形盖住页面）。
@@ -386,6 +401,13 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
   .tools{order:2;flex:none;gap:8px}
   .prog .bar{display:none}
   .prog::before{content:"✓";color:var(--accent);font-weight:700}
+  /* 移动端滑块等比缩小：布局槽与 stage 一起从 118px 缩到原主题按钮的约 81px
+     （stage 81×51.55，与桌面 118×75.1 同为 440:280 比例），实绘轨道约 58.9×30.2。
+     .tools 换行到第二行后的总宽随之少 37px、不再溢出视口，t=0 / t=1 两端旋钮
+     都完整落在视口内；槽高仍 44px，顶栏高度不变。画布 fit 与拖动 logicalDx
+     都按 stage 实际尺寸换算，440 坐标系里的轨道与两端位置（x=72 / x=228）不变 */
+  .ld-inline{width:81px}
+  .ld-stage{width:81px;height:51.55px}
   .wrap{grid-template-columns:minmax(0,1fr)}
   .list{padding-bottom:18px}
   .side{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(88vw,360px);border-right:0;border-radius:0 var(--r-frame) var(--r-frame) 0;overflow:hidden;isolation:isolate;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateX(-104%);transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
@@ -534,7 +556,13 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
       <div class="prog" id="prog"><span class="bar" aria-hidden="true"><i></i></span><span class="txt"></span></div>
       <button class="btn" id="ribbonBtn" type="button" data-ripplet aria-pressed="false" title="收起页面底部的时间轴条"><span class="icon-swap" id="ribSwap"><span class="ic on" data-icon="collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 8.5L12 11l2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="expand"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 11L12 8.5l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span class="btn-lab">收起时间轴</span></button>
       <button class="btn" id="immersiveBtn" type="button" data-ripplet aria-pressed="false" title="隐藏顶栏、目录和时间轴，专注阅读正文"><span class="icon-swap" id="immSwap"><span class="ic on" data-icon="enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="exit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></span><span>沉浸阅读</span></button>
-      <button class="btn" id="themeBtn" type="button" data-ripplet aria-pressed="false" title="切换深色 / 浅色主题"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.6A8.2 8.2 0 1 1 10.4 4 6.6 6.6 0 0 0 20 13.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>深色</span></button>
+      <div class="ld-inline" id="ld-inline">
+        <div class="ld-stage" id="ld-stage">
+          <canvas id="ld-cv"></canvas>
+          <button class="ld-switch" id="ld-sw" type="button" role="switch" aria-checked="false" aria-label="切换深色 / 浅色主题"></button>
+          <span class="ld-sr" id="ld-live" aria-live="polite"></span>
+        </div>
+      </div>
     </div>
   </header>
   <div class="wrap">
@@ -1026,7 +1054,7 @@ function setSpeed(v){
 }
 function effectiveTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
 function updateThemeBtn(){const b=$('#themeBtn');if(!b)return;const dark=effectiveTheme()==='dark';b.setAttribute('aria-pressed',String(dark));if(!b.dataset.built){b.dataset.built='1';b.innerHTML='<span class="icon-swap" id="themeSwap"><span class="ic" data-icon="moon">'+IC.moon+'</span><span class="ic" data-icon="sun">'+IC.sun+'</span></span><span class="btn-lab"></span>';}setSwap('themeSwap',dark?'sun':'moon');$('.btn-lab',b).textContent=dark?'浅色':'深色';b.title=dark?'当前为深色主题，点击切换到浅色':'当前为浅色主题，点击切换到深色';}
-function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;updateThemeBtn();}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;updateThemeBtn();if(window.__ldFollow)window.__ldFollow(t);}
 function updateRibbonBtn(){const b=$('#ribbonBtn');$('#app').classList.toggle('ribbon-off',S.ribbonHide);b.setAttribute('aria-pressed',String(S.ribbonHide));setSwap('ribSwap',S.ribbonHide?'expand':'collapse');$('.btn-lab',b).textContent=S.ribbonHide?'展开时间轴':'收起时间轴';b.title=S.ribbonHide?'展开页面底部的时间轴条':'收起页面底部的时间轴条';}
 let immersiveOn=false,immHideTimer=0;
 const reducedMotion=()=>{try{return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(_){return false;}};
@@ -1130,7 +1158,693 @@ $('#detail').addEventListener('click',ev=>{
   const a=b.dataset.act;
   if(a==='star'||a==='done')toggle(a);
 });
-$('#themeBtn').addEventListener('click',()=>{const next=effectiveTheme()==='dark'?'light':'dark';S.theme=next;applyTheme(next);save();});
+/* ===== 光明与黑暗滑块（最新版移植，含弹簧修正、松手速度窗口、取消归位）=====
+   替换原 #themeBtn：滑动（拖动或弹簧）过程中，本页主题色逐帧跟随 t——每个主题变量
+   在深色端（t=0）与浅色端（t=1）之间按 OKLab 插值写入行内样式；t 归位到端点后才
+   提交主题（走本页原有机制：S.theme + applyTheme + save）并清掉行内插值。
+   两端位置（440 坐标系）：t=0 按钮 x=72、左缘距轨道左缘 12；t=1 按钮 x=228、右缘距轨道右缘 12。 */
+(function(){
+'use strict';
+function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+function lerp(a, b, t){ return a + (b - a) * t; }
+function smooth(t){ t = clamp01(t); return t * t * (3 - 2 * t); }
+function mulberry32(seed){
+  var a = seed >>> 0;
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    var r = Math.imul(a ^ (a >>> 15), 1 | a);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hexToRgb(hex){
+  var n = parseInt(hex.slice(1), 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
+function srgbToLinear(c){ return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+function linearToSrgb(c){ return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055; }
+function hexToOklab(hex){
+  var rgb = hexToRgb(hex);
+  var r = srgbToLinear(rgb[0]), g = srgbToLinear(rgb[1]), b = srgbToLinear(rgb[2]);
+  var l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+  var m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+  var s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+  l = Math.cbrt(l); m = Math.cbrt(m); s = Math.cbrt(s);
+  return [
+    0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  ];
+}
+function oklabToRgb255(lab){
+  var L = lab[0], a = lab[1], b = lab[2];
+  var l = L + 0.3963377774 * a + 0.2158037573 * b;
+  var m = L - 0.1055613458 * a - 0.0638541728 * b;
+  var s = L - 0.0894841775 * a - 1.2914855480 * b;
+  l = l * l * l; m = m * m * m; s = s * s * s;
+  var r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  var g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  var bl = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+  function ch(v){
+    v = linearToSrgb(v);
+    v = v < 0 ? 0 : v > 1 ? 1 : v;
+    return Math.round(v * 255);
+  }
+  return [ch(r), ch(g), ch(bl)];
+}
+function makeScale(hexes){
+  var labs = hexes.map(hexToOklab);
+  var n = labs.length - 1;
+  return function(t){
+    t = clamp01(t);
+    var pos = t * n;
+    var i = Math.min(n - 1, Math.floor(pos));
+    var f = pos - i;
+    var A = labs[i], B = labs[i + 1];
+    return [lerp(A[0], B[0], f), lerp(A[1], B[1], f), lerp(A[2], B[2], f)];
+  };
+}
+function css(lab, alpha){
+  var c = oklabToRgb255(lab);
+  if (alpha === undefined) return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+  return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + alpha.toFixed(4) + ')';
+}
+var scaleBg    = makeScale(['#0E1016', '#3A3C44', '#8D8E93', '#E7E5E1']);
+/* 轨道配色与本页主题同色系：深端用深色 --sunk 的深蓝灰 #232F3D（去原纯黑 #06070B），
+   浅端用浅色 --sunk 的冷浅灰 #E8EDF3（去原米白暖调 #E2DFDA），中间两点同步换成蓝灰，
+   OKLab 分段插值在深浅之间走蓝灰系；旋钮玻璃、点阵（深端近白 / 浅端深褐）与边缘光
+   （深端蓝紫 / 浅端暖橙）在新轨道两端仍保持对比、清晰可辨 */
+var scaleTrack = makeScale(['#232F3D', '#4A5A6E', '#9AA9BB', '#E8EDF3']);
+var scaleEdge  = makeScale(['#8E9BFF', '#C9C4FF', '#FFFFFF', '#FFE2B0', '#FFB140']);
+var scaleDots  = makeScale(['#F4F6FF', '#E9ECF7', '#B9B3AA', '#5A4632']);
+var scaleGlassTop    = makeScale(['#3A3E4E', '#FFFFFF']);
+var scaleGlassBottom = makeScale(['#20222C', '#F2FEFA']);
+var W = 440, H = 280;
+var TRACK = { x: 60, y: 58, w: 320, h: 164, r: 58 };
+var KNOB = 140, KNOB_R = 46, TRAVEL = 156;
+var knobX = function(t){ return 72 + TRAVEL * t; };
+var KNOB_Y = 70;
+function rrPath(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+function makePerimeter(x, y, w, h, r){
+  var segs = [];
+  var midX = x + w / 2;
+  function line(x1, y1, x2, y2){
+    var len = Math.hypot(x2 - x1, y2 - y1);
+    segs.push({ type: 'l', x1: x1, y1: y1, x2: x2, y2: y2, len: len });
+  }
+  function arc(cx, cy, a1, a2){
+    segs.push({ type: 'a', cx: cx, cy: cy, r: r, a1: a1, a2: a2, len: Math.abs(a2 - a1) * r });
+  }
+  line(midX, y, x + w - r, y);
+  arc(x + w - r, y + r, -Math.PI / 2, 0);
+  line(x + w, y + r, x + w, y + h - r);
+  arc(x + w - r, y + h - r, 0, Math.PI / 2);
+  line(x + w - r, y + h, x + r, y + h);
+  arc(x + r, y + h - r, Math.PI / 2, Math.PI);
+  line(x, y + h - r, x, y + r);
+  arc(x + r, y + r, Math.PI, Math.PI * 1.5);
+  line(x + r, y, midX, y);
+  var total = 0;
+  for (var i = 0; i < segs.length; i++) total += segs[i].len;
+  return {
+    total: total,
+    point: function(u){
+      var d = (((u % 1) + 1) % 1) * total;
+      for (var i = 0; i < segs.length; i++){
+        var s = segs[i];
+        if (d <= s.len || i === segs.length - 1){
+          var f = s.len === 0 ? 0 : Math.min(1, d / s.len);
+          if (s.type === 'l') return [lerp(s.x1, s.x2, f), lerp(s.y1, s.y2, f)];
+          var a = lerp(s.a1, s.a2, f);
+          return [s.cx + s.r * Math.cos(a), s.cy + s.r * Math.sin(a)];
+        }
+        d -= s.len;
+      }
+      return [midX, y];
+    }
+  };
+}
+var GRID = 15, STEP = 5.6, DOT = 4.3, CENTER = 7;
+function buildMoon(){
+  var pts = [];
+  for (var gy = 0; gy < GRID; gy++){
+    for (var gx = 0; gx < GRID; gx++){
+      var d1 = Math.hypot(gx - 6.6, gy - 7.4);
+      if (d1 > 5.6) continue;
+      var d2 = Math.hypot(gx - 9.2, gy - 5.0);
+      if (d2 <= 4.9) pts.push({ x: gx, y: gy, a: 0.16 });
+      else pts.push({ x: gx, y: gy, a: 1 });
+    }
+  }
+  return pts;
+}
+function buildSun(){
+  var pts = [];
+  for (var gy = 0; gy < GRID; gy++){
+    for (var gx = 0; gx < GRID; gx++){
+      if (Math.hypot(gx - 7, gy - 7) <= 3.3) pts.push({ x: gx, y: gy, a: 1 });
+    }
+  }
+  var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  for (var i = 0; i < 4; i++){
+    pts.push({ x: 7 + dirs[i][0] * 4.9, y: 7 + dirs[i][1] * 4.9, a: 1 });
+    pts.push({ x: 7 + dirs[i][0] * 5.9, y: 7 + dirs[i][1] * 5.9, a: 1 });
+  }
+  var d = 4.6 / Math.SQRT2;
+  var diag = [[d, d], [d, -d], [-d, d], [-d, -d]];
+  for (var j = 0; j < 4; j++) pts.push({ x: 7 + diag[j][0], y: 7 + diag[j][1], a: 1 });
+  return pts;
+}
+function byAngle(pts){
+  return pts.slice().sort(function(p, q){
+    return Math.atan2(p.y - CENTER, p.x - CENTER) - Math.atan2(q.y - CENTER, q.x - CENTER);
+  });
+}
+var moonPts = byAngle(buildMoon());
+var sunPts  = byAngle(buildSun());
+var pairCount = Math.min(moonPts.length, sunPts.length);
+var rng = mulberry32(20261113);
+function makeRand(){ return { delay: rng() * 0.25, rot: 0.6 + rng() * 0.8, ox: (rng() * 2 - 1), oy: (rng() * 2 - 1) }; }
+var pairRand = [], moonExtraRand = [], sunExtraRand = [];
+var i;
+for (i = 0; i < pairCount; i++) pairRand.push(makeRand());
+for (i = pairCount; i < moonPts.length; i++) moonExtraRand.push(makeRand());
+for (i = pairCount; i < sunPts.length; i++) sunExtraRand.push(makeRand());
+var starPts = [
+  { x: 12.5, y: 1.5, a: 1 },
+  { x: 12.5, y: 0.5, a: 0.6 }, { x: 12.5, y: 2.5, a: 0.6 },
+  { x: 11.5, y: 1.5, a: 0.6 }, { x: 13.5, y: 1.5, a: 0.6 }
+];
+function pointProgress(t, delay){ return smooth((t - delay) / 0.75); }
+function rotatePt(x, y, ang){
+  var c = Math.cos(ang), s = Math.sin(ang);
+  return [x * c - y * s, x * s + y * c];
+}
+var fixedEl = document.getElementById('ld-inline');
+var stage = document.getElementById('ld-stage');
+var cv = document.getElementById('ld-cv');
+var ctx = cv.getContext('2d');
+var sw = document.getElementById('ld-sw');
+var live = document.getElementById('ld-live');
+var reduced = reducedMotion();
+function fit(){
+  var rect = stage.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 3);
+  var bw = Math.max(1, Math.round(rect.width * dpr));
+  var bh = Math.max(1, Math.round(rect.height * dpr));
+  if (cv.width !== bw || cv.height !== bh){
+    cv.width = bw; cv.height = bh;
+  }
+  ctx.setTransform(bw / W, 0, 0, bw / W, 0, 0);
+}
+/* 初始状态跟随本页当前主题：浅色 = t 1（太阳），深色 = t 0（月亮） */
+var checked = effectiveTheme() === 'light';
+var t = checked ? 1 : 0;
+var vel = 0;
+var target = null;
+var dragging = false;
+sw.setAttribute('aria-checked', checked ? 'true' : 'false');
+function draw(now){
+  fit();
+  ctx.clearRect(0, 0, W, H);
+  var ease = smooth(t);
+  var trackLab = scaleTrack(t), edgeLab = scaleEdge(t), dotLab = scaleDots(t);
+  if (fixedEl) fixedEl.style.setProperty('--ld-edge', css(edgeLab));
+  var kx = knobX(t), ky = KNOB_Y;
+  var kcx = kx + KNOB / 2, kcy = ky + KNOB / 2;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.55, 0.12, t).toFixed(3) + ')';
+  ctx.shadowBlur = 26;
+  ctx.shadowOffsetY = 10;
+  rrPath(ctx, TRACK.x, TRACK.y, TRACK.w, TRACK.h, TRACK.r);
+  ctx.fillStyle = css(trackLab);
+  ctx.fill();
+  ctx.restore();
+  ctx.save();
+  rrPath(ctx, TRACK.x, TRACK.y, TRACK.w, TRACK.h, TRACK.r);
+  ctx.clip();
+  var reflX = lerp(kx + 26, kx + KNOB - 26, ease);
+  var reflY = lerp(ky + KNOB - 18, ky + 18, ease);
+  var rg = ctx.createRadialGradient(reflX, reflY, 0, reflX, reflY, 110);
+  rg.addColorStop(0, css(edgeLab, lerp(0.34, 0.26, t)));
+  rg.addColorStop(1, css(edgeLab, 0));
+  ctx.fillStyle = rg;
+  ctx.fillRect(TRACK.x, TRACK.y, TRACK.w, TRACK.h);
+  ctx.restore();
+  ctx.save();
+  rrPath(ctx, TRACK.x, TRACK.y, TRACK.w, TRACK.h, TRACK.r);
+  ctx.clip();
+  ctx.beginPath();
+  rrPath(ctx, TRACK.x - 6, TRACK.y - 6, TRACK.w + 12, TRACK.h + 12, TRACK.r + 6);
+  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.85, 0.22, t).toFixed(3) + ')';
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 7;
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = 'rgba(0,0,0,0.9)';
+  ctx.stroke();
+  ctx.beginPath();
+  rrPath(ctx, TRACK.x - 6, TRACK.y - 6, TRACK.w + 12, TRACK.h + 12, TRACK.r + 6);
+  ctx.shadowColor = 'rgba(255,255,255,' + lerp(0.05, 0.28, t).toFixed(3) + ')';
+  ctx.shadowBlur = 14;
+  ctx.shadowOffsetY = -7;
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.stroke();
+  ctx.restore();
+  rrPath(ctx, TRACK.x + 0.5, TRACK.y + 0.5, TRACK.w - 1, TRACK.h - 1, TRACK.r - 0.5);
+  ctx.strokeStyle = 'rgba(255,255,255,' + lerp(0.06, 0.55, t).toFixed(3) + ')';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,' + lerp(0.48, 0.16, t).toFixed(3) + ')';
+  ctx.shadowBlur = 24;
+  ctx.shadowOffsetY = lerp(10, 7, t);
+  rrPath(ctx, kx, ky, KNOB, KNOB, KNOB_R);
+  ctx.fillStyle = css(scaleGlassTop(t));
+  ctx.fill();
+  ctx.restore();
+  var grad = ctx.createLinearGradient(0, ky, 0, ky + KNOB);
+  grad.addColorStop(0, css(scaleGlassTop(t)));
+  grad.addColorStop(1, css(scaleGlassBottom(t)));
+  rrPath(ctx, kx, ky, KNOB, KNOB, KNOB_R);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  var per = makePerimeter(kx - 1.5, ky - 1.5, KNOB + 3, KNOB + 3, KNOB_R + 1.5);
+  var u0 = 0.60 + 0.53 * ease;
+  var lightPt = per.point(u0);
+  ctx.save();
+  rrPath(ctx, kx, ky, KNOB, KNOB, KNOB_R);
+  ctx.clip();
+  var hx = lerp(lightPt[0], kcx, 0.45), hy = lerp(lightPt[1], kcy, 0.45);
+  var hg = ctx.createRadialGradient(hx, hy, 0, hx, hy, 95);
+  hg.addColorStop(0, css(edgeLab, lerp(0.38, 0.30, t)));
+  hg.addColorStop(1, css(edgeLab, 0));
+  ctx.fillStyle = hg;
+  ctx.fillRect(kx, ky, KNOB, KNOB);
+  var gl = ctx.createLinearGradient(0, ky, 0, ky + KNOB * 0.62);
+  gl.addColorStop(0, 'rgba(255,255,255,' + lerp(0.10, 0.65, t).toFixed(3) + ')');
+  gl.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = gl;
+  ctx.fillRect(kx, ky, KNOB, KNOB * 0.62);
+  ctx.restore();
+  rrPath(ctx, kx + 0.5, ky + 0.5, KNOB - 1, KNOB - 1, KNOB_R - 0.5);
+  ctx.strokeStyle = 'rgba(255,255,255,' + lerp(0.14, 0.9, t).toFixed(3) + ')';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  var halfLen = lerp(0.22, 0.19, t);
+  var baseA = lerp(0.9, 0.55, t);
+  var SEG = 90;
+  ctx.save();
+  if (t < 0.6) ctx.globalCompositeOperation = 'lighter';
+  ctx.lineCap = 'round';
+  var pass, sIdx;
+  for (pass = 0; pass < 2; pass++){
+    var isCore = pass === 1;
+    ctx.lineWidth = isCore ? 2.2 : 4.2;
+    ctx.shadowBlur = isCore ? 8 : 26;
+    ctx.shadowColor = isCore ? 'rgba(255,255,255,0.9)' : css(edgeLab, 0.9);
+    for (sIdx = 0; sIdx < SEG; sIdx++){
+      var f = -1 + ((sIdx + 0.5) / SEG) * 2;
+      var a = Math.exp(-2.6 * f * f) * baseA;
+      if (a < 0.004) continue;
+      var um = u0 + f * halfLen;
+      var du = (2 * halfLen / SEG) * 0.75;
+      var p1 = per.point(um - du), p2 = per.point(um + du);
+      ctx.strokeStyle = isCore ? 'rgba(255,255,255,' + a.toFixed(4) + ')' : css(edgeLab, a);
+      ctx.beginPath();
+      ctx.moveTo(p1[0], p1[1]);
+      ctx.lineTo(p2[0], p2[1]);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+  var dotGlow = t < 0.6 ? (0.6 - t) / 0.6 : 0;
+  ctx.save();
+  if (dotGlow > 0){
+    ctx.shadowColor = css(dotLab, 0.85 * dotGlow);
+    ctx.shadowBlur = 5;
+  }
+  ctx.fillStyle = css(dotLab);
+  function drawDot(gx, gy, alpha, scale){
+    if (alpha <= 0.003) return;
+    var px = kcx + (gx - CENTER) * STEP;
+    var py = kcy + (gy - CENTER) * STEP;
+    var sz = DOT * scale;
+    ctx.globalAlpha = Math.min(1, alpha);
+    ctx.fillRect(px - sz / 2, py - sz / 2, sz, sz);
+  }
+  for (i = 0; i < pairCount; i++){
+    var mp = moonPts[i], sp = sunPts[i], rd = pairRand[i];
+    var pe = pointProgress(t, rd.delay);
+    var gx2 = lerp(mp.x, sp.x, pe), gy2 = lerp(mp.y, sp.y, pe);
+    var rel = rotatePt(gx2 - CENTER, gy2 - CENTER, Math.sin(Math.PI * pe) * 1.1 * rd.rot);
+    var sway = Math.sin(Math.PI * pe);
+    drawDot(CENTER + rel[0] + rd.ox * 2.2 * sway,
+            CENTER + rel[1] + rd.oy * 2.2 * sway,
+            lerp(mp.a, 1, pe),
+            1 - 0.15 * sway);
+  }
+  for (i = pairCount; i < moonPts.length; i++){
+    var mp2 = moonPts[i], rd2 = moonExtraRand[i - pairCount];
+    var pe2 = pointProgress(t, rd2.delay);
+    var rel2 = rotatePt(mp2.x - CENTER, mp2.y - CENTER, Math.sin(Math.PI * pe2) * 1.1 * rd2.rot);
+    drawDot(CENTER + rel2[0], CENTER + rel2[1], mp2.a * (1 - pe2), 1 - 0.15 * Math.sin(Math.PI * pe2));
+  }
+  for (i = pairCount; i < sunPts.length; i++){
+    var sp2 = sunPts[i], rd3 = sunExtraRand[i - pairCount];
+    var pe3 = pointProgress(t, rd3.delay);
+    drawDot(sp2.x, sp2.y, pe3, 1);
+  }
+  var starFade = 1 - smooth(t * 1.35);
+  if (starFade > 0.003){
+    var tw = reduced ? 1 : 0.72 + 0.28 * Math.sin(now / 520);
+    for (i = 0; i < starPts.length; i++){
+      drawDot(starPts[i].x, starPts[i].y, starPts[i].a * starFade * tw, 1);
+    }
+  }
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+var rafId = null, lastTs = 0;
+function twinkleActive(){
+  return !reduced && !dragging && target === null && t < 0.55;
+}
+function frame(ts){
+  rafId = null;
+  var dt = Math.min(0.033, lastTs ? (ts - lastTs) / 1000 : 0.016);
+  lastTs = ts;
+  if (target !== null && !dragging){
+    /* 临界阻尼弹簧，解析解（非欧拉积分）——任意 dt 都稳定。 */
+    var w = reduced ? 30 : 10;
+    var y = t - target;
+    var B = vel + w * y;
+    var expF = Math.exp(-w * dt);
+    t = target + (y + B * dt) * expF;
+    vel = (vel - w * B * dt) * expF;
+    if (t < 0){ t = 0; if (vel < 0) vel = 0; }
+    else if (t > 1){ t = 1; if (vel > 0) vel = 0; }
+    if (Math.abs(t - target) < 0.0008 && Math.abs(vel) < 0.0008){
+      t = target; vel = 0; target = null;
+    }
+  }
+  /* 移动中（拖动 / 弹簧）页面主题逐帧跟随 t；t 归位端点后提交主题并清掉行内插值 */
+  if (dragging || target !== null){
+    applyThemeMix(t);
+  } else {
+    settleTheme();
+  }
+  draw(ts);
+  if (dragging || target !== null || twinkleActive()){
+    if (!document.hidden) rafId = requestAnimationFrame(frame);
+  }
+}
+function requestRender(){
+  if (rafId === null && !document.hidden) rafId = requestAnimationFrame(frame);
+}
+document.addEventListener('visibilitychange', function(){
+  if (document.hidden){
+    if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; }
+    lastTs = 0;
+  } else {
+    requestRender();
+  }
+});
+window.addEventListener('resize', requestRender);
+/* ---- 界面主题实时插值（OKLab，与滑块同一套颜色数学）----
+   端点取本页自己的主题值：深色来自 :root[data-theme="dark"]，浅色来自 :root。
+   每项为 [变量名, [深R,深G,深B,深A], [浅R,浅G,浅B,浅A]]；RGB 在 OKLab 里混，alpha 线性混。 */
+function rgbToOklab(r, g, b){
+  var R = srgbToLinear(r / 255), G = srgbToLinear(g / 255), B = srgbToLinear(b / 255);
+  var l = 0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B;
+  var m = 0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B;
+  var s = 0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B;
+  l = Math.cbrt(l); m = Math.cbrt(m); s = Math.cbrt(s);
+  return [
+    0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  ];
+}
+var THEME_VARS = [
+  ['--bg',          [19,26,34,1],       [245,247,250,1]],
+  ['--panel',       [26,35,46,1],       [255,255,255,1]],
+  ['--sunk',        [35,47,61,1],       [232,237,243,1]],
+  ['--ink',         [234,240,246,1],    [30,42,54,1]],
+  ['--ink-2',       [194,207,220,1],    [69,86,104,1]],
+  ['--ink-3',       [159,176,194,1],    [95,113,134,1]],
+  ['--line',        [46,59,74,1],       [216,224,234,1]],
+  ['--line-2',      [38,50,65,1],       [230,236,242,1]],
+  ['--hover',       [34,46,60,0.62],    [237,242,247,0.62]],
+  ['--focus',       [125,182,240,1],    [36,112,184,1]],
+  ['--accent',      [53,126,194,1],     [36,112,184,1]],
+  ['--accent-hover',[44,107,168,1],     [29,95,158,1]],
+  ['--warn-bg',     [46,42,30,0.72],    [248,243,231,0.72]],
+  ['--warn-line',   [74,66,48,1],       [228,215,184,1]],
+  ['--warn-ink',    [227,201,138,1],    [122,94,30,1]],
+  ['--warn-k',      [227,201,138,0.16], [176,141,52,0.15]],
+  ['--mn-bg',       [24,42,48,0.70],    [234,243,246,0.70]],
+  ['--mn-line',     [46,74,82,1],       [191,217,222,1]],
+  ['--mn-ink',      [168,211,220,1],    [40,94,107,1]],
+  ['--gold',        [217,180,92,1],     [144,112,30,1]],
+  ['--green',       [98,191,166,1],     [36,122,104,1]],
+  ['--mark',        [125,182,240,0.32], [74,144,217,0.28]],
+  ['--hl',          [147,197,253,1],    [29,78,216,1]],
+  ['--glass-tint',  [15,23,42,0.06],    [255,255,255,0.04]],
+  ['--glass-border',[255,255,255,0.07], [255,255,255,0.24]],
+  ['--glass-rim-top',[255,255,255,0.08],[255,255,255,0.22]],
+  ['--glass-rim-bottom',[255,255,255,0.02],[0,0,0,0.015]],
+  ['--glass-ring',  [255,255,255,0.03], [255,255,255,0.08]],
+  ['--on-glass',    [255,255,255,0.03], [255,255,255,0.14]],
+  ['--on-glass-hover',[255,255,255,0.055],[255,255,255,0.25]],
+  ['--glass-panel', [19,27,38,0.36],    [255,255,255,0.32]],
+  ['--glass-era',   [19,27,38,0.52],    [255,255,255,0.44]],
+  ['--glass-card',  [255,255,255,0.03], [255,255,255,0.26]],
+  ['--glass-field', [255,255,255,0.035],[255,255,255,0.22]],
+  ['--glass-strong',[19,26,34,0.44],   [245,247,250,0.44]]
+];
+var themeVarLabs = THEME_VARS.map(function(row){
+  return [row[0],
+    rgbToOklab(row[1][0], row[1][1], row[1][2]), row[1][3],
+    rgbToOklab(row[2][0], row[2][1], row[2][2]), row[2][3]];
+});
+/* 顶栏 / 时间轴两颗胶囊在各自作用域里覆写了玻璃变量（见 .top,.ribbon 覆写段），
+   根变量的行内插值盖不到它们，这组单独写到胶囊元素上。 */
+var CAPSULE_VARS = [
+  ['--glass-tint',  [13,20,32,0.01],    [255,255,255,0.005]],
+  ['--glass-border',[255,255,255,0.045],[255,255,255,0.12]],
+  ['--glass-rim-top',[255,255,255,0.03],[255,255,255,0.08]],
+  ['--glass-rim-bottom',[255,255,255,0.01],[0,0,0,0.008]],
+  ['--glass-ring',  [255,255,255,0.015],[255,255,255,0.03]]
+];
+var capsuleVarLabs = CAPSULE_VARS.map(function(row){
+  return [row[0],
+    rgbToOklab(row[1][0], row[1][1], row[1][2]), row[1][3],
+    rgbToOklab(row[2][0], row[2][1], row[2][2]), row[2][3]];
+});
+var capsuleEls = [document.querySelector('.top'), document.querySelector('.ribbon')];
+/* 阴影变量是完整阴影值，只混颜色与透明度（几何沿用浅色端，与端点差异仅 2px 模糊半径） */
+var shadowLabD = rgbToOklab(0, 0, 0), shadowLabL = rgbToOklab(20, 34, 52);
+/* 时代色在各 [data-era] 元素自身上定义，逐个元素写行内插值。
+   每项 era / eraInk / eraTint 均为 [深色RGBA, 浅色RGBA]。 */
+var ERA_DEFS = {
+  cn1: { era: [[111,163,216,1],[61,122,184,1]],  ink: [[156,194,234,1],[42,95,146,1]],  tint: [[111,163,216,0.15],[61,122,184,0.10]] },
+  cn2: { era: [[208,138,132,1],[168,90,84,1]],   ink: [[226,172,166,1],[138,66,60,1]],  tint: [[208,138,132,0.14],[168,90,84,0.09]] },
+  cn3: { era: [[210,168,112,1],[176,125,69,1]],  ink: [[228,192,142,1],[138,95,48,1]],  tint: [[210,168,112,0.14],[176,125,69,0.10]] },
+  cn4: { era: [[132,184,164,1],[78,138,116,1]],  ink: [[168,210,192,1],[56,106,86,1]],  tint: [[132,184,164,0.14],[78,138,116,0.10]] },
+  cn5: { era: [[194,164,140,1],[140,115,96,1]],  ink: [[214,188,164,1],[110,87,71,1]],  tint: [[194,164,140,0.14],[140,115,96,0.10]] }
+};
+var eraLabs = {};
+for (var ek in ERA_DEFS){
+  var ed = ERA_DEFS[ek];
+  eraLabs[ek] = {
+    eraD: rgbToOklab(ed.era[0][0], ed.era[0][1], ed.era[0][2]), eraL: rgbToOklab(ed.era[1][0], ed.era[1][1], ed.era[1][2]),
+    inkD: rgbToOklab(ed.ink[0][0], ed.ink[0][1], ed.ink[0][2]), inkL: rgbToOklab(ed.ink[1][0], ed.ink[1][1], ed.ink[1][2]),
+    tintD: rgbToOklab(ed.tint[0][0], ed.tint[0][1], ed.tint[0][2]), tintDa: ed.tint[0][3],
+    tintL: rgbToOklab(ed.tint[1][0], ed.tint[1][1], ed.tint[1][2]), tintLa: ed.tint[1][3]
+  };
+}
+function mixLab(a, b, tt){ return [lerp(a[0], b[0], tt), lerp(a[1], b[1], tt), lerp(a[2], b[2], tt)]; }
+var mixApplied = false, lastMix = -1;
+function applyThemeMix(tt){
+  if (mixApplied && Math.abs(tt - lastMix) < 0.0004) return;
+  mixApplied = true; lastMix = tt;
+  document.documentElement.classList.add('ld-live');
+  var rootStyle = document.documentElement.style;
+  for (var i = 0; i < themeVarLabs.length; i++){
+    var row = themeVarLabs[i];
+    rootStyle.setProperty(row[0], css(mixLab(row[1], row[3], tt), lerp(row[2], row[4], tt)));
+  }
+  var shCol = mixLab(shadowLabD, shadowLabL, tt);
+  rootStyle.setProperty('--shadow', '0 1px 2px ' + css(shCol, lerp(0.35, 0.06, tt)) + ',0 10px 30px ' + css(shCol, lerp(0.45, 0.12, tt)));
+  rootStyle.setProperty('--glass-shadow', '0 6px 20px ' + css(shCol, lerp(0.10, 0.03, tt)));
+  rootStyle.setProperty('--glass-shadow-up', '0 -6px 20px ' + css(shCol, lerp(0.10, 0.03, tt)));
+  for (var c = 0; c < capsuleEls.length; c++){
+    var cel = capsuleEls[c];
+    if (!cel) continue;
+    for (var j = 0; j < capsuleVarLabs.length; j++){
+      var crow = capsuleVarLabs[j];
+      cel.style.setProperty(crow[0], css(mixLab(crow[1], crow[3], tt), lerp(crow[2], crow[4], tt)));
+    }
+    cel.style.setProperty('--glass-shadow', '0 6px 20px ' + css(shCol, lerp(0.05, 0.015, tt)));
+    cel.style.setProperty('--glass-shadow-up', '0 -6px 20px ' + css(shCol, lerp(0.05, 0.015, tt)));
+  }
+  var eraEls = document.querySelectorAll('[data-era]');
+  for (var e2 = 0; e2 < eraEls.length; e2++){
+    var eel = eraEls[e2], edf = eraLabs[eel.getAttribute('data-era')];
+    if (!edf) continue;
+    eel.style.setProperty('--era', css(mixLab(edf.eraD, edf.eraL, tt)));
+    eel.style.setProperty('--era-ink', css(mixLab(edf.inkD, edf.inkL, tt)));
+    eel.style.setProperty('--era-tint', css(mixLab(edf.tintD, edf.tintL, tt), lerp(edf.tintDa, edf.tintLa, tt)));
+  }
+}
+function clearThemeMix(){
+  if (!mixApplied) return;
+  mixApplied = false; lastMix = -1;
+  document.documentElement.classList.remove('ld-live');
+  var rootStyle = document.documentElement.style;
+  for (var i = 0; i < themeVarLabs.length; i++) rootStyle.removeProperty(themeVarLabs[i][0]);
+  rootStyle.removeProperty('--shadow');
+  rootStyle.removeProperty('--glass-shadow');
+  rootStyle.removeProperty('--glass-shadow-up');
+  for (var c = 0; c < capsuleEls.length; c++){
+    var cel = capsuleEls[c];
+    if (!cel) continue;
+    for (var j = 0; j < capsuleVarLabs.length; j++) cel.style.removeProperty(capsuleVarLabs[j][0]);
+    cel.style.removeProperty('--glass-shadow');
+    cel.style.removeProperty('--glass-shadow-up');
+  }
+  var eraEls = document.querySelectorAll('[data-era]');
+  for (var e2 = 0; e2 < eraEls.length; e2++){
+    eraEls[e2].style.removeProperty('--era');
+    eraEls[e2].style.removeProperty('--era-ink');
+    eraEls[e2].style.removeProperty('--era-tint');
+  }
+}
+/* 松手 / 按键 / 点按选定的主题，只在 t 归位到对应端点后才提交（见 frame() 的 settle 分支） */
+var pendingTheme = null;
+function settleTheme(){
+  if (pendingTheme !== null){
+    var day = pendingTheme;
+    pendingTheme = null;
+    S.theme = day ? 'light' : 'dark';
+    applyTheme(S.theme);
+    save();
+    live.textContent = day ? '浅色' : '深色';
+    sw.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  clearThemeMix();
+}
+function commit(day, silent){
+  checked = day;
+  sw.setAttribute('aria-checked', day ? 'true' : 'false');
+  target = day ? 1 : 0;
+  pendingTheme = silent ? null : day;
+  requestRender();
+}
+function toggle(){ commit(!checked); }
+/* 外部主题变化（如未手动选过主题时系统深浅变化走 applyTheme）时滑块静默跟随，不回写 S.theme */
+window.__ldFollow = function(theme){
+  if (dragging) return;
+  var day = theme === 'light';
+  if (day !== checked || (target === null && t !== (day ? 1 : 0))) commit(day, true);
+};
+var dragStartX = 0, dragStartT = 0, dragDist = 0, samples = [], suppressClick = false;
+var activePointerId = null;
+function logicalDx(clientDx){
+  var rect = stage.getBoundingClientRect();
+  return clientDx * (W / rect.width);
+}
+sw.addEventListener('pointerdown', function(e){
+  if (dragging || activePointerId !== null) return;
+  activePointerId = e.pointerId;
+  dragging = true;
+  target = null; vel = 0;
+  pendingTheme = null; /* 新的抓握接管任何正在归位的提交 */
+  dragStartX = e.clientX;
+  dragStartT = t;
+  dragDist = 0;
+  samples = [{ time: performance.now(), t: t }];
+  try { sw.setPointerCapture(e.pointerId); } catch (err) {}
+  requestRender();
+  e.preventDefault();
+});
+sw.addEventListener('pointermove', function(e){
+  if (!dragging || e.pointerId !== activePointerId) return;
+  var dx = logicalDx(e.clientX - dragStartX);
+  dragDist = Math.max(dragDist, Math.abs(e.clientX - dragStartX));
+  t = clamp01(dragStartT + dx / TRAVEL);
+  samples.push({ time: performance.now(), t: t });
+  if (samples.length > 12) samples.shift();
+  requestRender();
+});
+function endDrag(e){
+  if (!dragging || !e || e.pointerId !== activePointerId) return;
+  dragging = false;
+  activePointerId = null;
+  var v = 0;
+  if (samples.length >= 2){
+    var nowMs = performance.now();
+    var last = samples[samples.length - 1];
+    /* 只认新鲜样本（110ms 窗口）；按住不动再松手速度为零。 */
+    if (nowMs - last.time <= 80){
+      var first = null;
+      for (var i2 = 0; i2 < samples.length; i2++){
+        if (nowMs - samples[i2].time <= 110) { first = samples[i2]; break; }
+      }
+      if (first && last.time > first.time){
+        var dt = (last.time - first.time) / 1000;
+        if (dt > 0.01) v = (last.t - first.t) / dt;
+      }
+    }
+  }
+  samples = [];
+  if (dragDist < 4){
+    suppressClick = true;
+    toggle();
+  } else {
+    commit(t + v * 0.06 >= 0.5);
+  }
+  requestRender();
+}
+function cancelDrag(e){
+  /* pointercancel / lostpointercapture：清理后弹回已确认状态的端点
+     （画面与 aria-checked 重新一致）。静默——不改主题、不发新的 change 事件。 */
+  if (activePointerId === null) return;
+  if (e && e.pointerId !== activePointerId) return;
+  dragging = false;
+  activePointerId = null;
+  samples = [];
+  dragDist = 0;
+  vel = 0;
+  commit(checked, true);
+  requestRender();
+}
+sw.addEventListener('pointerup', endDrag);
+sw.addEventListener('pointercancel', cancelDrag);
+sw.addEventListener('lostpointercapture', cancelDrag);
+sw.addEventListener('click', function(e){
+  if (suppressClick){ suppressClick = false; return; }
+  if (e.detail === 0 && !dragging) toggle();
+});
+sw.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowRight'){ e.preventDefault(); if (!checked || target !== 1) commit(true); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); if (checked || target !== 0) commit(false); }
+});
+draw(performance.now());
+requestRender();
+})();
 if(window.matchMedia){const mqT=window.matchMedia('(prefers-color-scheme: dark)');if(mqT.addEventListener)mqT.addEventListener('change',e=>{if(!S.theme)applyTheme(e.matches?'dark':'light');});}
 $('#ribbonBtn').addEventListener('click',()=>{S.ribbonHide=!S.ribbonHide;save();updateRibbonBtn();if(!S.ribbonHide)requestAnimationFrame(()=>{layoutRibbon();updateCursor();});});
 $('#immersiveBtn').addEventListener('click',enterImmersive);
