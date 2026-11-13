@@ -33,7 +33,7 @@
   --dur-ribbon:560ms;--ease-ribbon:cubic-bezier(0.22,1,0.36,1);
   /* 沉浸阅读进/出专用：只驱动 transform/opacity（GPU 合成层），一次到位、长尾缓动，进出同帧反向，不分段衔接 */
   --dur-immersive:640ms;--ease-immersive:cubic-bezier(0.22,1,0.36,1);
-  /* 翻页专用：旧页淡出 160ms（--dur-page-out），再新页淡入 420ms（--dur-page），两段先后衔接 */
+  /* 翻页专用：--dur-page 供正文内按钮等非手势切页的 enter 动画用；左右滑翻页走跟手拖动 + Wobble 弹簧落定，不用淡入淡出 */
   --dur-page:420ms;--dur-page-out:160ms;
   --ease-soft:cubic-bezier(0.22,1,0.36,1);--ease-draw:cubic-bezier(0.65,0,0.45,1);--dur-ui:250ms;
   /* 玻璃配方：样例 4 号「超透薄玻璃」再降两档——6px 轻模糊、底色再降（胶囊专用覆写 0.5%/1%，几乎全透明）、高光与投影同步再淡。
@@ -259,7 +259,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .empty p{margin:0 0 14px;line-height:1.7}
 
 /* 详情 */
-.detail{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);outline:none;transition:background-color var(--dur-struct) var(--ease-apple)}
+.detail{position:relative;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);outline:none;transition:background-color var(--dur-struct) var(--ease-apple)}
 /* 卡片盒模型不做过渡：沉浸切换时布局一次到位，可见运动只走 transform/opacity */
 .card{max-width:780px;margin:0 auto;margin-bottom:calc(118px + env(safe-area-inset-bottom));padding:calc(92px + env(safe-area-inset-top)) 44px 40px}
 .app.ribbon-off .card{margin-bottom:24px}
@@ -458,6 +458,13 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
 .card.enter-prev{animation:pagePrev var(--dur-page) var(--ease-immersive) both}
 @keyframes pageNext{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
 @keyframes pagePrev{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+/* 左右滑跟手翻页条：横向锁定后临时盖在滚动视口上的一条横带，恰好一屏高、两页宽，
+   左页 / 右页并排；拖动时整条 1:1 跟手平移（只写 transform，走合成层），松手由 Wobble
+   弹簧滑到目标页或回弹，落定后立刻拆除、底下真实内容无缝接续。带身 pointer-events:none，
+   不接管点击；纵向滚动仍由容器原生负责（touch-action:pan-y 不变）。 */
+.pager-strip{position:absolute;left:0;display:flex;overflow:hidden;pointer-events:none;z-index:5;will-change:transform}
+.pager-page{flex:none;height:100%;overflow:hidden}
+.pager-page .card{will-change:auto}
 
 .search:focus-within>svg{color:var(--accent)}
 .search.is-clearing input{opacity:0;transform:translateY(-4px);transition:opacity 200ms var(--ease-soft),transform 200ms var(--ease-soft)}
@@ -499,43 +506,21 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
 .imm-overlay{position:fixed;inset:0;z-index:80;background:var(--glass-strong);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);opacity:0;transform:translateY(18px);visibility:hidden;pointer-events:none;will-change:opacity,transform;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),background-color 140ms linear,visibility 0s linear var(--dur-immersive)}
 .imm-overlay.show{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),background-color 140ms linear,visibility 0s linear 0s}
 .imm-overlay[hidden]{display:none}
-.imm-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:transparent}
+.imm-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:transparent}
 #immDetail{position:relative}
-.imm-scroll .card{margin-bottom:0;padding-top:26px;padding-bottom:96px;will-change:opacity,transform}
-/* 沉浸翻页两段式：旧页先在原位用 --dur-page-out（160ms）淡出，淡出结束才换入新页，
-   新页再用 --dur-page（420ms）淡入（enter-next / enter-prev，见正文区翻页规则）。
-   两段先后衔接、不重叠，旧页不脱离文档流，位置不跳。 */
-.imm-scroll .card.page-out{animation:pageOut var(--dur-page-out) var(--ease-immersive) both}
-@keyframes pageOut{from{opacity:1}to{opacity:0}}
+.imm-scroll .card{margin-bottom:0;padding-top:26px;padding-bottom:96px}
+/* 沉浸翻页 = 与主界面同一套左右滑跟手翻页（见脚本「横向滑动翻页」一节与 .pager-strip）：
+   拖动时新旧两页并排 1:1 跟手，松手弹簧落定，不再淡出 / 淡入硬切。 */
 .imm-overlay .immersive-exit{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));z-index:7;opacity:1;transform:none;visibility:visible;pointer-events:auto}
 .imm-overlay .immersive-exit:hover{transform:translateY(-1px)}
 .imm-overlay .immersive-exit:active{transform:scale(.96);transition-duration:var(--dur-press)}
-/* 沉浸翻页：覆盖层的直接子元素（不在滚动区内），进入沉浸后恒可见、随时可点。
-   宽屏（桌面 / iPad 横屏 ≥1024px）：左右悬浮圆钮，贴在 780px 正文栏两侧的留白里，垂直居中，不压正文；
-   窄屏（iPad 竖屏 / 手机 ≤1023px）：改为底部固定翻页栏，按钮横向拉满拇指区，正文底部留白避让，不挤占正文宽度。
-   注意：这两个按钮不挂 data-ripplet —— 涟漪的 position:relative 会顶掉它们的定位（退出键旧 bug）。 */
+/* 沉浸翻页为左右滑跟手翻页（见脚本「横向滑动翻页」一节），没有翻页按钮；
+   .imm-nav 只作计数胶囊的定位容器：覆盖全屏、pointer-events:none 不挡滚动与点击，
+   计数胶囊恒定悬浮在底部中央（各宽度一致）。 */
 .imm-nav{position:absolute;inset:0;z-index:6;pointer-events:none}
-.imm-nav-btn{pointer-events:auto;position:absolute;top:50%;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;padding:0;border:1px solid var(--glass-border);color:var(--ink);isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateY(-50%);transition:transform var(--dur-micro) var(--ease-apple),opacity var(--dur-micro) var(--ease-apple),background-color var(--dur-micro) var(--ease-apple),box-shadow var(--dur-micro) var(--ease-apple)}
-.imm-nav-btn svg{width:26px;height:26px}
-.imm-nav-btn .imm-nav-txt{display:none}
-.imm-nav-btn.imm-prev{left:max(12px,calc(50% - 478px))}
-.imm-nav-btn.imm-next{right:max(12px,calc(50% - 478px))}
-.imm-nav-btn:hover{transform:translateY(-50%) scale(1.06);box-shadow:var(--glass-shadow),var(--glass-insets),0 6px 20px rgba(20,34,52,.08)}
-.imm-nav-btn:active{transform:translateY(-50%) scale(.94);transition-duration:var(--dur-press)}
-.imm-nav-btn:disabled{opacity:.32;pointer-events:none}
 .imm-count{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:6px 14px;border-radius:999px;border:1px solid var(--glass-border);background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.imm-nav-btn,.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
-@media (prefers-reduced-transparency:reduce){.imm-nav-btn,.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
-@media (max-width:1023px){
-  .imm-nav{inset:auto;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));pointer-events:auto;isolation:isolate;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-top:1px solid var(--glass-border);box-shadow:var(--glass-shadow-up),var(--glass-insets)}
-  .imm-nav-btn{position:static;flex:1 1 0;width:auto;height:52px;min-height:52px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transform:none;font-size:15px;font-weight:600}
-  .imm-nav-btn svg{width:20px;height:20px}
-  .imm-nav-btn .imm-nav-txt{display:inline}
-  .imm-nav-btn:hover{transform:none}
-  .imm-nav-btn:active{transform:scale(.97);transition-duration:var(--dur-press)}
-  .imm-count{position:static;transform:none;flex:none;padding:0 2px;border:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
-  .imm-scroll .card{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
-}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-transparency:reduce){.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* lenis.css（darkroomengineering/lenis，MIT）—— Lenis 必需样式，随库一并内联 */
 html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopped{overflow:clip}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}.lenis.lenis-smooth iframe{pointer-events:none}.lenis.lenis-autoToggle{transition-property:overflow;transition-duration:1ms;transition-behavior:allow-discrete}
 /* View Transitions：只给详情标题/年份起共享元素名，节点切换时小幅交叉过渡；无此 API 的浏览器走原硬切 */
@@ -598,10 +583,8 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
 </div>
 <div class="imm-overlay" id="immOverlay" role="dialog" aria-modal="true" aria-label="沉浸阅读" hidden>
   <div class="imm-scroll" id="immScroll" data-lenis-prevent><div id="immDetail"></div></div>
-  <nav class="imm-nav" id="immNav" aria-label="沉浸翻页">
-    <button class="imm-nav-btn imm-prev" id="immPrev" type="button" aria-label="上一节点"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="imm-nav-txt">上一节点</span></button>
+  <nav class="imm-nav" id="immNav" aria-label="沉浸阅读进度">
     <span class="imm-count" id="immCount" aria-hidden="true"></span>
-    <button class="imm-nav-btn imm-next" id="immNext" type="button" aria-label="下一节点"><span class="imm-nav-txt">下一节点</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </nav>
   <button class="immersive-exit" id="immersiveExit" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>退出沉浸</span></button>
 </div>
@@ -767,8 +750,9 @@ function actsHTML(e){
          '<button class="btn sm done-btn'+(dn?' on-done':'')+'" type="button" data-act="done" data-ripplet aria-pressed="'+dn+'">'+(dn?IC.badge:IC.check)+'<span>'+(dn?'已掌握':'标为掌握')+'</span></button>';
 }
 let lastDir=null;
-function cardHTML(){
-  const e=cur(),r=eraOf(e);
+function cardHTML(){return cardHTMLFor(cur(),neighbor(-1),neighbor(1));}
+function cardHTMLFor(e,pv,nx){
+  const r=eraOf(e);
   const tags=e.ch.map(chParts);
   let h='<article class="card" data-era="'+r.k+'" aria-labelledby="ev-t">';
   h+='<div class="crumb"><span class="dot"></span><span>'+esc(r.name)+'</span><span class="yr">'+esc(r.range)+'</span></div>';
@@ -781,16 +765,17 @@ function cardHTML(){
     h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ol></section>';
     if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map(tipHTML).join('')+'</ul></section>';
     if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn">'+fmt(e.m)+'</p></section>';
-  h+='<nav class="pn" aria-label="上一个和下一个">'+pnBtn(neighbor(-1),'prev')+pnBtn(neighbor(1),'next')+'</nav>';
+  h+='<nav class="pn" aria-label="上一个和下一个">'+pnBtn(pv,'prev')+pnBtn(nx,'next')+'</nav>';
   h+='<p class="note">章节对应马工程重点教材2023年版。此为复习提要，不替代教材，请以你的课程与考试大纲为准。<br><span class="storage-note">'+(storageOK?'重点与掌握记录仅保存在当前浏览器，不会跨设备同步。':'当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。')+'</span></p></article>';
   return h;
 }
+let pagerSwap=false;
 function renderDetail(){
   const nd=navDir;navDir=null;lastDir=nd;
   const e=cur(),h=cardHTML();
   const d=$('#detail'),same=d.dataset.id===e.id,st=d.scrollTop;
   d.innerHTML=h;d.dataset.id=e.id;
-  if(same){d.scrollTop=st;}else{d.scrollTop=0;const c=$('.card',d);if(c&&!vtBusy)c.classList.add(nd==='next'?'enter-next':nd==='prev'?'enter-prev':'enter');$('#live').textContent=yr(e)+'年 '+e.t;}
+  if(same){d.scrollTop=st;}else{d.scrollTop=0;const c=$('.card',d);if(c&&!vtBusy&&!pagerSwap)c.classList.add(nd==='next'?'enter-next':nd==='prev'?'enter-prev':'enter');$('#live').textContent=yr(e)+'年 '+e.t;}
   if(lenisDetail)lenisDetail.resize();
 }
 
@@ -877,6 +862,207 @@ function bindTrack(){
     else if(ev.key==='ArrowDown'){ev.preventDefault();step(-1);}});
 }
 
+/* ---------- 横向滑动翻页（跟手） ----------
+   粒度：每滑一次只进 / 退一个小节——时间轴里最小的内容单位就是单个节点（一张事件卡），
+   按当前导航列表（navList）的阅读顺序走 neighbor(±1)，不再整时代 / 整阶段跳转。
+   主界面（#detail）与沉浸阅读（#immScroll）共用同一套 makePager：
+   - 只认触摸 / 触控笔；起点落在按钮等交互元素上不启动；横向优先级刻意高于
+     竖向（自然手势多是左下 / 左上 / 右下 / 右上这类斜滑，做不到完全水平）：
+     |dx|≥6px 且 |dx|≥|dy|×0.65 即锁定（容忍约 57° 的斜角），位移再大些放宽到
+     |dx|≥|dy|×0.5（约 63°）；竖向定轴反过来收严，须 |dy|≥10px 且
+     |dy|≥|dx|×2.4（或行程够长后 |dy|>|dx|×2）才让行，竖滑保持原生滚动、
+     判定后本手势不再翻页。
+   - 两个容器仍是 touch-action:pan-y（竖滑原生接管）；另挂一条 non-passive 的
+     touchmove：横向位移 ≥3px 且 |dx|≥|dy|×0.5 就 preventDefault 掐住原生滚动，
+     锁定后整段手势持续拦截、并把容器 scrollTop 钉回锁定值——横滑一旦锁定，
+     竖直滚动在本手势内完全让路、不再抢。明显竖向的手势从不拦截，滚动原样。
+   - 锁定（≤6px，几乎触摸第一刻）即在当前视口位置盖一条翻页条（.pager-strip，
+     恰好一屏高）：当前页克隆按克隆时刻的滚动位置内移、与原页重合，相邻页从
+     自身顶部排起、与当前页并排；原页 visibility:hidden 让位。跟手从触摸原点
+     起算全程位移（锁定前的几 px 一并计入、无死区跳变），拖动中整条 1:1 跟手
+     （transform 只等于手指位移，无阻尼、无滞后、无缩放浮动），方向锁定后固定，
+     位移钳制在一页宽内。
+   - 松手先把 pointerup 的最终坐标并入位移与速度采样（轻扫的末段位移只在松手
+     事件里），再按低阈值决定翻页：位移 ≥min(46px, 页宽 12%)，或 ≥14px 且同向
+     速度 ≥0.30px/ms，或 ≥8px 且同向速度 ≥0.60px/ms；没等到锁定就松手、但位移
+     ≥12px 且斜向宽容达标的快速轻扫也直接翻一页。达标后 Wobble 弹簧带松手初速度
+     滑到目标页 / 回弹原页（overshootClamping 防过冲），落定后才以
+     select(...,{from:'pager'}) 提交并拆条，提交本身不叠加任何过渡，画面连续不断层。
+     没等到锁定就松手的短扫同样按斜滑宽容判定（|dx|≥12px 且 |dx|≥|dy|×0.5）。
+   - 首 / 末节没有相邻页：只许 30px 内受阻跟手，松手必回弹，不越界。
+   - 连续滑动：落定与提交不阻塞下一次手势。弹簧还在飞时新手指按下即接管
+     （takeover）：停弹簧、条不拆、内容不提交，手势原点按当前条位反推，从
+     当前位移无缝接着滑，同向继续翻、反向滑回取消；提交只在最终落定后走
+     select(...,{from:'pager'}) 的快速路径——只换当前卡片内容（pagerSwap
+     抑制进入动画、无 View Transition、无整页重绘），侧栏 / 时间轴不重排。
+   - 减少动态效果时不建条：松手过阈值直接 step(±1)（其余过渡本就被全局规则关掉）。
+   - pointercancel（竖向接管 / 手势被打断）：拖动中直接拆条还原，绝不把页面
+     留在半翻状态；弹簧落定途中没有活动手势，cancel 不触发拆条。 */
+function makePager(scroller,host,htmlFor,guard){
+  if(!scroller||!host)return;
+  let pid=null,sx=0,sy=0,mode=0,dir=0,target=null,W=0;
+  let strip=null,curX=0,vel=0,samples=[],spring=null,pending=null,busy=false,stLock=0;
+  function pushSample(x,t){
+    samples.push({x:x,t:t});
+    while(samples.length>2&&t-samples[0].t>120)samples.shift();
+    if(samples.length>1){const a=samples[0],b=samples[samples.length-1];vel=(b.x-a.x)/Math.max(1,b.t-a.t);}
+  }
+  function paint(x){curX=x;if(strip)strip.style.transform='translateX('+x.toFixed(1)+'px)';}
+  function appliedDx(dx){
+    if(!target)return dir>0?Math.max(-30,Math.min(0,dx*0.32)):Math.max(0,Math.min(30,dx*0.32));
+    return dir>0?Math.max(-W,Math.min(0,dx)):Math.max(0,Math.min(W,dx));
+  }
+  function makePage(html,shiftY){
+    const page=document.createElement('div');page.className='pager-page';page.style.width=W+'px';
+    let card=null;
+    if(html==null){
+      const src=host.querySelector('.card');
+      if(src){card=src.cloneNode(true);card.classList.remove('enter','enter-next','enter-prev');card.style.transform='translateY('+(-shiftY)+'px)';}
+    }else{
+      const t=document.createElement('template');t.innerHTML=html;
+      card=t.content.firstElementChild;
+    }
+    if(card){
+      /* 条内两页都是临时替身：剥掉全部 id 与共享元素名，免得与正文真卡片撞 id / 撞 view-transition-name */
+      card.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+      card.removeAttribute('id');card.removeAttribute('aria-labelledby');
+      const tt=card.querySelector('.title'),yy=card.querySelector('.year');
+      if(tt)tt.style.viewTransitionName='none';if(yy)yy.style.viewTransitionName='none';
+      page.appendChild(card);
+    }
+    return page;
+  }
+  function build(dx){
+    W=scroller.clientWidth;const st=scroller.scrollTop;stLock=st;
+    target=neighbor(dir);
+    strip=document.createElement('div');strip.className='pager-strip';strip.setAttribute('aria-hidden','true');
+    try{strip.inert=true;}catch(_){}
+    strip.style.top=st+'px';strip.style.height=scroller.clientHeight+'px';strip.style.width=(W*2)+'px';
+    const curPage=makePage(null,st);
+    if(target){
+      const L=navList(),ci=L.findIndex(e=>e.id===curId()),ti=ci+dir;
+      const pv=ti-1>=0?L[ti-1]:null,nx=ti+1<L.length?L[ti+1]:null;
+      const adjPage=makePage(htmlFor(target,pv,nx),0);
+      if(dir>0){strip.appendChild(curPage);strip.appendChild(adjPage);strip.style.left='0px';}
+      else{strip.appendChild(adjPage);strip.appendChild(curPage);strip.style.left=(-W)+'px';}
+    }else{
+      strip.appendChild(curPage);strip.style.left='0px';
+    }
+    host.appendChild(strip);
+    const real=host.querySelector(':scope > .card');if(real)real.style.visibility='hidden';
+    paint(appliedDx(dx));
+  }
+  function teardown(){
+    if(strip){strip.remove();strip=null;}
+    const real=host.querySelector(':scope > .card');if(real)real.style.removeProperty('visibility');
+  }
+  function finishSettle(){
+    if(!busy)return;busy=false;
+    const p=pending,tg=target;pending=null;target=null;
+    if(spring){const s=spring;spring=null;try{s.stop();}catch(_){}}
+    teardown();
+    if(p==='commit'&&tg)select(tg.id,{from:'pager'});
+  }
+  function settle(commit,v0){
+    const toX=commit?-dir*W:0;
+    pending=commit?'commit':'back';busy=true;
+    if(!window.Wobble||!Wobble.Spring){finishSettle();return;}
+    try{
+      spring=new Wobble.Spring({fromValue:curX,toValue:toX,stiffness:340,damping:34,mass:1,initialVelocity:v0||0,overshootClamping:true,restDisplacementThreshold:0.5,restVelocityThreshold:0.02});
+      spring.onUpdate(s=>paint(s.currentValue));
+      spring.onStop(()=>finishSettle());
+      spring.start();
+    }catch(_){spring=null;finishSettle();}
+  }
+  function commitWanted(){
+    const ax=Math.abs(curX),dv=-vel*dir;/* 速度只认与拖动同向的分量，反向甩手不算 */
+    return ax>=Math.min(46,W*0.12)||(ax>=14&&dv>=0.30)||(ax>=8&&dv>=0.60);
+  }
+  /* 连续滑动接管：弹簧落定途中（busy）新手指按下，不等落定、不等提交——先把
+     busy 清掉再停弹簧（弹簧 onStop 回调里的 finishSettle 见 busy 已清会直接
+     返回，不拆条、不提交），然后把正在飞的翻页条直接交还给这根手指：手势
+     原点按当前条位反推（sx = 按下点 − 能产生当前 curX 的虚拟位移，无相邻页
+     的受阻跟手按 0.32 阻尼反推），后续 pointermove 的既有公式画出的位置与
+     接管瞬间严丝合缝；接着同向滑是继续翻、反向滑回去是取消本次翻页，提交
+     与否改由这次手势松手时的 commitWanted 重新决定。落定从此不阻塞新手势，
+     连续快速滑动可以一页接一页不停顿。 */
+  function takeover(ev){
+    if(!strip||!busy)return false;
+    if(ev.target&&ev.target.closest&&ev.target.closest('button,a,input,select,textarea,label'))return false;
+    if(!guard())return false;
+    busy=false;pending=null;
+    if(spring){const s=spring;spring=null;try{s.stop();}catch(_){}}
+    pid=ev.pointerId;mode=1;vel=0;
+    sx=ev.clientX-(target?curX:curX/0.32);sy=ev.clientY;
+    samples=[{x:ev.clientX,t:ev.timeStamp||0}];
+    return true;
+  }
+  scroller.addEventListener('pointerdown',ev=>{
+    if(ev.pointerType==='mouse')return;
+    if(pid!==null)return;
+    if(busy){takeover(ev);return;}
+    if(ev.target&&ev.target.closest&&ev.target.closest('button,a,input,select,textarea,label'))return;
+    if(!guard())return;
+    pid=ev.pointerId;sx=ev.clientX;sy=ev.clientY;mode=0;dir=0;target=null;vel=0;
+    samples=[{x:ev.clientX,t:ev.timeStamp||0}];
+  },{passive:true});
+  /* 横滑让路拦截（touch 通道，non-passive）：横向分量 ≥3px 且不小于纵向一半
+     就掐住原生竖向滚动（斜滑也算），锁定后整段手势持续拦截；明显竖向不拦截。
+     pointer 判定（下方）仍是翻页状态机本体，这里只负责不让浏览器先把滚动抢走 */
+  scroller.addEventListener('touchmove',ev=>{
+    if(pid===null||busy)return;
+    if(mode===1){ev.preventDefault();return;}
+    if(mode===0&&ev.touches&&ev.touches.length===1){
+      const t=ev.touches[0],tdx=t.clientX-sx,tdy=t.clientY-sy;
+      if(Math.abs(tdx)>=3&&Math.abs(tdx)>=Math.abs(tdy)*0.5)ev.preventDefault();
+    }
+  },{passive:false});
+  window.addEventListener('pointermove',ev=>{
+    if(ev.pointerId!==pid||mode===2)return;
+    const dx=ev.clientX-sx,dy=ev.clientY-sy,now=ev.timeStamp||0;
+    pushSample(ev.clientX,now);
+    if(mode===0){
+      const ax=Math.abs(dx),ay=Math.abs(dy);
+      if((ax>=6&&ax>=ay*0.65)||(ax>=18&&ax>=ay*0.5)){mode=1;dir=dx<0?1:-1;
+        if(reducedMotion()){W=scroller.clientWidth;target=neighbor(dir);curX=dx;}
+        else build(dx);}
+      else if((ay>=10&&ay>=ax*2.4)||(ax+ay>=26&&ay>ax*2))mode=2;
+      return;
+    }
+    /* 已锁定：竖向位置钉死在锁定值，本手势内页面不许再上下漂 */
+    if(strip&&scroller.scrollTop!==stLock)scroller.scrollTop=stLock;
+    if(strip)paint(appliedDx(dx));else curX=dx;
+  },{passive:true});
+  window.addEventListener('pointerup',ev=>{
+    if(ev.pointerId!==pid)return;
+    pid=null;
+    /* 松手最终坐标并入采样：轻扫的末段位移与速度只体现在 pointerup 里，
+       不并入就会把快速轻扫判成没滑够 */
+    const fdx=ev.clientX-sx,fdy=ev.clientY-sy;
+    pushSample(ev.clientX,ev.timeStamp||0);
+    if(mode===2){mode=0;target=null;return;}
+    if(mode===0){
+      /* 没等到锁定就松手的短促轻扫：位移不大但方向明确，同样翻一页 */
+      const ax=Math.abs(fdx);
+      if(ax>=12&&ax>=Math.abs(fdy)*0.5){const d=fdx<0?1:-1;if(neighbor(d))step(d);}
+      target=null;return;
+    }
+    mode=0;
+    if(strip)paint(appliedDx(fdx));else curX=fdx;
+    if(reducedMotion()){if(target&&commitWanted())step(dir);target=null;return;}
+    if(!strip){target=null;return;}
+    settle(!!target&&commitWanted(),vel);
+  },{passive:true});
+  window.addEventListener('pointercancel',ev=>{
+    if(ev.pointerId!==pid)return;
+    pid=null;mode=0;
+    if(busy)return;
+    target=null;teardown();
+  },{passive:true});
+}
+makePager($('#detail'),$('#detail'),(e,pv,nx)=>cardHTMLFor(e,pv,nx),()=>!immersiveOn);
+makePager($('#immScroll'),$('#immDetail'),(e,pv,nx)=>immCardHTMLFor(e,pv,nx),()=>immersiveOn);
+
 /* ---------- 交互 ---------- */
 let navDir=null,vtBusy=false;
 function setSwap(id,name){const w=document.getElementById(id);if(!w)return;$$('.ic',w).forEach(ic=>ic.classList.toggle('on',ic.dataset.icon===name));}
@@ -940,9 +1126,11 @@ function select(id,o){
   const NL=navList(),oi=NL.findIndex(e=>e.id===curId()),ni=NL.findIndex(e=>e.id===id);navDir=(oi>=0&&ni>oi)?'next':(oi>=0&&ni<oi)?'prev':null;
   S.cur=id;save();
   const swap=()=>{renderDetail();if(immersiveOn)renderOverlayCard(false);};
+  /* 左右滑跟手翻页落定后的提交：翻页条已经把新页滑到位，这里只换内容、不再叠加任何过渡 */
+  if(o.from==='pager'){pagerSwap=true;try{swap();}finally{pagerSwap=false;}}
   /* View Transitions：手动切节点时让标题/年份做共享元素过渡；沉浸中（覆盖层已有自己的交叉过渡）、
      播放自动推进、无此 API 的老浏览器都走原路径硬切，不叠加两套过渡 */
-  if(!immersiveOn&&!o.auto&&document.startViewTransition&&!reducedMotion()){
+  else if(!immersiveOn&&!o.auto&&document.startViewTransition&&!reducedMotion()){
     vtBusy=true;
     try{document.startViewTransition(()=>{swap();vtBusy=false;});}
     catch(_){vtBusy=false;swap();}
@@ -1061,41 +1249,25 @@ const reducedMotion=()=>{try{return !!(window.matchMedia&&window.matchMedia('(pr
 /* 沉浸阅读 = 独立覆盖层：内容用与正文相同的 cardHTML() 渲染进覆盖层（去掉重复 id），
    底层 .app 布局完全不动、不加类、不参与动画；进/出只切换覆盖层的 .show
    （opacity + translateY 过渡）。退出键是覆盖层的子元素，覆盖层显示期间恒可见、可点。 */
-/* 悬浮翻页按钮与计数：按当前导航列表同步禁用态（首/尾）和「n / 总数」，
-   在每次渲染覆盖层时调用，点击翻页后立刻反映新位置 */
+/* 沉浸计数：翻页已改为左右滑动（无翻页按钮），这里只按当前导航列表同步
+   底部计数胶囊的「n / 总数」，在每次渲染覆盖层时调用，滑动翻页后立刻反映新位置 */
 function syncImmNav(){
   const L=navList(),i=L.findIndex(e=>e.id===curId());
   const c=$('#immCount');if(c)c.textContent=(i>=0?String(i+1):'0')+' / '+L.length;
-  const pv=$('#immPrev'),nx=$('#immNext');
-  if(pv)pv.disabled=!(i>0);
-  if(nx)nx.disabled=!(i>=0&&i<L.length-1);
 }
-let immSwapTimer=0,immSwapSeq=0;
+function immCardHTMLFor(e,pv,nx){return cardHTMLFor(e,pv,nx).replace(' id="acts"','').replace(' id="ev-t"',' id="ev-t-imm"').replace('aria-labelledby="ev-t"','aria-labelledby="ev-t-imm"');}
 function renderOverlayCard(keepScroll){
   const ov=$('#immDetail');if(!ov)return;
-  const sc=$('#immScroll'),overlay=$('#immOverlay');
+  const sc=$('#immScroll');
   syncImmNav();
-  const html=()=>cardHTML().replace(' id="acts"','').replace(' id="ev-t"',' id="ev-t-imm"').replace('aria-labelledby="ev-t"','aria-labelledby="ev-t-imm"');
-  if(keepScroll){immSwapSeq++;clearTimeout(immSwapTimer);const st=sc.scrollTop;ov.innerHTML=html();sc.scrollTop=st;return;}
-  /* 翻页两段式：覆盖层已显示且有方向时，旧页先用 page-out 160ms 淡出，淡出结束才换入
-     新页，新页再用 enter-next / enter-prev 420ms 淡入，两段先后衔接、不重叠。
-     翻页全程覆盖层与层内玻璃件保持原来的磨砂玻璃实时效果，不暂停 backdrop-filter、
-     不切换底色。连点时以最后一页为准。 */
-  const old=ov.querySelector('.card'),dir=lastDir,shown=overlay.classList.contains('show');
-  if(shown&&old&&!reducedMotion()&&(dir==='next'||dir==='prev')){
-    const seq=++immSwapSeq;clearTimeout(immSwapTimer);
-    old.classList.remove('enter','enter-next','enter-prev');
-    old.classList.add('page-out');
-    immSwapTimer=setTimeout(()=>{
-      if(seq!==immSwapSeq)return;
-      ov.innerHTML=html();sc.scrollTop=0;
-      const c=$('.card',ov);if(c)c.classList.add(dir==='prev'?'enter-prev':'enter-next');
-    },170);
-    return;
-  }
-  immSwapSeq++;clearTimeout(immSwapTimer);
+  const html=()=>immCardHTMLFor(cur(),neighbor(-1),neighbor(1));
+  if(keepScroll){const st=sc.scrollTop;ov.innerHTML=html();sc.scrollTop=st;return;}
+  /* 换页即时落地：左右滑翻页时翻页条已把新页滑到位（pagerSwap），这里只换内容、不加任何
+     进入动画；正文内按钮等非手势切页才走 enter-next / enter-prev 的轻滑入。旧的「旧页先
+     淡出、新页再淡入」两段式硬切已删除。 */
   ov.innerHTML=html();sc.scrollTop=0;
-  const c=$('.card',ov);if(c&&!reducedMotion())c.classList.add(dir==='prev'?'enter-prev':dir==='next'?'enter-next':'enter');
+  const dir=lastDir,c=$('.card',ov);
+  if(c&&!reducedMotion()&&!pagerSwap)c.classList.add(dir==='prev'?'enter-prev':dir==='next'?'enter-next':'enter');
 }
 /* 沉浸全屏（best-effort）：Fullscreen API 只能由用户手势触发，这里挂在「沉浸阅读」点击里顺手调；
    浏览器拒绝（iframe 权限、iOS 限制）时静默放弃，沉浸覆盖层本身不受影响；退出沉浸时同步退出全屏 */
@@ -1855,8 +2027,6 @@ if(window.matchMedia){const mqT=window.matchMedia('(prefers-color-scheme: dark)'
 $('#ribbonBtn').addEventListener('click',()=>{S.ribbonHide=!S.ribbonHide;save();updateRibbonBtn();if(!S.ribbonHide)requestAnimationFrame(()=>{layoutRibbon();updateCursor();});});
 $('#immersiveBtn').addEventListener('click',enterImmersive);
 $('#immersiveExit').addEventListener('click',()=>exitImmersive());
-$('#immPrev').addEventListener('click',()=>step(-1));
-$('#immNext').addEventListener('click',()=>step(1));
 /* 覆盖层内的交互与正文一致：上/下一页走 select（自动同步两处），章节标签先退出沉浸再筛选，
    重点/掌握走 toggle 更新状态后就地重渲染覆盖层卡片（保持滚动位置）并补同款动效 */
 $('#immDetail').addEventListener('click',ev=>{
