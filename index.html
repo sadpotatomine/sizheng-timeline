@@ -51,11 +51,13 @@
   --glass-insets:inset 0 1px 1px var(--glass-rim-top),inset 0 -1px 1px var(--glass-rim-bottom),inset 1px 0 1px rgba(255,255,255,.04),inset -1px 0 1px rgba(255,255,255,.04),0 0 0 .5px var(--glass-ring);
   --on-glass:rgba(255,255,255,.14);--on-glass-hover:rgba(255,255,255,.25);
   --glass-panel:rgba(255,255,255,.32);
-  --glass-panel-blur:blur(14px) saturate(150%);
-  --glass-era:rgba(255,255,255,.44);
+  --glass-panel-blur:blur(14px) saturate(160%);
+  --glass-era:rgba(255,255,255,.82);
   --glass-card:rgba(255,255,255,.26);
   --glass-field:rgba(255,255,255,.22);
   --glass-strong:rgba(245,247,250,.44);
+  /* 沉浸定格底：磨砂层入场落定后撤掉实时模糊、换这层近不透明同色底（底层主页沉浸期间冻结不动，定格后画面几乎无差别） */
+  --imm-veil:rgba(245,247,250,.92);
   /* 圆角等级：chips/按钮/开关全胶囊，内容卡片 24px，框架表面（顶栏/底栏/抽屉）28px，节点全圆 */
   --r-chip:999px;--r-card:24px;--r-frame:28px;
 }
@@ -76,21 +78,22 @@
   --glass-shadow-up:0 -6px 24px rgba(0,0,0,.10);
   --on-glass:rgba(255,255,255,.03);--on-glass-hover:rgba(255,255,255,.055);
   --glass-panel:rgba(19,27,38,.36);
-  --glass-era:rgba(19,27,38,.52);
+  --glass-era:rgba(19,27,38,.85);
   --glass-card:rgba(255,255,255,.03);
   --glass-field:rgba(255,255,255,.035);
   --glass-strong:rgba(19,26,34,.44);
+  --imm-veil:rgba(19,26,34,.92);
 }
 [data-era=cn1]{--era:#3D7AB8;--era-ink:#2A5F92;--era-tint:rgba(61,122,184,.10)}
 [data-era=cn2]{--era:#A85A54;--era-ink:#8A423C;--era-tint:rgba(168,90,84,.09)}
 [data-era=cn3]{--era:#B07D45;--era-ink:#8A5F30;--era-tint:rgba(176,125,69,.10)}
 [data-era=cn4]{--era:#4E8A74;--era-ink:#386A56;--era-tint:rgba(78,138,116,.10)}
-[data-era=cn5]{--era:#8C7360;--era-ink:#6E5747;--era-tint:rgba(140,115,96,.10)}
+[data-era=cn5]{--era:#6E4FA8;--era-ink:#54387F;--era-tint:rgba(110,79,168,.10)}
   [data-theme="dark"] [data-era=cn1]{--era:#6FA3D8;--era-ink:#9CC2EA;--era-tint:rgba(111,163,216,.15)}
   [data-theme="dark"] [data-era=cn2]{--era:#D08A84;--era-ink:#E2ACA6;--era-tint:rgba(208,138,132,.14)}
   [data-theme="dark"] [data-era=cn3]{--era:#D2A870;--era-ink:#E4C08E;--era-tint:rgba(210,168,112,.14)}
   [data-theme="dark"] [data-era=cn4]{--era:#84B8A4;--era-ink:#A8D2C0;--era-tint:rgba(132,184,164,.14)}
-  [data-theme="dark"] [data-era=cn5]{--era:#C2A48C;--era-ink:#D6BCA4;--era-tint:rgba(194,164,140,.14)}
+  [data-theme="dark"] [data-era=cn5]{--era:#B79CED;--era-ink:#D6C6F5;--era-tint:rgba(183,156,237,.14)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);isolation:isolate;transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -100,14 +103,12 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 /* 有机 blob：8 值 border-radius + 缓慢 morph，只在背景层低透明度漂移，不挡内容（玻璃顶/底栏能透出一点蓝） */
 .bg-blobs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .blob{position:absolute;display:block;filter:blur(30px);opacity:.32;background:linear-gradient(135deg,rgba(59,130,246,.55),rgba(147,197,253,.32))}
-.blob-a{width:340px;height:340px;left:-90px;top:15%;border-radius:32% 68% 63% 37%/38% 34% 66% 62%;animation:blobMorphA 17s ease-in-out infinite alternate}
-/* 翻页拖动 / 弹簧落定期间（html.paging）与沉浸打开期间（html.imm-on）暂停背景 blob 的 morph：
-   两团 30px 高斯模糊的大元素持续变形会让所有 backdrop-filter 表面逐帧重采样，是滑动掉帧的隐形主因；
-   暂停后背景静止（沉浸时本就被覆盖层盖住），滑动只剩翻页条自身的 transform 在动 */
-html.paging .blob,html.imm-on .blob{animation-play-state:paused}
-.blob-b{width:260px;height:260px;right:-70px;bottom:6%;border-radius:62% 38% 33% 67%/60% 64% 36% 40%;animation:blobMorphB 21s ease-in-out infinite alternate}
-@keyframes blobMorphA{from{border-radius:32% 68% 63% 37%/38% 34% 66% 62%;transform:rotate(0deg) scale(1)}to{border-radius:58% 42% 38% 62%/45% 60% 40% 55%;transform:rotate(24deg) scale(1.08)}}
-@keyframes blobMorphB{from{border-radius:62% 38% 33% 67%/60% 64% 36% 40%;transform:rotate(0deg) scale(1)}to{border-radius:38% 62% 57% 43%/52% 38% 62% 48%;transform:rotate(-20deg) scale(1.1)}}
+.blob-a{width:340px;height:340px;left:-90px;top:15%;border-radius:32% 68% 63% 37%/38% 34% 66% 62%}
+/* blob 一律静止，不再做无限 morph 动画：两团 30px 高斯模糊的大元素持续变形（border-radius
+   逐帧重绘 + 重模糊）会让页面上每一个 backdrop-filter 玻璃面（顶栏 / 底栏 / 侧栏 / 正文 /
+   沉浸磨砂层）逐帧重采样背景，手机上静止时 GPU 也满载，开抽屉、进沉浸时更是雪上加霜。
+   静止后它们只是两团静态色晕，玻璃透出的颜色和层次不变，背景只在真正滚动时才重采样 */
+.blob-b{width:260px;height:260px;right:-70px;bottom:6%;border-radius:62% 38% 33% 67%/60% 64% 36% 40%}
 [data-theme="dark"] .blob{opacity:.24}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -135,28 +136,17 @@ button,[role="button"],a,input,select,summary,.btn,.chip,.item,.tag,.pn button,.
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-bg,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @media (prefers-reduced-transparency:reduce){.top,.ribbon,.immersive-exit,.side,.detail,.era-h,.imm-bg,.search input{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 
-/* 液态玻璃（复刻 rdev/liquid-glass-react 的 SVG 滤镜做法，MIT）：只给顶栏胶囊与底部时间轴胶囊。
-   结构与原库一致：胶囊内一层 .lg-warp 承接 backdrop 模糊+饱和，再由 filter:url() 的
-   feDisplacementMap 折射链（R/G/B 三通道不同 scale 造色散、边缘遮罩合成）把这层渲染整体弯曲；
-   .lg-warp 外再套一层不进滤镜的 .lg-clip 裁剪（见下方），把滤镜输出锁死在胶囊轮廓内；
-   内容层不进滤镜、保持锐利。默认参数：displacementScale 70、saturation 140、aberrationIntensity 2、
-   blurAmount 已随胶囊模糊下调（.lg-warp 的 backdrop 模糊现为 1px，几乎没有柔光）、cornerRadius 999。
-   仅 Chromium 内核启用（页面脚本检测后给 <html> 加 .lg-on）：Safari/iOS 的 WebKit 不呈现 SVG
-   滤镜折射，脚本不加类，胶囊保持上面的 4 号超透薄玻璃原样；Firefox 同理不启用。
-   .lg-warp 未启用时无背景、无滤镜，完全惰性，不影响任何现有样式 */
-.lg-svg{position:absolute;left:0;top:0;pointer-events:none}
-/* 裁剪层：不进滤镜，只负责把 .lg-warp 的滤镜输出裁回胶囊轮廓。滤镜区域放大到 170% 后，
-   位移输出会画出元素盒子；同元素上的 clip-path 在 Chromium 里拦不住这份溢出，
-   必须由父层的 overflow + clip-path 在合成阶段裁掉，胶囊外正文才不会被弯曲 */
-.lg-clip{position:absolute;inset:0;border-radius:999px;overflow:hidden;clip-path:inset(0 round 999px);pointer-events:none;z-index:-1}
-.lg-warp{position:absolute;inset:0;border-radius:inherit;pointer-events:none}
-html.lg-on .top,html.lg-on .ribbon{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;will-change:transform}
-html.lg-on .lg-warp{background:var(--glass-tint);-webkit-backdrop-filter:blur(1px) saturate(140%);backdrop-filter:blur(1px) saturate(140%)}
-html.lg-on .top .lg-warp{filter:url(#lg-f-top)}
-html.lg-on .ribbon .lg-warp{filter:url(#lg-f-ribbon)}
-/* 原库的两层边缘高光环（screen / overlay 混合、1.5px 遮罩环、对角渐变）合并复刻为一层 screen 环；
-   静态 135° 是原库鼠标居中时的基准角，内阴影数值与原库一致 */
-html.lg-on .top::before,html.lg-on .ribbon::before{content:"";position:absolute;inset:0;border-radius:999px;padding:1.5px;pointer-events:none;mix-blend-mode:screen;opacity:.06;background:linear-gradient(135deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.05) 33%,rgba(255,255,255,.16) 66%,rgba(255,255,255,0) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;box-shadow:0 0 0 .5px rgba(255,255,255,.14) inset,0 1px 3px rgba(255,255,255,.07) inset,0 1px 4px rgba(0,0,0,.10)}
+/* 胶囊玻璃：底栏 = 纯磨砂（半透明底色 + backdrop 高斯模糊 + 饱和 + 细边框），
+   走 GPU 合成、静止零成本；顶栏胶囊 2026-11-14 起按用户要求试行折射，
+   见下方紧跟 .top::after 覆写的「顶栏折射」规则；沉浸工具键（主题 / 退出，两颗 40px 小圆键）
+   同日按用户点名跟进同款折射，规则在沉浸覆盖层一节，门控与顶栏一致。
+   历史教训（仍适用于大面积 / 多颗胶囊，不要扩散折射）：① .lg-warp 承接 23 条原语的
+   filter 链——胶囊动画时逐帧重算整条链；② 折射写进多颗胶囊的 backdrop-filter——
+   Android Chromium 的 backdrop-filter:url() 走 CPU 逐帧求值，背景任何变化都触发整片
+   重算，多颗带滤镜的胶囊同帧进出沉浸时直接卡死。所以折射只许小面积件、翻页中关停 */
+/* 胶囊边缘高光环（screen 混合、1.5px 遮罩环、静态 135° 对角渐变）：纯静态绘制，无滤镜、不逐帧求值 */
+.top::before,.ribbon::before,.imm-overlay .immersive-exit::before{content:"";position:absolute;inset:0;border-radius:999px;padding:1.5px;pointer-events:none;mix-blend-mode:screen;opacity:.06;background:linear-gradient(135deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.05) 33%,rgba(255,255,255,.16) 66%,rgba(255,255,255,0) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;box-shadow:0 0 0 .5px rgba(255,255,255,.14) inset,0 1px 3px rgba(255,255,255,.07) inset,0 1px 4px rgba(0,0,0,.10)}
+[data-theme="light"] .top::before,[data-theme="light"] .ribbon::before,[data-theme="light"] .imm-overlay .immersive-exit::before{mix-blend-mode:normal}
 
 /* 顶栏：与底部时间轴同款的悬浮胶囊——左右留边、不全宽、全圆角、磨砂玻璃底。
    fixed 脱离布局，侧栏与正文从它下面穿过；静止时的避让放进滚动容器内部
@@ -209,7 +199,7 @@ html.ld-live *,html.ld-live *::before,html.ld-live *::after{transition:none!impo
 .side-head{padding:12px 14px 8px;display:grid;gap:9px;border-bottom:1px solid var(--line);background:transparent;transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple)}
 .search{position:relative}
 .search>svg{position:absolute;left:11px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
-.search input{display:block;width:100%;height:44px;padding:0 38px 0 34px;border:1px solid var(--glass-border);border-radius:var(--r-chip);background:var(--glass-field);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);box-shadow:inset 0 1px 1px var(--glass-rim-top);font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
+.search input{display:block;width:100%;height:44px;padding:0 38px 0 34px;border:1px solid var(--glass-border);border-radius:var(--r-chip);background:var(--glass-field);box-shadow:inset 0 1px 1px var(--glass-rim-top);font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
 .search input::placeholder{color:var(--ink-3)}
 .search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
 .search input:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(36,112,184,.20)}
@@ -231,7 +221,7 @@ html.ld-live *,html.ld-live *::before,html.ld-live *::after{transition:none!impo
 .sel select{position:static;flex:1;min-width:0;width:auto;height:42px;opacity:1;cursor:pointer;-webkit-appearance:none;appearance:none;border:0;background:transparent;font:inherit;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0}
 .sel:focus-within{outline:2px solid var(--focus);outline-offset:2px}
 .side-cap{font-size:14px;color:var(--ink-3);padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(118px + env(safe-area-inset-bottom))}
+.list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .app.ribbon-off .list{padding-bottom:18px}
 .grp{position:relative}
 /* 时代分组之间用半圆弧代替直角分割（S 形曲线感），只画在分组之间、不碰条目 */
@@ -240,7 +230,7 @@ html.ld-live *,html.ld-live *::before,html.ld-live *::after{transition:none!impo
 /* 详情段落之间的内联 SVG 波浪分隔线 */
 .wave-sep{height:10px;margin:20px 0 -8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='10' viewBox='0 0 220 10'%3E%3Cpath d='M2 5 Q29 0 56 5 T110 5 T164 5 T218 5' fill='none' stroke='%23D8E0EA' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center/220px 10px no-repeat;opacity:.75}
 [data-theme="dark"] .wave-sep{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='10' viewBox='0 0 220 10'%3E%3Cpath d='M2 5 Q29 0 56 5 T110 5 T164 5 T218 5' fill='none' stroke='%232E3B4A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")}
-.era-h{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:8px minmax(0,1fr);align-items:center;gap:0 8px;padding:9px 16px 7px;background:var(--glass-era);-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);border-bottom:1px solid var(--line-2);font-size:14px;font-weight:600;color:var(--era-ink);transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
+.era-h{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:8px minmax(0,1fr);align-items:center;gap:0 8px;padding:9px 16px 7px;background:var(--glass-era);border-bottom:1px solid var(--line-2);font-size:14px;font-weight:600;color:var(--era-ink);transition:background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
 .era-h .dot{width:8px;height:8px;border-radius:50%;background:var(--era);flex:none}
 .era-h .en{white-space:normal;overflow-wrap:anywhere}
 .era-h .yr{grid-column:2;font-weight:400;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -265,7 +255,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 /* 详情 */
 .detail{position:relative;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);outline:none;transition:background-color var(--dur-struct) var(--ease-apple)}
 /* 卡片盒模型不做过渡：沉浸切换时布局一次到位，可见运动只走 transform/opacity */
-.card{max-width:780px;margin:0 auto;margin-bottom:calc(118px + env(safe-area-inset-bottom));padding:calc(92px + env(safe-area-inset-top)) 44px 40px}
+.card{max-width:780px;margin:0 auto;margin-bottom:calc(96px + env(safe-area-inset-bottom));padding:calc(92px + env(safe-area-inset-top)) 44px 40px}
 .app.ribbon-off .card{margin-bottom:24px}
 .card.enter{animation:enter var(--dur-enter) var(--ease-apple) both}
 @keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -283,12 +273,6 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .acts .btn:hover svg{transform:scale(1.15)}
 .acts .btn:active svg{transform:scale(.9)}
 .title{font-family:var(--serif);font-size:31px;line-height:1.28;font-weight:700;letter-spacing:.01em;margin:16px 0 0;text-wrap:balance}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.tag{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;min-height:44px;padding:6px 14px;border-radius:var(--r-chip);border:1px solid var(--glass-border);background:var(--glass-card);box-shadow:inset 0 1px 1px var(--glass-rim-top);font-size:14px;color:var(--ink-3);text-align:left;line-height:1.45}
-.tag b{color:var(--ink-2);font-weight:600;white-space:nowrap}
-.tag.here{border-color:var(--era);background:var(--era-tint)}
-.tag.here b{color:var(--era-ink)}
-.tag:hover{background:var(--hover);box-shadow:0 4px 14px rgba(20,34,52,.06)}
 .sig{margin:16px 0 0;padding:13px 18px;border:1px solid var(--glass-border);border-left:3px solid var(--era);background:var(--era-tint);-webkit-backdrop-filter:blur(6px) saturate(140%);backdrop-filter:blur(6px) saturate(140%);box-shadow:inset 0 1px 1px rgba(255,255,255,.10);border-radius:0 var(--r-card) var(--r-card) 0;font-size:17px;line-height:1.6;font-weight:500}
 .sig .lab{display:inline-block;margin-right:12px;font-size:14px;font-weight:700;letter-spacing:.1em;color:var(--era-ink);vertical-align:2px}
 .blk{margin-top:28px}
@@ -310,25 +294,54 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
 .pn small{font-size:14px;color:var(--ink-3)}
 .pn b{font-size:14.5px;font-weight:600;white-space:normal;overflow-wrap:anywhere}
 .pn button:disabled{opacity:.5;cursor:default}
-.note{margin:30px 0 0;font-size:14px;line-height:1.7;color:var(--ink-3);text-align:center}
-
 /* 时间带 */
-.ribbon-meta{display:none;position:absolute;top:0;left:0;right:0;align-items:center;justify-content:space-between;gap:12px;font-size:14px;line-height:22px;pointer-events:none}
-.era-current{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--era-ink)}
-.ribbon-count{color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
-@media (max-width:1100px){.ribbon-meta{display:flex}.band .bl{display:none}}
+/* 当前阶段名：底栏单行布局里常驻的文本（胶囊左端、轨道之前），只报当前所处阶段，
+   不再标年份——年份刻度行与游标年份标签已随单行化整体删除（2026-11-14 用户要求：
+   下面时间轴改成和上面胶囊一样大的一行，年份不用标了，这个是什么阶段就行了）。
+   flex:none + nowrap 保证最长的九个字（社会主义革命和建设）永远完整显示，绝不省略截断；
+   是哪个阶段由轨道上五段时代色带 + 此处阶段名共同表达，游标停在哪段就报哪段 */
+.era-name{flex:none;font-size:14px;font-weight:600;color:var(--era-ink);white-space:nowrap;transition:color var(--dur-struct) var(--ease-apple)}
 
 /* 两颗胶囊几乎全透明：底色降到接近 0（浅色 0.5% / 深色 1%），边框、高光环、投影同步压到最淡，
-   只留一条很细的轮廓线，玻璃感靠磨砂模糊降到 1px 后的微弱柔光 + 细边框维持（胶囊专用 --glass-blur 覆写，
-   只作用于 .top / .ribbon 本体；液态玻璃 .lg-warp 的模糊在上方 lg-on 规则里同步为 1px，移动端媒体查询里
-   .top / .ribbon 的直接覆写也同步为 1px）。以下覆写只作用于 .top / .ribbon，
-   不动全局 --glass-* 变量，侧栏 / 卡片 / chips / 搜索框 / 沉浸的内容区玻璃不受影响；
-   液态玻璃的 .lg-warp 背景同样读 --glass-tint，会跟着一起变透 */
-.top,.ribbon{--glass-blur:blur(1px) saturate(140%);--glass-tint:rgba(255,255,255,.005);--glass-border:rgba(255,255,255,.12);--glass-rim-top:rgba(255,255,255,.08);--glass-rim-bottom:rgba(0,0,0,.008);--glass-ring:rgba(255,255,255,.03);--glass-shadow:0 6px 20px rgba(20,34,52,.015);--glass-shadow-up:0 -6px 20px rgba(20,34,52,.015)}
+   只留一条很细的轮廓线；玻璃感靠 6px 磨砂模糊 + 细边框维持（胶囊专用 --glass-blur 覆写，
+   只作用于 .top / .ribbon 本体）。以下覆写只作用于 .top / .ribbon，
+   不动全局 --glass-* 变量，侧栏 / 卡片 / chips / 搜索框 / 沉浸的内容区玻璃不受影响 */
+.top,.ribbon{--glass-blur:blur(6px) saturate(150%);--glass-tint:rgba(255,255,255,.005);--glass-border:rgba(255,255,255,.12);--glass-rim-top:rgba(255,255,255,.08);--glass-rim-bottom:rgba(0,0,0,.008);--glass-ring:rgba(255,255,255,.03);--glass-shadow:0 6px 20px rgba(20,34,52,.015);--glass-shadow-up:0 -6px 20px rgba(20,34,52,.015)}
 [data-theme="dark"] .top,[data-theme="dark"] .ribbon{--glass-tint:rgba(13,20,32,.01);--glass-border:rgba(255,255,255,.045);--glass-rim-top:rgba(255,255,255,.03);--glass-rim-bottom:rgba(255,255,255,.01);--glass-ring:rgba(255,255,255,.015);--glass-shadow:0 6px 24px rgba(0,0,0,.05);--glass-shadow-up:0 -6px 24px rgba(0,0,0,.05)}
 /* 顶栏胶囊的对角高光同步压淡（只覆写 .top，不碰共用同一条 ::after 规则的沉浸退出按钮） */
 .top::after{background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,.006) 28%,transparent 58%)}
-.ribbon{display:flex;align-items:center;gap:14px;width:auto;height:auto;min-height:0;padding:8px 16px;border:1px solid var(--glass-border);border-radius:999px;box-shadow:var(--glass-shadow),var(--glass-insets);position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:1180px;margin:0 auto;z-index:40;transition:transform var(--dur-ribbon) var(--ease-ribbon),opacity calc(var(--dur-ribbon) * .82) var(--ease-ribbon) 60ms,background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),visibility 0s linear 0s;will-change:transform,opacity}
+/* 顶栏折射（2026-11-14 用户点名试行；沉浸工具键同日跟进同款，规则在沉浸覆盖层一节）：
+   与「我的订阅」筛选胶囊完全同款——
+   SVG 滤镜 #lg-refract（feTurbulence + feDisplacementMap，scale 64，定义在 body 开头）
+   经 backdrop-filter:url() 直接作用于背景，再叠 1px 模糊 + 180% 饱和。
+   仅当页首能力检测脚本（Chromium + CSS.supports）通过时 html 才带 .has-lg；
+   不支持的环境（WebKit / Firefox）保持上面的纯磨砂，观感不缺失。
+   翻页中（html.paging）同样启用、不许关停：顶栏只有一行、采样面积小，逐帧成本
+   有界；而关掉再恢复会让胶囊的饱和与亮度在滑动开始 / 落定各跳一次——正是用户
+   反复报的「左右滑时背景变色一下」（2026-11-14）。Chromium 里 .detail 的背板
+   （body mesh + 静止 blob）不随条身平移变化，保滤镜不产生逐帧重采样，放心保留 */
+html.has-lg .top{-webkit-backdrop-filter:url("#lg-refract") blur(1px) saturate(180%);backdrop-filter:url("#lg-refract") blur(1px) saturate(180%)}
+@media (prefers-reduced-transparency:reduce){html.has-lg .top{-webkit-backdrop-filter:none;backdrop-filter:none}}
+/* 平板 / 桌面端同款折射（2026-11-14 用户点名「平板和电脑端也做成那个玻璃效果看看」）：
+   ≥761px 时把顶栏同款液态玻璃折射扩到底部时间轴胶囊、侧栏、正文面——这三处此前
+   只有纯磨砂（底栏 --glass-blur、侧栏 / 正文面 --glass-panel-blur）。配方与顶栏逐字
+   相同（#lg-refract + 1px 模糊 + 180% 饱和），门控也一致：仅 Chromium（.has-lg）、
+   翻页中（.paging）同样启用（理由同顶栏：关停再恢复就是滑动时背景变色 + 落定
+   那一帧的全屏重栅格，正是用户报的变色与卡顿）；沉浸期间（.imm-on）不启用——
+   沉浸时顶 / 底栏整颗隐藏、侧栏与正文面的模糊另有整层关停规则（见翻页一节），
+   不在此叠加折射。移动端（≤760px）维持现状：只有顶栏胶囊与沉浸工具键带折射，
+   底栏 / 抽屉 / 正文面仍是纯磨砂，避免手机端大面积折射逐帧重算 */
+@media (min-width:761px){
+  html.has-lg:not(.imm-on) .ribbon,
+  html.has-lg:not(.imm-on) .side,
+  html.has-lg:not(.imm-on) .detail{-webkit-backdrop-filter:url("#lg-refract") blur(1px) saturate(180%);backdrop-filter:url("#lg-refract") blur(1px) saturate(180%)}
+}
+@media (prefers-reduced-transparency:reduce){
+  html.has-lg:not(.imm-on) .ribbon,
+  html.has-lg:not(.imm-on) .side,
+  html.has-lg:not(.imm-on) .detail{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+.ribbon{display:flex;align-items:center;gap:14px;width:auto;height:auto;min-height:0;padding:10px 16px;border:1px solid var(--glass-border);border-radius:999px;box-shadow:var(--glass-shadow),var(--glass-insets);position:fixed;left:14px;right:14px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:1180px;margin:0 auto;z-index:40;transition:transform var(--dur-ribbon) var(--ease-ribbon),opacity calc(var(--dur-ribbon) * .82) var(--ease-ribbon) 60ms,background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),visibility 0s linear 0s;will-change:transform,opacity}
 .play{border-radius:50%;flex:none}
 /* 浅色模式播放键可见性：胶囊几乎全透明后，原底托（白 14%）与边框在浅底上几乎消失，
    图标也跟着看不清。浅色下单独给播放键换深蓝图标 + 近实白圆形底托 + 深蓝描边，
@@ -336,52 +349,54 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
    深色模式不加任何覆写，保持原样 */
 :root[data-theme="light"] .ribbon .btn.play:not([aria-pressed="true"]){color:#1D4ED8;background:rgba(255,255,255,.92);border-color:rgba(29,78,216,.5);box-shadow:0 1px 5px rgba(20,34,52,.18),inset 0 0 0 1px rgba(29,78,216,.22)}
 :root[data-theme="light"] .ribbon .btn.play:not([aria-pressed="true"]):hover{color:#1E40AF;background:#fff;border-color:rgba(29,78,216,.7);box-shadow:0 2px 8px rgba(20,34,52,.2),inset 0 0 0 1px rgba(29,78,216,.3)}
-.track{position:relative;flex:1;height:72px;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:var(--r-card)}
+/* 轨道单行化（2026-11-14）：高度 72px → 36px，只剩一条轨道线（时代色带 + 节点圆点 +
+   游标），年份行与时代名行全部撤掉；底栏胶囊总高因此与顶栏胶囊一致（桌面 66px /
+   手机 52px，均为一行）。轨道仍可整段拖动，拖动逻辑不依赖高度 */
+.track{position:relative;flex:1;height:36px;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:var(--r-card)}
 .track:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
-/* 直线轨道：轨道本体是一条内联 SVG 直线（JS 按轨道宽度生成 path，中心线 y=27），连接线为圆点链；
+/* 直线轨道：轨道本体是一条内联 SVG 直线（JS 按轨道宽度生成 path，中心线 y=18），连接线为圆点链；
    进度是同一条 path 的 stroke-dasharray 截取，小球/节点圆点都落在同一条直线上 */
-.rail-svg{position:absolute;left:0;top:0;width:100%;height:72px;pointer-events:none;overflow:visible}
+.rail-svg{position:absolute;left:0;top:0;width:100%;height:36px;pointer-events:none;overflow:visible}
 .rail-w{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;stroke-dasharray:0.1 7.5}
 .rail-fill{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;opacity:.9;pointer-events:none}
 /* Wobble 弹簧驱动小球时关掉 transform 过渡，避免过渡与逐帧写入互相拉扯 */
-.track.springy .cur-line,.track.springy .cur-dot,.track.springy .cur-lab{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.track.springy .cur-line,.track.springy .cur-dot{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
 .speed{display:flex;align-items:center;padding:3px;gap:2px;border-radius:999px;background:var(--on-glass);box-shadow:inset 0 0 0 1px var(--glass-ring),inset 0 1px 1px var(--glass-rim-top);flex:none;transition:background-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
 .speed button{min-height:38px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--ink-2);font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .speed button:hover{color:var(--ink);background:var(--panel);transform:translateY(-1px)}
 .speed button:active{transform:scale(.96);transition-duration:var(--dur-press)}
 .speed button[aria-pressed="true"]{background:transparent;color:#fff;font-weight:600}
 .play-count{font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;min-width:54px;text-align:right}
-.band{position:absolute;top:0;height:40px;pointer-events:none}
-.band .bl{position:absolute;left:3px;right:3px;top:1px;font-size:14px;font-weight:600;color:var(--era-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.band .bb{position:absolute;left:1px;right:1px;top:24px;height:6px;border-radius:3px;background:var(--era);opacity:.2}
-.dot-e{position:absolute;top:27px;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--panel);border:1.5px solid var(--era);pointer-events:none;transition:opacity var(--dur-micro) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),transform var(--dur-enter) var(--ease-spring)}
+/* 时代色带：单行轨道上唯一的阶段表达——五段不同颜色的轨道段（颜色即阶段），
+   段界即阶段分界；当前阶段名由胶囊左端的 .era-name 常驻显示，色带本身不再带文字
+   （窄段塞不下完整阶段名，截断/省略正是此前反复出问题的地方） */
+.band{position:absolute;top:0;height:36px;pointer-events:none}
+.band .bb{position:absolute;left:1px;right:1px;top:15px;height:6px;border-radius:3px;background:var(--era);opacity:.45}
+.dot-e{position:absolute;top:18px;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--panel);border:1.5px solid var(--era);pointer-events:none;transition:opacity var(--dur-micro) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),transform var(--dur-enter) var(--ease-spring)}
 .dot-e.now{background:var(--era);transform:scale(1.65)}
 .dot-e.done{background:var(--era)}
 .dot-e.dim{opacity:.18}
-.cur-line{position:absolute;left:0;top:13px;width:2px;height:28px;margin-left:-1px;border-radius:1px;background:var(--ink);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple)}
-.cur-dot{position:absolute;left:0;top:27px;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--era);box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--era);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.cur-line{position:absolute;left:0;top:7px;width:2px;height:22px;margin-left:-1px;border-radius:1px;background:var(--ink);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple)}
+.cur-dot{position:absolute;left:0;top:18px;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--era);box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--era);pointer-events:none;will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
 .cur-dot::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--era);opacity:0;pointer-events:none}
 .app.playing .cur-dot::after{animation:curPulse 1.6s var(--ease-out) infinite}
 @keyframes curPulse{0%{transform:scale(.5);opacity:.8}70%{transform:scale(1.3);opacity:0}100%{transform:scale(1.3);opacity:0}}
 .app.playing .play{animation:playPulse 2s var(--ease-apple) infinite}
 /* 播放中游标位置由逐帧线性推进以 transform 直接写入（合成层，不触发布局）：
    关掉 transform 的过渡，否则缓动曲线 + 过渡时长会让小球冲到节点、停住、再冲向下一个 */
-.app.playing .cur-line,.app.playing .cur-dot,.app.playing .cur-lab{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
+.app.playing .cur-line,.app.playing .cur-dot{transition:background-color var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple)}
 @keyframes playPulse{0%,100%{box-shadow:0 0 0 0 rgba(36,112,184,0)}50%{box-shadow:0 0 0 6px rgba(36,112,184,.14)}}
-.tick,.cur-lab{position:absolute;top:47px;transform:translateX(-50%);font-size:14px;line-height:20px;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
-.tick{color:var(--ink-3);transition:opacity var(--dur-micro) var(--ease-apple)}
-.tick.hide{opacity:0}
-.cur-lab{left:0;font-size:14px;font-weight:700;color:var(--era-ink);will-change:transform;transition:transform var(--dur-struct) var(--ease-apple),color var(--dur-struct) var(--ease-apple)}
-.tick.first,.cur-lab.first{transform:none}
-.tick.last,.cur-lab.last{transform:translateX(-100%)}
 
 /* 工具栏：收起时间轴 / 沉浸阅读。时间轴是固定浮动层，收起只走 transform + opacity，布局高度不变 */
 .app.ribbon-off .ribbon{transform:translateY(135%);opacity:0;pointer-events:none;visibility:hidden;transition:transform var(--dur-ribbon) var(--ease-ribbon),opacity calc(var(--dur-ribbon) * .72) var(--ease-ribbon) calc(var(--dur-ribbon) * .18),background-color var(--dur-struct) var(--ease-apple),border-color var(--dur-struct) var(--ease-apple),box-shadow var(--dur-struct) var(--ease-apple),visibility 0s linear var(--dur-ribbon)}
 /* 沉浸阅读 = 独立覆盖层（样式在本文件末尾）：底层布局完全不动、不参与动画，
    只有覆盖层自身做 opacity + transform 的淡入上浮 / 淡出。退出键是覆盖层的子元素，
    定位规则写在末尾覆盖层一节，避免被 [data-ripplet] 的 position:relative 覆盖 */
-.immersive-exit{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--glass-border);color:var(--ink);font-size:15px;font-weight:600;box-shadow:var(--glass-shadow),var(--glass-insets)}
-.immersive-exit svg{width:18px;height:18px}
+/* 沉浸工具键：只留图标的小圆键（40px），与顶栏移动端的图标键同尺寸，不带文字标签——
+   此前是 48px 高的带字大胶囊，两颗并排近 300px 宽，直接压住时代标题与年份（用户实机截图指出不和谐）。
+   功能说明走 aria-label / title，主题键的当前态仍由日/月图标表达 */
+.immersive-exit{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;min-height:0;padding:0;border-radius:50%;border:1px solid var(--glass-border);color:var(--ink);box-shadow:var(--glass-shadow),var(--glass-insets)}
+.immersive-exit svg{width:17px;height:17px}
 .immersive-exit:hover{box-shadow:var(--glass-shadow),var(--glass-insets),0 6px 20px rgba(20,34,52,.08)}
 @media (max-width:760px){.tools{flex-wrap:wrap}.tools .btn{padding:0 9px}}
 .year,.crumb,.it-y,.it-t,.hl{transition:color var(--dur-struct) var(--ease-apple)}
@@ -397,30 +412,38 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
   .brand span{display:none}
 }
 @media (max-width:760px){
-  .top,.ribbon{-webkit-backdrop-filter:blur(1px) saturate(140%);backdrop-filter:blur(1px) saturate(140%)}
-  .top{flex-wrap:wrap;gap:8px 8px;padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));left:8px;right:8px}
-  .menu-btn{display:inline-flex;order:0}
+  .top,.ribbon{-webkit-backdrop-filter:blur(6px) saturate(150%);backdrop-filter:blur(6px) saturate(150%)}
+  .top{flex-wrap:nowrap;gap:6px;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));left:8px;right:8px}
+  .menu-btn{display:inline-flex;order:0;width:38px;min-height:38px}
   .brand{order:1;flex:1 1 auto}
-  .brand b{font-size:18px}
-  .tools{order:2;flex:none;gap:8px}
-  .prog .bar{display:none}
-  .prog::before{content:"✓";color:var(--accent);font-weight:700}
-  /* 移动端滑块等比缩小：布局槽与 stage 一起从 118px 缩到原主题按钮的约 81px
-     （stage 81×51.55，与桌面 118×75.1 同为 440:280 比例），实绘轨道约 58.9×30.2。
-     .tools 换行到第二行后的总宽随之少 37px、不再溢出视口，t=0 / t=1 两端旋钮
-     都完整落在视口内；槽高仍 44px，顶栏高度不变。画布 fit 与拖动 logicalDx
-     都按 stage 实际尺寸换算，440 坐标系里的轨道与两端位置（x=72 / x=228）不变 */
-  .ld-inline{width:81px}
-  .ld-stage{width:81px;height:51.55px}
+  .brand b{font-size:17px}
+  .tools{order:2;flex:none;gap:6px;flex-wrap:nowrap}
+  /* 顶栏胶囊移动端只做一行（2026-11-14 用户要求）：删掉「✓ 0/104」掌握计数，
+     一行内依次是目录键、标题、收起时间轴键、沉浸键、主题滑块。桌面端计数不变 */
+  .prog{display:none}
+  /* 两颗按钮在移动端只留图标（title 与无障碍文案不变）。隐藏标签必须用 .btn-lab
+     类选择器，不能用 span:last-child——涟漪脚本会往每个 [data-ripplet] 按钮末尾追加
+     <span class="ripplet-wrap">，:last-child 命中的是它而不是标签，标签藏不掉
+     （2026-11-14 实机截图证实过）。单行总宽 ≈ 目录 38 + 标题 86 + 38 + 38 +
+     滑块 68 + 间距 ~24 ≈ 292px，稳落胶囊内 */
+  #ribbonBtn .btn-lab,#immersiveBtn .btn-lab{display:none}
+  #ribbonBtn,#immersiveBtn{width:38px;min-height:38px;padding:0;flex:none}
+  /* 移动端滑块等比缩小：stage 68×43.27（与桌面 118×75.1 同为 440:280 比例），
+     槽高 38px；顶栏改单行后胶囊总高约 50px，正文顶部留白同步收窄
+     （.card padding-top 128px → 76px）。画布 fit 与拖动 logicalDx 都按 stage
+     实际尺寸换算，440 坐标系里的轨道与两端位置（x=72 / x=228）不变 */
+  .ld-inline{width:68px;height:38px}
+  .ld-stage{width:68px;height:43.27px}
   .wrap{grid-template-columns:minmax(0,1fr)}
   .list{padding-bottom:18px}
   .side{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(88vw,360px);border-right:0;border-radius:0 var(--r-frame) var(--r-frame) 0;overflow:hidden;isolation:isolate;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateX(-104%);transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
   .side.open{transform:none}
   .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 0 18px}
   .drawer-head b{font-family:var(--serif);font-size:18px;letter-spacing:.06em}
-  .scrim{display:block;position:fixed;inset:0;z-index:45;background:rgba(15,23,33,.38);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-apple)}
+  /* 遮罩不带 backdrop 模糊：全屏模糊层做 opacity 淡入是抽屉打开卡顿的主因之一，去掉后只剩纯色淡入 */
+  .scrim{display:block;position:fixed;inset:0;z-index:45;background:rgba(15,23,33,.38);opacity:0;pointer-events:none;transition:opacity 200ms var(--ease-apple)}
   .scrim.show{opacity:1;pointer-events:auto}
-  .card{padding:calc(178px + env(safe-area-inset-top)) 18px 30px;margin-bottom:calc(160px + env(safe-area-inset-bottom))}
+  .card{padding:calc(76px + env(safe-area-inset-top)) 18px 30px;margin-bottom:calc(84px + env(safe-area-inset-bottom))}
   .app.ribbon-off .card{margin-bottom:24px}
   .year{font-size:58px}
   .head{gap:4px 14px}
@@ -431,13 +454,22 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
   .bg,.pts li{font-size:16px}
   .pn{gap:8px}
   .pn button{padding:9px 12px}
-  .ribbon{gap:8px;flex-wrap:wrap;row-gap:4px;height:auto;left:8px;right:8px;padding:6px 12px}
-  .play{width:44px;min-height:44px}
-  .speed button{min-height:36px;padding:0 7px;font-size:12.5px}
-  .play-count{display:block;min-width:0;text-align:left}
-  .track{order:-1;flex:1 1 100%}
-  .speed{margin-left:auto}
-  .ribbon-count{display:none}
+  /* 手机端删掉底部时间轴的播放功能（播放键 / 倍速 / 播放计数）：屏幕太小，底栏只留
+     可拖动的时间轴本身、单行排布；桌面端播放功能不变。JS 侧 setPlay 在窄屏下拒绝
+     启动、resize 到窄屏时自动停播（见脚本 setPlay 与 resize 处理） */
+  /* 手机端底栏与顶栏胶囊同尺寸（2026-11-14 单行化）：胶囊总高 52px = 顶栏的
+     6px 上下内边距 + 38px 内容行 + 边框；这里内容行是 36px 轨道，故上下内边距取 7px。
+     胶囊内唯一的文字是左端的当前阶段名，垂直居中——胶囊两端圆弧在垂直中线处内缩为 0，
+     16px 水平内边距下文字不可能再被圆弧切掉（此前 92px 高胶囊里文字贴顶/贴底行才出界，
+     单行居中后该问题从几何上消失）。阶段名 flex:none 永不截断，轨道让出剩余宽度 */
+  .ribbon{gap:8px;flex-wrap:nowrap;height:auto;left:8px;right:8px;padding:7px 16px}
+  .play,.speed,.play-count{display:none!important}
+  .era-name{font-size:13.5px}
+  .track{flex:1 1 auto}
+  /* 手机端轨道只剩五个时期（节点圆点不再生成，见 layoutRibbon）：色带加粗加亮，
+     每段交界处加一道竖刻度，让「五段时期」在单行轨道上一眼可辨、拖动时知道停在哪段 */
+  .band .bb{top:14px;height:8px;opacity:.62}
+  .band ~ .band::before{content:"";position:absolute;left:-1px;top:10px;width:2px;height:16px;border-radius:1px;background:var(--ink-3);opacity:.45}
   .dot-e{width:6px;height:6px;margin:-3px 0 0 -3px;border-width:1.2px}
 }
 
@@ -479,16 +511,29 @@ h3.lab::after{content:"";flex:1;height:1px;background:var(--line)}
    box-shadow / text-shadow 光栅化、transition / animation 逐帧求值，条内都不需要；
    底色本身带 alpha，关掉这些在滑动的几百毫秒里看不出差别，落定拆条后真实卡片原样 */
 .pager-strip *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;transition:none!important;animation:none!important}
-/* 翻页期间的重绘面收到最小（都在建条那一帧一次性切换、落定拆条后自动恢复）：
-   - 压在翻页条上方的胶囊（顶/底栏、沉浸计数、退出键）与液态玻璃折射层关 backdrop-filter / filter，
-     免得逐帧重采样下方移动的条身；
-   - 正文面 .detail 自身的 backdrop-filter 也关：它是翻页条的祖先，WebKit 会把带 backdrop-filter 的
-     祖先与其后代合成在同一组里，条身平移可能连带整个正文面逐帧重绘——关掉后条身是独立合成层，
-     每帧只剩它自己的 transform 在动；
-   - 背景 blob（30px 高斯模糊的大图层）翻页期间整层隐藏，不进合成 */
-html.paging .top,html.paging .ribbon,html.paging .imm-count,html.paging .immersive-exit,html.paging .detail{-webkit-backdrop-filter:none;backdrop-filter:none}
-html.paging .lg-warp{filter:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-html.paging .blob{visibility:hidden}
+/* 翻页期间的滤镜关停只留给 WebKit（无 .has-lg 的环境）：它是翻页条的祖先，WebKit
+   会把带 backdrop-filter 的祖先与其后代合成在同一组里，条身平移可能连带整个正文面
+   逐帧重绘——关掉后条身是独立合成层，每帧只剩它自己的 transform 在动。
+   Chromium（.has-lg，含用户的安卓手机）一律不关：.detail 的背板是 body mesh +
+   静止 blob，不随条身平移变化，保滤镜没有逐帧重采样；而 blur(14px) saturate(160%)
+   一旦关掉，整面正文的饱和与亮度立刻跳一档、落定恢复时再跳回来——用户三报的
+   「左右滑时背景会变色一下」就是它（此前误判 14px 模糊开关对合成色无影响：
+   模糊本身影响小，saturate(160%) 的开关才是变色主因）。同理，落定拆条那一帧
+   也不再有「全屏模糊重新栅格化」与内容替换叠在同一帧——那是每次滑动切换
+   「狠狠卡一下」的一半来源。
+   其余表面翻页期间同样一律不动（2026-11-14 用户两次要求：滑动时与正常阅读同色）：
+   - 任何表面的 background 不动；顶 / 底两颗胶囊与沉浸工具键的 backdrop 模糊 /
+     折射全部保留、不关停（面积小，逐帧重采样成本有界；此前「关模糊 + 换
+     --imm-veil 近不透明定格底」在深色下把透出蓝晕的玻璃面换成近黑实底，已废除）；
+   - 背景 blob 翻页期间不隐藏：它们早已静止、是合成器缓存层，藏掉会让整页背景瞬间掉色 */
+html:not(.has-lg).paging .detail{-webkit-backdrop-filter:none;backdrop-filter:none}
+/* 沉浸期间底层正文面 / 侧栏的 backdrop 模糊关停：它们整层被 .imm-bg 的磨砂盖住、看不见，
+   却仍在逐帧合成；关掉后沉浸里只剩 .imm-bg 一层全屏模糊在工作，进出沉浸不再多层叠加 */
+html.imm-on .detail,html.imm-on .side{-webkit-backdrop-filter:none;backdrop-filter:none}
+/* 沉浸期间顶栏 / 底栏整颗隐藏：它们被磨砂层 + 覆盖层完全盖住、点不到，却仍带着各自的
+   backdrop 模糊躺在 .imm-bg 的采样区里——采样区里只要有带滤镜的活层，磨砂层就得逐帧
+   重算。隐藏后采样区里只剩全静态的正文面，磨砂模糊算一次即被缓存（见 .imm-bg 注释） */
+html.imm-on .top,html.imm-on .ribbon{visibility:hidden}
 .pager-page{flex:none;height:100%;overflow:hidden;position:relative;contain:paint}
 .pager-page .card{will-change:auto}
 
@@ -533,7 +578,7 @@ html.paging .blob{visibility:hidden}
 .imm-overlay.show{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:opacity var(--dur-immersive) var(--ease-immersive),transform var(--dur-immersive) var(--ease-immersive),visibility 0s linear 0s}
 .imm-overlay[hidden]{display:none}
 /* 沉浸的磨砂背景独立成 .imm-bg 一层：只承接 backdrop 模糊+底色，不做滚动容器的祖先。
-   以前模糊挂在覆盖层本体上，层内正文一滚动 / 翻页，WebKit 就逐帧重采样整屏 18px 模糊，
+   以前模糊挂在覆盖层本体上，层内正文一滚动 / 翻页，WebKit 就逐帧重采样整屏模糊，
    背景跟着内容一起抖、帧率掉得最厉害。背景层因此独立出来、静止不动：翻页时它纹丝不动
    （画面与合成缓存都不变），只有翻页条在上层平移；沉浸里翻到哪页，模糊背景始终是进沉浸那一刻的样子。
    它必须是覆盖层的同级（body 直下、z-index 低一层），不能做覆盖层的子元素：覆盖层带
@@ -541,22 +586,50 @@ html.paging .blob{visibility:hidden}
    隔离组内部、采不到组外的主页面——模糊会静默失效，只剩半透明底色盖着清晰的主页面文字
    （上一版正是这样把模糊弄丢的）。同级独立层则直接模糊它下面的主页面，磨砂效果与改版前一致；
    进 / 出与覆盖层同帧同曲线淡入淡出，退出时在它淡尽的过程中露出已同步到新页的主页面。 */
-.imm-bg{position:fixed;inset:0;z-index:79;background:var(--glass-strong);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);pointer-events:none;opacity:0;visibility:hidden;transition:opacity var(--dur-immersive) var(--ease-immersive),visibility 0s linear var(--dur-immersive)}
+.imm-bg{position:fixed;inset:0;z-index:79;background:var(--glass-strong);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);pointer-events:none;opacity:0;visibility:hidden;transition:opacity var(--dur-immersive) var(--ease-immersive),visibility 0s linear var(--dur-immersive)}
 .imm-bg.show{opacity:1;visibility:visible;transition:opacity var(--dur-immersive) var(--ease-immersive),visibility 0s linear 0s}
 .imm-bg[hidden]{display:none}
+/* 磨砂常驻、但采样区里不许有活物：用户明确要求沉浸背景的模糊保留、只是不许跟随内容变动。
+   本层模糊的是冻结的主页面，本身永不变动；真正的逐帧重算来自采样区里的动态元素——
+   此前顶/底栏胶囊带着各自的 backdrop 模糊躺在采样区里、全屏请求又在落定瞬间触发整页
+   resize。现在 html.imm-on 把顶/底栏整颗隐藏、正文/侧栏模糊关停、背景 blob 静止、
+   全屏请求删除，采样区里只剩全静态内容：模糊只在入场时算一次并被合成器缓存，
+   沉浸里滚动只是把正文图层盖在缓存好的磨砂纹理上合成，不再逐帧重采样 */
 .imm-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:transparent}
 #immDetail{position:relative}
 .imm-scroll .card{margin-bottom:0;padding-top:26px;padding-bottom:96px}
 /* 沉浸翻页 = 与主界面同一套左右滑跟手翻页（见脚本「横向滑动翻页」一节与 .pager-strip）：
    拖动时新旧两页并排 1:1 跟手，松手弹簧落定，不再淡出 / 淡入硬切。 */
-.imm-overlay .immersive-exit{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));z-index:7;opacity:1;transform:none;visibility:visible;pointer-events:auto}
+/* 沉浸右上角工具组：主题切换键 + 退出键并排，都是 40px 图标圆键，两颗合计只占右上角约 88px，
+   不再横压正文首行。主题键此前只在顶栏里，沉浸覆盖层一盖住就看不见、点不到；这里放一颗
+   （id=themeBtn，图标由 updateThemeBtn 统一维护，点击走与滑块同一套提交：S.theme +
+   applyTheme + save，滑块经 __ldFollow 静默跟随）。两颗键的文字标签一律隐藏：主题键的
+   .btn-lab 仍由 updateThemeBtn 写入当前态文案（供 title 同步），退出键的标签同理只留无障碍名 */
+.imm-tools{position:absolute;top:calc(10px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));z-index:7;display:flex;align-items:center;gap:8px}
+.imm-overlay .immersive-exit .btn-lab{display:none}
+/* 手机端正文首行让出工具键的高度：圆键底沿约在 48px，正文从 58px 起，时代标题不再钻到键下 */
+@media (max-width:760px){.imm-scroll .card{padding-top:58px}.imm-overlay .immersive-exit{width:38px;height:38px}}
+/* 沉浸工具键（主题 / 退出）改用与顶栏同款的玻璃（2026-11-14 用户点名「用我的那个动效和玻璃效果」）：
+   磨砂底 + 边缘高光环（::before，与 .top 同一条规则）+ 对角高光（::after，本就共用）；
+   Chromium 下再叠顶栏同款折射（#lg-refract + 1px 模糊 + 180% 饱和，.has-lg 门控、翻页中
+   同样保留，与 .top 完全一致）。两颗键各只有约 40px，采样面积远小于顶栏整颗胶囊；翻页期间背景
+   一律不动（见翻页节），颜色不跳。底部计数胶囊不改，常驻 --imm-veil 定格底。
+   入场动效与覆盖层同套：.imm-tools 容器随 .show 以 --dur-immersive / --ease-immersive 落定
+   （只动容器，不动按钮本体——按钮自身的 hover / 按压 transform 不被动画填充覆盖）；
+   退场随覆盖层整体淡出，不单独动画 */
+@keyframes immToolsIn{from{opacity:0;transform:translateY(-8px) scale(.94)}to{opacity:1;transform:none}}
+.imm-overlay.show .imm-tools{animation:immToolsIn var(--dur-immersive) var(--ease-immersive) both}
+.imm-overlay .immersive-exit{position:relative;opacity:1;transform:none;visibility:visible;pointer-events:auto;background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+html.has-lg .imm-overlay .immersive-exit{-webkit-backdrop-filter:url("#lg-refract") blur(1px) saturate(180%);backdrop-filter:url("#lg-refract") blur(1px) saturate(180%)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.imm-overlay .immersive-exit{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-transparency:reduce){.imm-overlay .immersive-exit{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 .imm-overlay .immersive-exit:hover{transform:translateY(-1px)}
 .imm-overlay .immersive-exit:active{transform:scale(.96);transition-duration:var(--dur-press)}
 /* 沉浸翻页为左右滑跟手翻页（见脚本「横向滑动翻页」一节），没有翻页按钮；
    .imm-nav 只作计数胶囊的定位容器：覆盖全屏、pointer-events:none 不挡滚动与点击，
    计数胶囊恒定悬浮在底部中央（各宽度一致）。 */
 .imm-nav{position:absolute;inset:0;z-index:6;pointer-events:none}
-.imm-count{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:6px 14px;border-radius:999px;border:1px solid var(--glass-border);background:var(--glass-tint);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow),var(--glass-insets);font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+.imm-count{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:6px 14px;border-radius:999px;border:1px solid var(--glass-border);background:var(--imm-veil);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:var(--glass-shadow),var(--glass-insets);font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @media (prefers-reduced-transparency:reduce){.imm-count{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* lenis.css（darkroomengineering/lenis，MIT）—— Lenis 必需样式，随库一并内联 */
@@ -569,16 +642,18 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
 </style>
 </head>
 <body>
+
 <div class="bg-blobs" aria-hidden="true"><i class="blob blob-a"></i><i class="blob blob-b"></i></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="lg-refract" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="64" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<script>(function(){/* 顶栏折射能力检测，与「我的订阅」同款：仅 Chromium 且 CSS.supports 认可 backdrop-filter:url() 时给 html 加 .has-lg，其余环境顶栏保持纯磨砂 */try{var ua=navigator.userAgent||'';var isChromium=/Chrome|Chromium|Edg/.test(ua)&&!/OPR/.test(ua);if(isChromium&&window.CSS&&CSS.supports&&CSS.supports('backdrop-filter','url("#lg-refract")')){document.documentElement.classList.add('has-lg');}}catch(e){}})();</script>
 <div class="app" id="app">
   <header class="top">
-    <svg class="lg-svg" width="270" height="69" aria-hidden="true" focusable="false"><defs><radialGradient id="lg-f-top-mask" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="black" stop-opacity="0"/><stop offset="76%" stop-color="black" stop-opacity="0"/><stop offset="100%" stop-color="white" stop-opacity="1"/></radialGradient><filter id="lg-f-top" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feImage x="0" y="0" width="100%" height="100%" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/2wCEAAQDAwMDAwQDAwQGBAMEBgcFBAQFBwgHBwcHBwgLCAkJCQkICwsMDAwMDAsNDQ4ODQ0SEhISEhQUFBQUFBQUFBQBBQUFCAgIEAsLEBQODg4UFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFP/CABEIAQABAAMBEQACEQEDEQH/xAAxAAEBAQEBAQAAAAAAAAAAAAADAgQIAQYBAQEBAQEBAQAAAAAAAAAAAAMCBAEACAf/2gAMAwEAAhADEAAAAPjPor6kOgOiKhKgKhKgOhKhOhKxKgKhOgKhKhKgKxOhKhOgKhKhKgKwKhKgKgKwG841nns9J/nn2KVCdCdCVAVCVCVAdCVCdiVAVidCVAVCVAdiVCVCdAVCVCVAVCVAVAViVZxsBrPPY6R/NvsY6E6ErEqAqE6ErAqE6E7E7ErA0ErArAqAqEuiVAXRLol0S6J0JUBWBUI0BXnG88djpH81+xjoToSoSoCoTsSoYQTsTsTQSsCsCsCsCsCoC6A0JeAuiXSLwn0SoioCoCoBsBrPFH0j+a/Yx0J0JUJUJ2BUMIR2MIRoBoJIBXnJAK840BUA0BdAegXhLpF4S8R+IuiVgVANAV546fSH5r9jHRHQFQlYxYnZQgnYwhQokgEgEmckzjecazlYD3OPQHoD0S8JcI/EXiPxF0SoSvONBFF0j+a/YxdI7EqA6KLGEKEKEGFI0AlA0AUzimYbzjecazjWce5w6BdEeCXhPhFwz8R+MuiVgVAdF0j+a/Yp0RUJ0MWUIUWUIUKUIJqBoArnJM4pmBMw3nCsw1mCs4+AegPBLxHwi4Z8KPGXSPojYH0ukfzX7FOiKhiyiylDiylDhBNRNQJAJcwpnBMopmC84XlCswdzj3OPQHwlwS8R8M+HHDPxl0ioDoukfzT7GOhOyiimzmzhDlShBNBNBJc4rmFMwJlBMwXlC82esoVmHucOgXgHxH4j4Zyccg/GfiOiKh6R/NPsY6GLOKObOUObOUI0KEAlEkzimYFygmUEyheXPeULzZ6yhWce5x8BeEuGfCj0HyI5EdM/EdD0h+a/Yx0U0cUflxNnNnCHCCdgSiSZgTMK5c6ZQvLnTLnvJnvKFZgrMHc5dAeiXijhn445E8g/RHTPpdI/mn2KdlFR5RzcTUTZxZwglYGgCmcEzAuUEyZ0y57yZ0yZ7yheUKzh3OPc5dEvEfij0RyI9E+iPGfT6T/NPsQ6OKiKmajy4ijmyOyKwNAFM4JlBMudMmdMue8mdMme8me8wVmGsw0A9A+kfjjxx6J9EememfT6W/MvsMqOamKiamKmKOKM7ErErAUzAmYLyZ0y50yZ0yZkyZ7yBeULzBeYazl0T6R9KPRPYj0T2J9B9Ppj8x+wjo4qY7M9iKmKg6MrIrErALzBeYEyZ0y50yZkyZ7x50yheXPeUbzjWcqA6I+lHYnsT6J7E9iOx0z+YfYBUc1MdmexHZjsHRlRBRDYBecEzZ7yAmXNeTOmTOmPOmXOmULyjeYbzlYnQxRx057E9mexPYij6a/L/r86OOzPpjsR6Y7B9MqIaILDPYZ7zZ0y57y50yZ0x5kyAmXPeUEyjeYUznQnYnRTUTUT2JqJ7EUfTn5d9fFRx2Z9EdmPTHjLsF0h6I2OegzXmzJmzplz3lzJjzpkBMudMoplBM5JnOwOyiimzmomomonsHRdO/l318VFHYj0x6I9McgumXiHpDQ56DPebMmbNebMmXMmQEy50yguQEzCmYkA7GLGEKaObibiaOKOKPp38s+vCsj7EeiPTHIP0Hwx6ReMKDP0M95895syZ815cy5c6ZQTKCZRXMKZiQDQYQYsps5uJs5qIsjounvyz68KyLpx4z9Mcg+GXoLxl4g6IUGes+a8+e82ZM2dMuZMoJmBcwrlJM5IBoMKMoUWc2c3E0cWRUXT/wCV/XQ2R0RdiPQfDPkFwy9BeIOiHQz0Ges+e82dM2ZM2dMwLmBcwpmJc5qBoMIUIUoU2c2cWZ0R0PT/AOV/XQ2RUJdM+wfDL0Hwy5A+EfEHQz0AUGe8+dM2e82dcwJnFcwrnJc5IEKUIMIUoUWc2cWRUJ0PT/5V9dFYjZFRF0z8ZeM+QPDLxD4Q6OfoBQhefPeYEz50ziucUzCoEuclCEKFGUKEKLOLI7E6EqHqD8o+uhsRsisSoi6ZeM+QPiHhj0R8IUIdALALzgmcEzimcVAlzioGomgyhQgwhRZHZFQHQlQ9Qfk/10NiVkNiNiVGXiPxj4x8Q9IfCFCPRCwC84oA3nFQFM5KBKJIMKEIUWRoUUJWJUJ0BUPUH5L9dDZFYigjYjZHRF0x8Q9IvEHRHojQjQhecUAUAkEkziomgGgkoxZGgxZFQFQlYnQHRdPfj/10KCSCKESCNiVkViPSLpD0h6I0Q0I0A2IoBWBIJIBKBIJoJIJ2R2J0JWBUJ0JUB0XTv479dFZDYiglYigkhEgjZFQjRFQjRFQjQigFYigHYigmgEgmglYlYnQlQlYlQHQlQnQ9P/kf1yVkNiNCNkNiVENiNiViNEViNkVCVgKCViViViSCViSCVgdCViVCViVCdgVCVCdD1D+U/XBWQ2I0I2Q2JUQ2I0JWQ0I2JUQ2JUI2JUI2J0JWJWJWA2R0BWJ0I2JUJ2BUJUJ0P//EABkQAQEBAQEBAAAAAAAAAAAAAAECABEDEP/aAAgBAQABAgB1atWrVq1atWrVq1atWrVq1atWrVq1atWrVq+OrVq1atWrVq1atWrVq1atWrVq1atWrVq1atXxVppppppdWrVq1atWrVq1NNNNNNNNNNNPVWmmmmms6tWrVq1atWpppppppppppppp6q0000uc51atWrVq1ammmmmmmmmmmmmt1Vpppc5znVq1atWrVqaaaaaaaaaaaaaeqtNLnOc51atWrVq1ammmmmmmmmmmmmnqrS5znOc6tWrVq16222mmmmmmlVppp6tKuc5znOrVq1a9TbbbbTTTTTSq000qtLnOc5zq1atWrW0222200000qqqtKqrnOc5zq1atTbbbbbbbbTTTSqqqqqq5znOc6tTTTbbbbbbbbTTTSqqqqrlVznOctNNNtttttttttNNNNKqqqrqznKqrTTTTbbbbbbbbbTTTSqqqqrqznOc5aaaabbbbbbbbbaaaaVVVVVdWc5znVq1NNttttttttttNNKqqqqudWc5znVq16tbbbbbbbbbbTTSqqqq5XVnOc6tWrVrb1tttttttttNNKqqqqrWrK5VWmmm2230bbbbbbaaaXOc5zlVa1KuVVppptttt9G22222mmlzlVznK6tWVVWmmmm2222222222mlznOc5znLWppVVWmmm22222229bTWrOc5znOcq1qaaVpWmm222222229erVqznOc5znKtatStK0rTbTTbbbberXr1as5znOc5aVpppppWlabaabbbb1ta9WrVnOc5znU0rTTTTTTTTTbTTbbbTWvVq1as5znOdTTStNNNNNNNNNtNNtttN6tWvVq1ZznOrU00rTTTTTTTTTTTTTbTWvVq1atWrOc6tTTTStNNNNNNNNNNtNNtNa9WrVq1Z1Z1NNNNNK1q1NNNNNNNNNNNtNatWrVq1atWrU00000rWrVq1atWrVq1alaaa1atWrVq1NNNammmmla1atWrVq1aterVq16tWrVnVqa1NK1qaaaVX/xAAWEAADAAAAAAAAAAAAAAAAAAAhgJD/2gAIAQEAAz8AaExf/8QAGhEBAQEBAQEBAAAAAAAAAAAAAQISEQADEP/aAAgBAgEBAgDx48ePHjx48ePHjx48ePHjx48ePHjx48ePHj86IiIiIiInjx48ePHjx48IiIiIj0oooooooooRERER73ve60UUUUUUVrWiiiiiihERERER73ve97ooooorRWiiiiihKERERER73ve973RRRRWtFFFFFFCIiIiIiPe973ve60UUVrRRRRRRQiIlCIiI973ve973pRRWiiiiiiiiiiiiiiihEe973ve973RRWtFFFFFFFFFFFFFFFFFFa13ve973WitaKKKKKKKKKKKKKKKKKK1rWtd1rutFa1oooooooooooosssooorWta1rWta1rRRRRRRRRRRZZZZZZZZZWta1rWta1rRRRRRRRRZZZZZZZZZZZZe9a1rWta1rWitaKLLLLLLLLLLLLLLLLL3rWta1rWtFbLLLLLLLLLLLLLLLLLLLL3vWta1rWita1ssssssss+hZZZZZZZZe961rWta0Vre97LLLLLLLLLLLPoWWWWWXrWta1oorWta3ssss+hZZZZ9Cyyyyyyyyiita1orWta1ve9llllllllllllllllFFa0VorWta1ve9llllllllllllllllllFFFaK1rWta1rWiyyyyyyyyyyyyiiiiiiitFFa1rWta1oosoosssssoooosoooorRRRWta1rWta0UUUUUWUUUUUUUUUUUVoooorWta1rWtaKKKKKKmiiiiiiiiiiiiiiitd73ve61oSiiipoqaKKKKKKKKKK0UUUVrve973vREREZoSihEooooorRRRRWtd73ve9EREREREoSiiiiitFllllla73ve9ERERERESiiiiiitH0PoWWWWVrXe96IiIiMoiJRRRRRRWjwlFFllllFFd6IiIiIlCUUUUUUUUUePHjx48ePCIiIiIiIiUUUUUUUUUUUePHjx48ePHjx48ePHjx48IiUUUUUUJRRRX//xAAWEQADAAAAAAAAAAAAAAAAAAABYJD/2gAIAQIBAz8AtEV7/8QAFxEBAQEBAAAAAAAAAAAAAAAAAAECEP/aAAgBAwEBAgCtNNNNNNNNNNNNNNNNNNNNNNNNNNNNNcrTTTTTTTTTTTTTTTTTTTTTTTTTTTTTXKrTTTTTTTU000000000000000000001FVpppppqampqaaaaaaaaaaaaaaaaaaaa5Vaaaaampqampqammmmmmmmmmmlaaaaaaiq0001NTU1NTU1NTTTTTTTTTTSqqtNNNcqtNNSyzU1LNTU1NTTTTTTTTTSqqq001ytNLLLLNTU1NTU1NTbbbTTTTTSqqq001ytNLLLLLNTU1NTU3NttttNNNNNKqq001KrSyyyyyzU1NTU3Nzc02220000qqqqrSqqyyyyyzU1NTU3Nzc3NttttNNNKqqqqqqssssss1NTU3Nzc3NzbbbbTTTSqqqqqqrLLLLLNTU1Nzc3Nzc22220000qqqqqqqqssss1NTU3Nzc3NzbbbbbTTSqqqqqqqqqqzU1NTc3Nzc3Nzbc22000qqqqqqqqqqqtTU3Nzc3Nzc3NtzbTTSqqqqrKqqqqqtNNzc23Nzc3Nzc3NTU1KqqqrKqqqqqtNNNNttzc3Nzc3NzU1NLLLLLKqqqqqqqq0022223Nzc3NzU1NSyyyyyyqqqqqqqrTTbbbbc3Nzc3NTU1LLLLLLKsqqqqqqrTTTTbbbc3Nzc1NTUsssssssqqqqqqrTTTTTbbbTc3NTU1NTUsssssqqqqqqqq0000222023NTU1NTUsssssqqqqqqqq000000003NTU1NTU1LLLLLNKrTSqqqqtNNNNNNtNNTU1NSzUssss00qq0qqqqrTTTTTTTTTU1NTUs1LLLNNNKrTTTSqqq00000000001NTU1LNTU0000qtNNNKqqqtNNNNNNNNTU1NTUs1NNNNNKss1NNNK00qtK0000001NNTU0s000000qq000001NKrStNNNNK1NNNNStNNNNNKqtNNNNNNNK0000000rU0000rTTTTTSq00000rTTTTTTTTTTTTTTTTStNNNNKr/xAAUEQEAAAAAAAAAAAAAAAAAAACg/9oACAEDAQM/AAAf/9k=" preserveAspectRatio="xMidYMid slice" result="DISPLACEMENT_MAP"/><feColorMatrix in="DISPLACEMENT_MAP" type="matrix" values="0.3 0.3 0.3 0 0 0.3 0.3 0.3 0 0 0.3 0.3 0.3 0 0 0 0 0 1 0" result="EDGE_INTENSITY"/><feComponentTransfer in="EDGE_INTENSITY" result="EDGE_MASK"><feFuncA type="discrete" tableValues="0 0.1 1"/></feComponentTransfer><feOffset in="SourceGraphic" dx="0" dy="0" result="CENTER_ORIGINAL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-70" xChannelSelector="R" yChannelSelector="B" result="RED_DISPLACED"/><feColorMatrix in="RED_DISPLACED" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="RED_CHANNEL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-77" xChannelSelector="R" yChannelSelector="B" result="GREEN_DISPLACED"/><feColorMatrix in="GREEN_DISPLACED" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="GREEN_CHANNEL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-84" xChannelSelector="R" yChannelSelector="B" result="BLUE_DISPLACED"/><feColorMatrix in="BLUE_DISPLACED" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="BLUE_CHANNEL"/><feBlend in="GREEN_CHANNEL" in2="BLUE_CHANNEL" mode="screen" result="GB_COMBINED"/><feBlend in="RED_CHANNEL" in2="GB_COMBINED" mode="screen" result="RGB_COMBINED"/><feGaussianBlur in="RGB_COMBINED" stdDeviation="0.3" result="ABERRATED_BLURRED"/><feComposite in="ABERRATED_BLURRED" in2="EDGE_MASK" operator="in" result="EDGE_ABERRATION"/><feComponentTransfer in="EDGE_MASK" result="INVERTED_MASK"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer><feComposite in="CENTER_ORIGINAL" in2="INVERTED_MASK" operator="in" result="CENTER_CLEAN"/><feComposite in="EDGE_ABERRATION" in2="CENTER_CLEAN" operator="over"/></filter></defs></svg><span class="lg-clip" aria-hidden="true"><span class="lg-warp"></span></span>
     <button class="btn icon-btn menu-btn" id="menuBtn" type="button" data-ripplet aria-label="打开目录" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <div class="brand"><b>史纲时间轴</b><span>sadpotatomine 的复习本</span></div>
     <div class="tools">
       <div class="prog" id="prog"><span class="bar" aria-hidden="true"><i></i></span><span class="txt"></span></div>
       <button class="btn" id="ribbonBtn" type="button" data-ripplet aria-pressed="false" title="收起页面底部的时间轴条"><span class="icon-swap" id="ribSwap"><span class="ic on" data-icon="collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 8.5L12 11l2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="expand"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 15.5h17M9.5 11L12 8.5l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span class="btn-lab">收起时间轴</span></button>
-      <button class="btn" id="immersiveBtn" type="button" data-ripplet aria-pressed="false" title="隐藏顶栏、目录和时间轴，专注阅读正文"><span class="icon-swap" id="immSwap"><span class="ic on" data-icon="enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="exit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></span><span>沉浸阅读</span></button>
+      <button class="btn" id="immersiveBtn" type="button" data-ripplet aria-pressed="false" title="隐藏顶栏、目录和时间轴，专注阅读正文"><span class="icon-swap" id="immSwap"><span class="ic on" data-icon="enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ic" data-icon="exit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></span><span class="btn-lab">沉浸阅读</span></button>
       <div class="ld-inline" id="ld-inline">
         <div class="ld-stage" id="ld-stage">
           <canvas id="ld-cv"></canvas>
@@ -606,8 +681,8 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
     <main class="detail" id="detail" tabindex="-1"></main>
   </div>
   <footer class="ribbon">
-    <svg class="lg-svg" width="270" height="69" aria-hidden="true" focusable="false"><defs><radialGradient id="lg-f-ribbon-mask" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="black" stop-opacity="0"/><stop offset="76%" stop-color="black" stop-opacity="0"/><stop offset="100%" stop-color="white" stop-opacity="1"/></radialGradient><filter id="lg-f-ribbon" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feImage x="0" y="0" width="100%" height="100%" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/2wCEAAQDAwMDAwQDAwQGBAMEBgcFBAQFBwgHBwcHBwgLCAkJCQkICwsMDAwMDAsNDQ4ODQ0SEhISEhQUFBQUFBQUFBQBBQUFCAgIEAsLEBQODg4UFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFP/CABEIAQABAAMBEQACEQEDEQH/xAAxAAEBAQEBAQAAAAAAAAAAAAADAgQIAQYBAQEBAQEBAQAAAAAAAAAAAAMCBAEACAf/2gAMAwEAAhADEAAAAPjPor6kOgOiKhKgKhKgOhKhOhKxKgKhOgKhKhKgKxOhKhOgKhKhKgKwKhKgKgKwG841nns9J/nn2KVCdCdCVAVCVCVAdCVCdiVAVidCVAVCVAdiVCVCdAVCVCVAVCVAVAViVZxsBrPPY6R/NvsY6E6ErEqAqE6ErAqE6E7E7ErA0ErArAqAqEuiVAXRLol0S6J0JUBWBUI0BXnG88djpH81+xjoToSoSoCoTsSoYQTsTsTQSsCsCsCsCsCoC6A0JeAuiXSLwn0SoioCoCoBsBrPFH0j+a/Yx0J0JUJUJ2BUMIR2MIRoBoJIBXnJAK840BUA0BdAegXhLpF4S8R+IuiVgVANAV546fSH5r9jHRHQFQlYxYnZQgnYwhQokgEgEmckzjecazlYD3OPQHoD0S8JcI/EXiPxF0SoSvONBFF0j+a/YxdI7EqA6KLGEKEKEGFI0AlA0AUzimYbzjecazjWce5w6BdEeCXhPhFwz8R+MuiVgVAdF0j+a/Yp0RUJ0MWUIUWUIUKUIJqBoArnJM4pmBMw3nCsw1mCs4+AegPBLxHwi4Z8KPGXSPojYH0ukfzX7FOiKhiyiylDiylDhBNRNQJAJcwpnBMopmC84XlCswdzj3OPQHwlwS8R8M+HHDPxl0ioDoukfzT7GOhOyiimzmzhDlShBNBNBJc4rmFMwJlBMwXlC82esoVmHucOgXgHxH4j4Zyccg/GfiOiKh6R/NPsY6GLOKObOUObOUI0KEAlEkzimYFygmUEyheXPeULzZ6yhWce5x8BeEuGfCj0HyI5EdM/EdD0h+a/Yx0U0cUflxNnNnCHCCdgSiSZgTMK5c6ZQvLnTLnvJnvKFZgrMHc5dAeiXijhn445E8g/RHTPpdI/mn2KdlFR5RzcTUTZxZwglYGgCmcEzAuUEyZ0y57yZ0yZ7yheUKzh3OPc5dEvEfij0RyI9E+iPGfT6T/NPsQ6OKiKmajy4ijmyOyKwNAFM4JlBMudMmdMue8mdMme8me8wVmGsw0A9A+kfjjxx6J9EememfT6W/MvsMqOamKiamKmKOKM7ErErAUzAmYLyZ0y50yZ0yZkyZ7yBeULzBeYazl0T6R9KPRPYj0T2J9B9Ppj8x+wjo4qY7M9iKmKg6MrIrErALzBeYEyZ0y50yZkyZ7x50yheXPeUbzjWcqA6I+lHYnsT6J7E9iOx0z+YfYBUc1MdmexHZjsHRlRBRDYBecEzZ7yAmXNeTOmTOmPOmXOmULyjeYbzlYnQxRx057E9mexPYij6a/L/r86OOzPpjsR6Y7B9MqIaILDPYZ7zZ0y57y50yZ0x5kyAmXPeUEyjeYUznQnYnRTUTUT2JqJ7EUfTn5d9fFRx2Z9EdmPTHjLsF0h6I2OegzXmzJmzplz3lzJjzpkBMudMoplBM5JnOwOyiimzmomomonsHRdO/l318VFHYj0x6I9McgumXiHpDQ56DPebMmbNebMmXMmQEy50yguQEzCmYkA7GLGEKaObibiaOKOKPp38s+vCsj7EeiPTHIP0Hwx6ReMKDP0M95895syZ815cy5c6ZQTKCZRXMKZiQDQYQYsps5uJs5qIsjounvyz68KyLpx4z9Mcg+GXoLxl4g6IUGes+a8+e82ZM2dMuZMoJmBcwrlJM5IBoMKMoUWc2c3E0cWRUXT/wCV/XQ2R0RdiPQfDPkFwy9BeIOiHQz0Ges+e82dM2ZM2dMwLmBcwpmJc5qBoMIUIUoU2c2cWZ0R0PT/AOV/XQ2RUJdM+wfDL0Hwy5A+EfEHQz0AUGe8+dM2e82dcwJnFcwrnJc5IEKUIMIUoUWc2cWRUJ0PT/5V9dFYjZFRF0z8ZeM+QPDLxD4Q6OfoBQhefPeYEz50ziucUzCoEuclCEKFGUKEKLOLI7E6EqHqD8o+uhsRsisSoi6ZeM+QPiHhj0R8IUIdALALzgmcEzimcVAlzioGomgyhQgwhRZHZFQHQlQ9Qfk/10NiVkNiNiVGXiPxj4x8Q9IfCFCPRCwC84oA3nFQFM5KBKJIMKEIUWRoUUJWJUJ0BUPUH5L9dDZFYigjYjZHRF0x8Q9IvEHRHojQjQhecUAUAkEkziomgGgkoxZGgxZFQFQlYnQHRdPfj/10KCSCKESCNiVkViPSLpD0h6I0Q0I0A2IoBWBIJIBKBIJoJIJ2R2J0JWBUJ0JUB0XTv479dFZDYiglYigkhEgjZFQjRFQjRFQjQigFYigHYigmgEgmglYlYnQlQlYlQHQlQnQ9P/kf1yVkNiNCNkNiVENiNiViNEViNkVCVgKCViViViSCViSCVgdCViVCViVCdgVCVCdD1D+U/XBWQ2I0I2Q2JUQ2I0JWQ0I2JUQ2JUI2JUI2J0JWJWJWA2R0BWJ0I2JUJ2BUJUJ0P//EABkQAQEBAQEBAAAAAAAAAAAAAAECABEDEP/aAAgBAQABAgB1atWrVq1atWrVq1atWrVq1atWrVq1atWrVq+OrVq1atWrVq1atWrVq1atWrVq1atWrVq1atXxVppppppdWrVq1atWrVq1NNNNNNNNNNNPVWmmmmms6tWrVq1atWpppppppppppppp6q0000uc51atWrVq1ammmmmmmmmmmmmt1Vpppc5znVq1atWrVqaaaaaaaaaaaaaeqtNLnOc51atWrVq1ammmmmmmmmmmmmnqrS5znOc6tWrVq16222mmmmmmlVppp6tKuc5znOrVq1a9TbbbbTTTTTSq000qtLnOc5zq1atWrW0222200000qqqtKqrnOc5zq1atTbbbbbbbbTTTSqqqqqq5znOc6tTTTbbbbbbbbTTTSqqqqrlVznOctNNNtttttttttNNNNKqqqrqznKqrTTTTbbbbbbbbbTTTSqqqqrqznOc5aaaabbbbbbbbbaaaaVVVVVdWc5znVq1NNttttttttttNNKqqqqudWc5znVq16tbbbbbbbbbbTTSqqqq5XVnOc6tWrVrb1tttttttttNNKqqqqrWrK5VWmmm2230bbbbbbaaaXOc5zlVa1KuVVppptttt9G22222mmlzlVznK6tWVVWmmmm2222222222mlznOc5znLWppVVWmmm22222229bTWrOc5znOcq1qaaVpWmm222222229erVqznOc5znKtatStK0rTbTTbbbberXr1as5znOc5aVpppppWlabaabbbb1ta9WrVnOc5znU0rTTTTTTTTTbTTbbbTWvVq1as5znOdTTStNNNNNNNNNtNNtttN6tWvVq1ZznOrU00rTTTTTTTTTTTTTbTWvVq1atWrOc6tTTTStNNNNNNNNNNtNNtNa9WrVq1Z1Z1NNNNNK1q1NNNNNNNNNNNtNatWrVq1atWrU00000rWrVq1atWrVq1alaaa1atWrVq1NNNammmmla1atWrVq1aterVq16tWrVnVqa1NK1qaaaVX/xAAWEAADAAAAAAAAAAAAAAAAAAAhgJD/2gAIAQEAAz8AaExf/8QAGhEBAQEBAQEBAAAAAAAAAAAAAQISEQADEP/aAAgBAgEBAgDx48ePHjx48ePHjx48ePHjx48ePHjx48ePHj86IiIiIiInjx48ePHjx48IiIiIj0oooooooooRERER73ve60UUUUUUVrWiiiiiihERERER73ve97ooooorRWiiiiihKERERER73ve973RRRRWtFFFFFFCIiIiIiPe973ve60UUVrRRRRRRQiIlCIiI973ve973pRRWiiiiiiiiiiiiiiihEe973ve973RRWtFFFFFFFFFFFFFFFFFFa13ve973WitaKKKKKKKKKKKKKKKKKK1rWtd1rutFa1oooooooooooosssooorWta1rWta1rRRRRRRRRRRZZZZZZZZZWta1rWta1rRRRRRRRRZZZZZZZZZZZZe9a1rWta1rWitaKLLLLLLLLLLLLLLLLL3rWta1rWtFbLLLLLLLLLLLLLLLLLLLL3vWta1rWita1ssssssss+hZZZZZZZZe961rWta0Vre97LLLLLLLLLLLPoWWWWWXrWta1oorWta3ssss+hZZZZ9Cyyyyyyyyiita1orWta1ve9llllllllllllllllFFa0VorWta1ve9llllllllllllllllllFFFaK1rWta1rWiyyyyyyyyyyyyiiiiiiitFFa1rWta1oosoosssssoooosoooorRRRWta1rWta0UUUUUWUUUUUUUUUUUVoooorWta1rWtaKKKKKKmiiiiiiiiiiiiiiitd73ve61oSiiipoqaKKKKKKKKKK0UUUVrve973vREREZoSihEooooorRRRRWtd73ve9EREREREoSiiiiitFllllla73ve9ERERERESiiiiiitH0PoWWWWVrXe96IiIiMoiJRRRRRRWjwlFFllllFFd6IiIiIlCUUUUUUUUUePHjx48ePCIiIiIiIiUUUUUUUUUUUePHjx48ePHjx48ePHjx48IiUUUUUUJRRRX//xAAWEQADAAAAAAAAAAAAAAAAAAABYJD/2gAIAQIBAz8AtEV7/8QAFxEBAQEBAAAAAAAAAAAAAAAAAAECEP/aAAgBAwEBAgCtNNNNNNNNNNNNNNNNNNNNNNNNNNNNNcrTTTTTTTTTTTTTTTTTTTTTTTTTTTTTXKrTTTTTTTU000000000000000000001FVpppppqampqaaaaaaaaaaaaaaaaaaaa5Vaaaaampqampqammmmmmmmmmmlaaaaaaiq0001NTU1NTU1NTTTTTTTTTTSqqtNNNcqtNNSyzU1LNTU1NTTTTTTTTTSqqq001ytNLLLLNTU1NTU1NTbbbTTTTTSqqq001ytNLLLLLNTU1NTU3NttttNNNNNKqq001KrSyyyyyzU1NTU3Nzc02220000qqqqrSqqyyyyyzU1NTU3Nzc3NttttNNNKqqqqqqssssss1NTU3Nzc3NzbbbbTTTSqqqqqqrLLLLLNTU1Nzc3Nzc22220000qqqqqqqqssss1NTU3Nzc3NzbbbbbTTSqqqqqqqqqqzU1NTc3Nzc3Nzbc22000qqqqqqqqqqqtTU3Nzc3Nzc3NtzbTTSqqqqrKqqqqqtNNzc23Nzc3Nzc3NTU1KqqqrKqqqqqtNNNNttzc3Nzc3NzU1NLLLLLKqqqqqqqq0022223Nzc3NzU1NSyyyyyyqqqqqqqrTTbbbbc3Nzc3NTU1LLLLLLKsqqqqqqrTTTTbbbc3Nzc1NTUsssssssqqqqqqrTTTTTbbbTc3NTU1NTUsssssqqqqqqqq0000222023NTU1NTUsssssqqqqqqqq000000003NTU1NTU1LLLLLNKrTSqqqqtNNNNNNtNNTU1NSzUssss00qq0qqqqrTTTTTTTTTU1NTUs1LLLNNNKrTTTSqqq00000000001NTU1LNTU0000qtNNNKqqqtNNNNNNNNTU1NTUs1NNNNNKss1NNNK00qtK0000001NNTU0s000000qq000001NKrStNNNNK1NNNNStNNNNNKqtNNNNNNNK0000000rU0000rTTTTTSq00000rTTTTTTTTTTTTTTTTStNNNNKr/xAAUEQEAAAAAAAAAAAAAAAAAAACg/9oACAEDAQM/AAAf/9k=" preserveAspectRatio="xMidYMid slice" result="DISPLACEMENT_MAP"/><feColorMatrix in="DISPLACEMENT_MAP" type="matrix" values="0.3 0.3 0.3 0 0 0.3 0.3 0.3 0 0 0.3 0.3 0.3 0 0 0 0 0 1 0" result="EDGE_INTENSITY"/><feComponentTransfer in="EDGE_INTENSITY" result="EDGE_MASK"><feFuncA type="discrete" tableValues="0 0.1 1"/></feComponentTransfer><feOffset in="SourceGraphic" dx="0" dy="0" result="CENTER_ORIGINAL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-70" xChannelSelector="R" yChannelSelector="B" result="RED_DISPLACED"/><feColorMatrix in="RED_DISPLACED" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="RED_CHANNEL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-77" xChannelSelector="R" yChannelSelector="B" result="GREEN_DISPLACED"/><feColorMatrix in="GREEN_DISPLACED" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="GREEN_CHANNEL"/><feDisplacementMap in="SourceGraphic" in2="DISPLACEMENT_MAP" scale="-84" xChannelSelector="R" yChannelSelector="B" result="BLUE_DISPLACED"/><feColorMatrix in="BLUE_DISPLACED" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="BLUE_CHANNEL"/><feBlend in="GREEN_CHANNEL" in2="BLUE_CHANNEL" mode="screen" result="GB_COMBINED"/><feBlend in="RED_CHANNEL" in2="GB_COMBINED" mode="screen" result="RGB_COMBINED"/><feGaussianBlur in="RGB_COMBINED" stdDeviation="0.3" result="ABERRATED_BLURRED"/><feComposite in="ABERRATED_BLURRED" in2="EDGE_MASK" operator="in" result="EDGE_ABERRATION"/><feComponentTransfer in="EDGE_MASK" result="INVERTED_MASK"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer><feComposite in="CENTER_ORIGINAL" in2="INVERTED_MASK" operator="in" result="CENTER_CLEAN"/><feComposite in="EDGE_ABERRATION" in2="CENTER_CLEAN" operator="over"/></filter></defs></svg><span class="lg-clip" aria-hidden="true"><span class="lg-warp"></span></span>
     <button class="btn icon-btn play" id="playBtn" type="button" data-ripplet aria-label="自动播放" aria-pressed="false"></button>
+    <span class="era-name" id="eraName"></span>
     <div class="track" id="track" role="slider" tabindex="0" aria-label="时间轴（可拖动；节点等距排列）" title="拖动浏览；节点按顺序等距排列，与真实年份间隔无关。← → 切换节点，Home / End 跳转首尾。"></div>
     <span class="play-count" id="playCount" aria-hidden="true"></span>
     <div class="speed" role="group" aria-label="播放速度">
@@ -625,7 +700,10 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
   <nav class="imm-nav" id="immNav" aria-label="沉浸阅读进度">
     <span class="imm-count" id="immCount" aria-hidden="true"></span>
   </nav>
-  <button class="immersive-exit" id="immersiveExit" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>退出沉浸</span></button>
+  <div class="imm-tools">
+    <button class="immersive-exit" id="themeBtn" type="button" aria-pressed="false" aria-label="切换主题"></button>
+    <button class="immersive-exit" id="immersiveExit" type="button" aria-label="退出沉浸" title="退出沉浸"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="btn-lab">退出沉浸</span></button>
+  </div>
 </div>
 <noscript><div class="nos">这个时间轴需要启用 JavaScript 才能使用。</div></noscript>
 <script type="application/json" id="sz-data">{"courses":{"sg":{"name":"史纲","full":"中国近现代史纲要","set":"cn","prefix":"史纲"}},"chapters":{"史纲":{"第一章":"进入近代后中华民族的磨难与抗争","第二章":"不同社会力量对国家出路的早期探索","第三章":"辛亥革命与君主专制制度的终结","第四章":"中国共产党成立和中国革命新局面","第五章":"中国革命的新道路","第六章":"中华民族的抗日战争","第七章":"为建立新中国而奋斗","第八章":"中华人民共和国的成立与中国社会主义建设道路的探索","第九章":"改革开放与中国特色社会主义的开创和发展","第十章":"中国特色社会主义进入新时代"}},"eras":{"cn":[{"k":"cn1","name":"旧民主主义革命时期","short":"旧民主主义革命","range":"1840—1919","from":1830,"to":1919.33},{"k":"cn2","name":"新民主主义革命时期","short":"新民主主义革命","range":"1919—1949","from":1919.33,"to":1949.74,"tick":1919},{"k":"cn3","name":"社会主义革命和建设时期","short":"社会主义革命和建设","range":"1949—1978","from":1949.74,"to":1978.9,"tick":1949},{"k":"cn4","name":"改革开放和社会主义现代化建设新时期","short":"改革开放新时期","range":"1978—2012","from":1978.9,"to":2012.8,"tick":1978},{"k":"cn5","name":"中国特色社会主义新时代","short":"新时代","range":"2012—","from":2012.8,"to":2100,"tick":2012}]},"events":[{"y":1840.49,"d":"1840年6月28日","t":"鸦片战争爆发","ch":["史纲·第一章"],"p":"广东沿海","s":"中国近代史的开端","b":"英国对华贸易长期处于逆差，便向中国大量走私鸦片。1839年林则徐虎门销烟，英国以此为借口，于1840年6月发动侵略战争。","k":["中国开始从一个独立的封建国家**逐步沦为半殖民地半封建国家**","近代中国两对主要矛盾：**帝国主义和中华民族的矛盾、封建主义和人民大众的矛盾，前者是最主要的矛盾**","两大历史任务：**求得民族独立和人民解放；实现国家富强和人民幸福**——前者为后者扫清障碍、创造前提","半殖民地（主权原因）：不平等条约破坏了中国的领土主权、领海主权、关税主权、司法主权等，中国丧失了完全独立的地位，但仍维持独立国家和政府的名义","半封建（经济原因）：中国出现了资本主义生产关系，但民族资本主义经济不可能成为社会经济的主要形式，外国资本及依附于它的官僚资本居于支配地位","**近代中国诞生的新兴被压迫阶级是工人阶级，它先于中国的资产阶级而产生，是中国沦为两半社会过程最早出现的新社会阶级**","**林则徐是近代中国睁眼看世界的第一人**"],"q":["易混：**1840年是“开始沦为”，1901年《辛丑条约》才是“完全沦为”**半殖民地半封建社会"],"m":"一个开端，两对矛盾，两大任务","c":["sg"],"id":"1840a"},{"y":1842.66,"d":"1842年8月29日","t":"《南京条约》签订","ch":["史纲·第一章"],"p":"南京","s":"中国近代第一个不平等条约","b":"清军战败，清政府被迫在南京江面的英国军舰上签约；1843年又订立《五口通商章程》和《虎门条约》作为补充。","k":["主要内容：**割香港岛；赔款2100万银元；开放广州、厦门、福州、宁波、上海五口通商；协定关税**","补充条约使英国攫取了**领事裁判权、片面最惠国待遇**等特权"],"q":["易混：领事裁判权、片面最惠国待遇出自1843年的补充条约，不在《南京条约》本身","易混：**香港岛（1842年割让）→ 九龙司地方一区（1860年割让）→ 新界（1898年租借）**"],"m":"割岛、赔款、五口、协定关税","c":["sg"],"id":"1842a"},{"y":1851.03,"d":"1851年1月11日","t":"金田起义","ch":["史纲·第二章"],"p":"广西桂平金田村","s":"太平天国运动爆发","b":"洪秀全以拜上帝会为组织形式，在广西桂平金田村发动起义，建号太平天国。","k":["太平天国运动是**中国旧式农民战争的最高峰**","沉重打击了清王朝的统治和外国侵略势力","先后提出**《天朝田亩制度》和《资政新篇》两个纲领性文件**"],"q":["考法：“旧式农民战争的最高峰”指太平天国；**农民阶级不可能提出科学的革命纲领**"],"m":"金田一声起，农民战争到顶峰","c":["sg"],"id":"1851a"},{"y":1853.21,"d":"1853年3月19日","t":"定都天京·《天朝田亩制度》","ch":["史纲·第二章"],"p":"天京（南京）","s":"建立与清王朝对峙的农民政权","b":"太平军攻克南京，定为首都，改称天京；同年颁布《天朝田亩制度》。1859年洪仁玕又提出《资政新篇》。","k":["《天朝田亩制度》**以解决土地问题为中心**，反映了农民废除封建土地所有制的强烈愿望","它带有**绝对平均主义色彩，具有空想性**，在当时无法实现","《资政新篇》是**中国近代第一个比较系统的发展资本主义的方案**，但缺乏实施条件"],"q":["易混：《天朝田亩制度》= 平均分配土地（空想）；《资政新篇》= 学习西方、发展资本主义（未能实施）","易混：**《资政新篇》既学技术、又学制度；魏源《海国图志》“师夷长技以制夷”只学技术、不学制度**"],"m":"","c":["sg"],"id":"1853a"},{"y":1856.81,"d":"1856年10月23日","t":"第二次鸦片战争","ch":["史纲·第一章"],"p":"广州","s":"英法联合扩大侵华","b":"英国借口“亚罗号事件”，法国借口“马神甫事件”，联合发动侵华战争，1857年底攻占广州，1858年北上攻陷大沽炮台。","k":["1858年清政府被迫签订《天津条约》：外国公使进驻北京，增开通商口岸，外国人可到内地游历、经商、传教","沙俄趁火打劫，1858年迫签《瑷珲条约》，**割占黑龙江以北、外兴安岭以南60多万平方公里领土**"],"q":["易混：沙俄割地三步——**《瑷珲条约》（1858，黑龙江以北）→《北京条约》（1860，乌苏里江以东）→《勘分西北界约记》（1864，西北）**"],"m":"","c":["sg"],"id":"1856a"},{"y":1860.8,"d":"1860年10月18日","t":"火烧圆明园·《北京条约》","ch":["史纲·第一章"],"p":"北京","s":"第二次鸦片战争结束","b":"英法联军攻入北京，劫掠并焚毁圆明园；清政府分别与英、法、俄签订《北京条约》。","k":["割九龙司地方一区给英国，增开天津为商埠，允许招募华工出国","沙俄以“调停有功”为名，**割占乌苏里江以东约40万平方公里领土**","此后清政府与外国侵略者逐步勾结，“借师助剿”镇压太平天国"],"q":["考法：第二次鸦片战争的主要条约 =《天津条约》（1858）+《北京条约》（1860）"],"m":"","c":["sg"],"id":"1860a"},{"y":1861.05,"d":"1861年1月20日—1894年","t":"洋务运动兴起","ch":["史纲·第二章"],"p":"北京·上海·安庆等地","s":"地主阶级洋务派“自强”“求富”的探索","b":"1861年清政府设立总理各国事务衙门。奕䜣、曾国藩、李鸿章、左宗棠、张之洞等以“中学为体，西学为用”为指导思想，学习西方技术。","k":["**前期以“自强”为旗号兴办军用工业（如江南制造总局），后期以“求富”为旗号兴办民用企业（如轮船招商局）**","创办新式学堂、派遣留学生，筹建北洋、南洋、福建水师","失败原因：**具有封建性，对外国有依赖性，管理具有腐朽性**；1894年甲午战败标志其失败","洋务派民用企业多数采取官督商办方式，基本上是资本主义性质的近代企业"],"q":["易混：洋务运动**客观上促进了中国早期工业化和民族资本主义的产生，但没有使中国走上富强道路**"],"m":"中体西用，先自强后求富","c":["sg"],"id":"1861a"},{"y":1864.55,"d":"1864年7月19日","t":"天京陷落","ch":["史纲·第二章"],"p":"天京（南京）","s":"太平天国运动失败","b":"1856年天京变乱后，太平天国由盛转衰；1864年7月湘军攻破天京。","k":["**失败的根本原因是农民阶级的局限性**：没有先进阶级领导，不能提出科学的革命纲领","领导集团腐败，宗教思想不能指导斗争，对外国侵略者缺乏理性认识","证明**单纯的农民战争不能完成反帝反封建的历史任务**"],"q":["易混：**天京变乱（1856）是由盛转衰的转折点；天京陷落（1864）标志运动失败**"],"m":"","c":["sg"],"id":"1864a"},{"y":1883.95,"d":"1883年12月14日—1885年","t":"中法战争","ch":["史纲·第一章"],"p":"越南北部·镇南关","s":"“不败而败”的战争","b":"法国侵略越南并以越南为跳板进犯中国，1883年12月进攻驻越清军，战争爆发；1884年马尾海战中福建水师几乎全军覆没。","k":["1885年3月冯子材率军取得镇南关大捷","清政府“乘胜即收”，与法国签订《中法新约》，法国势力深入中国西南","1884年中法战争期间，香港中国造船工人罢工，拒绝修理受伤的法舰，爱国商人罢市，码头工人拒运法货。","19世纪70至80年代边疆危机中，法国从越南侵犯广西。"],"q":["考法：近代反侵略战争失败的**根本原因是社会制度的腐败，重要原因是经济技术的落后**"],"m":"","c":["sg"],"id":"1883b"},{"y":1894.56,"d":"1894年7月25日","t":"甲午中日战争","ch":["史纲·第一章"],"p":"黄海·辽东·威海卫","s":"洋务运动失败，民族危机空前严重","b":"日本借朝鲜问题挑起战争：1894年7月25日日军在丰岛海面袭击中国运兵船；9月黄海海战中邓世昌等壮烈殉国；1895年2月北洋舰队在威海卫全军覆没。","k":["**标志着洋务运动的失败**","战后帝国主义列强掀起瓜分中国的狂潮","**民族危机空前加深，促进了中华民族的觉醒**","历次反侵略战争失败的原因：**社会制度的腐败和经济技术的落后，其中制度腐败是更根本的原因**","帝国主义列强未能灭亡和瓜分中国的原因：列强之间的矛盾和互相制约是重要原因，**最根本的原因是中华民族不屈不挠的反侵略斗争**，中国长期是一个统一的大国也是原因之一"],"q":["易混：**丰岛海战是开端；黄海海战是规模最大的海战；威海卫之战北洋舰队全军覆没**"],"m":"","c":["sg"],"id":"1894a"},{"y":1894.9,"d":"1894年11月24日","t":"兴中会成立","ch":["史纲·第三章"],"p":"美国檀香山","s":"第一个资产阶级革命团体","b":"孙中山在檀香山创立兴中会，誓词为“驱除鞑虏，恢复中华，创立合众政府”。","k":["**中国第一个资产阶级革命团体**","誓词提出推翻清王朝、建立共和政府的主张","孙中山在《兴中会章程》中**喊出“振兴中华”这个时代的最强音**"],"q":["易混：**兴中会（1894）是第一个资产阶级革命团体；同盟会（1905）是第一个全国性的资产阶级革命政党**"],"m":"","c":["sg"],"id":"1894b"},{"y":1895.29,"d":"1895年4月17日","t":"《马关条约》签订","ch":["史纲·第一章"],"p":"日本马关（下关）","s":"中国半殖民地化程度大大加深","b":"清政府派李鸿章赴日本马关议和，签订《马关条约》。","k":["**割让辽东半岛、台湾全岛及所有附属各岛屿、澎湖列岛给日本**","**赔偿日本军费白银2亿两；增开沙市、重庆、苏州、杭州为商埠**","**允许日本在中国通商口岸开设工厂**，适应了列强资本输出的需要","《马关条约》使**列强对华经济侵略由商品输出转向资本输出**，掀起瓜分中国的狂潮，中国人民的民族意识开始普遍觉醒"],"q":["易混：俄、德、法“三国干涉还辽”后，清政府以3000万两白银“赎回”辽东半岛","考法：**台湾被日本割占始于1895年，1945年抗战胜利后回归中国**"],"m":"割辽台澎，赔两亿，开四口，准设厂","c":["sg"],"id":"1895a"},{"y":1898.44,"d":"1898年6月11日","t":"戊戌维新","ch":["史纲·第二章"],"p":"北京","s":"资产阶级维新派的政治改良尝试","b":"1895年康有为等发动“公车上书”，维新运动兴起。1898年6月11日光绪帝颁布“明定国是”诏书，变法开始；9月21日慈禧太后发动政变，变法失败，历时103天。","k":["是一次**爱国救亡运动，一场资产阶级性质的政治改良运动，也是一场思想启蒙运动**","失败原因：**维新派不敢否定封建主义，对帝国主义抱有幻想，脱离并惧怕人民群众**；守旧势力强大","教训：在半殖民地半封建的中国，**自上而下的改良道路走不通**","戊戌维新是中国民族资产阶级登上政治舞台的第一次表演"],"q":["易混：维新派与守旧派论战三问——**要不要变法；要不要兴民权、设议院，实行君主立宪；要不要废八股、改科举、兴西学**","考法：维新派与守旧派的论战实质上是**资产阶级思想与封建主义思想在中国的第一次正面交锋**"],"m":"公车上书起，百日维新止","c":["sg"],"id":"1898a"},{"y":1900.46,"d":"1900年6月17日","t":"义和团运动·八国联军侵华","ch":["史纲·第一章"],"p":"京津地区","s":"粉碎了列强瓜分中国的图谋","b":"义和团以“扶清灭洋”为口号在山东、直隶兴起。1900年6月，英、法、德、俄、美、日、意、奥组成八国联军侵华，8月攻占北京。","k":["义和团运动**粉碎了列强瓜分中国的图谋**，显示了中国人民巨大的反侵略力量","局限：**带有笼统排外色彩和迷信落后的一面**"],"q":["考法：列强之间的矛盾和互相制约是列强未能瓜分中国的原因之一，但不是根本原因","考法：义和团蒙受封建统治者欺骗，是因为认识不到帝国主义联合中国封建地主阶级压迫中国人民的实质"],"m":"","c":["sg"],"id":"1900a"},{"y":1901.68,"d":"1901年9月7日","t":"《辛丑条约》签订","ch":["史纲·第一章"],"p":"北京","s":"中国完全沦为半殖民地半封建社会","b":"八国联军侵华战争后，清政府被迫与11国签订《辛丑条约》。","k":["**赔款白银4.5亿两，分39年还清，本息合计9.8亿余两**，以海关税、盐税等作担保","**划定北京东交民巷为使馆界，允许各国驻兵保护；拆毁大沽炮台，允许列强在北京至山海关铁路沿线驻兵**","清政府保证严禁人民参加反帝活动，**从此完全成为帝国主义统治中国的工具**","清末新政（1901年4月成立督办政务处）：设立商部、学部、巡警部，裁撤绿营，建立新军，颁布商法商律、奖励工商，鼓励留学、颁布新学制，1906年起正式废除科举考试"],"q":["易混：裁撤绿营是清末新政的内容，不是洋务运动"],"m":"四亿五千万，三十九年还","c":["sg"],"id":"1901a"},{"y":1905.63,"d":"1905年8月20日","t":"中国同盟会成立","ch":["史纲·第三章"],"p":"日本东京","s":"第一个全国性的资产阶级革命政党","b":"孙中山和黄兴、宋教仁等人以兴中会和华兴会为基础，在日本东京成立中国同盟会，以《民报》为机关报，并确定了革命纲领。","k":["纲领：**“驱除鞑虏，恢复中华，创立民国，平均地权”**","孙中山在《民报》发刊词中将其概括为**民族、民权、民生三大主义（旧三民主义）**","1905—1907年革命派与改良派展开大论战，划清了革命与改良的界限"],"q":["易混：论战三问——**要不要以革命手段推翻清王朝；要不要推翻帝制、实行共和；要不要进行社会革命**","易混：改良派很大一部分就是戊戌维新时期的维新派，例如梁启超"],"m":"十六字纲领，三民主义","c":["sg"],"id":"1905a"},{"y":1911.78,"d":"1911年10月10日","t":"武昌起义·辛亥革命","ch":["史纲·第三章"],"p":"湖北武昌","s":"推翻统治中国两千多年的君主专制制度","b":"保路运动推动革命形势高涨，湖北新军中的革命团体文学社、共进会发动武昌起义，各省纷纷响应。","k":["推翻了清王朝，**结束了统治中国两千多年的君主专制制度，建立了中华民国**","使民主共和观念深入人心，为中国的进步打开了闸门","但**没有改变中国半殖民地半封建的社会性质**"],"q":["考法：辛亥革命是近代中国**比较完全意义上的资产阶级民主革命**"],"m":"","c":["sg"],"id":"1911a"},{"y":1912.0,"d":"1912年1月1日","t":"中华民国成立","ch":["史纲·第三章"],"p":"南京","s":"资产阶级共和国性质的革命政权","b":"孙中山在南京就任临时大总统，南京临时政府成立。","k":["南京临时政府是**资产阶级共和国性质的革命政权**","**1912年2月12日清帝退位；随后孙中山辞职，袁世凯窃取了革命果实**","南京临时政府的局限性：《告友邦书》**试图用承认清政府与列强所订的一切不平等条约和所欠的一切外债换取列强承认中华民国**；没有提出满足农民土地要求的政策措施，反而以保护私有财产为借口维护封建土地制度以及官僚、地主占有的土地和财产","毛泽东指出：“中国反帝反封建的资产阶级民主革命，正规地说起来，是从孙中山先生开始的”"],"q":["易混：清帝退位标志清王朝统治结束；**袁世凯在北京就任临时大总统后，北洋军阀统治开始**"],"m":"","c":["sg"],"id":"1912a"},{"y":1912.19,"d":"1912年3月11日","t":"《中华民国临时约法》","ch":["史纲·第三章"],"p":"南京","s":"第一部具有资产阶级共和国宪法性质的法典","b":"南京临时政府公布《中华民国临时约法》。","k":["规定中华民国**主权属于国民全体，实行三权分立**","规定国民一律平等，享有人身、居住、言论、集会、结社、宗教信仰等自由","**改总统制为责任内阁制，意在限制袁世凯的权力**","《临时约法》以根本大法的形式废除了两千多年来的封建君主专制制度，确认了资产阶级共和国的政治制度"],"q":["考法：《临时约法》是**中国历史上第一部具有资产阶级共和国宪法性质的法典**"],"m":"","c":["sg"],"id":"1912b"},{"y":1913.53,"d":"1913年7月12日—1918年","t":"二次革命·护国运动·护法运动","ch":["史纲·第三章"],"p":"南方各省","s":"旧民主主义革命走向失败","b":"袁世凯建立北洋军阀统治。1913年宋教仁遇刺，孙中山发动“二次革命”失败；1915年袁世凯复辟帝制，蔡锷等发起护国战争；1917年孙中山发起护法运动。","k":["辛亥革命失败的根本原因：**在帝国主义时代的半殖民地半封建中国，资本主义的建国方案行不通**","主观原因：没有提出彻底的反帝反封建纲领，不能充分发动和依靠人民群众，不能建立坚强的革命政党","护法运动失败：1918年1月西南军阀与直系军阀勾结擅自停战、排挤孙中山、改组军政府，1918年5月21日孙中山愤然离开广州去上海；**护法运动的失败标志着整个民族资产阶级领导的旧民主主义革命的终结**"],"q":["考法：辛亥革命的失败表明，**资产阶级共和国的方案没有能够救中国**","考法：辛亥革命失败的客观根本原因是资本主义的建国方案行不通，主观根本原因是资产阶级的软弱性和妥协性（阶级局限性）"],"m":"","c":["sg"],"id":"1913a"},{"y":1915.71,"d":"1915年9月15日","t":"新文化运动兴起","ch":["史纲·第四章"],"p":"上海→北京","s":"一场空前的思想解放运动","b":"陈独秀在上海创办《青年杂志》（次年改名《新青年》），新文化运动兴起；1917年后以北京大学和《新青年》为主要阵地。","k":["**基本口号是民主和科学**","**提倡新道德、反对旧道德，提倡新文学、反对旧文学**","十月革命后，**新文化运动后期发展为宣传马克思主义的思想运动**","新文化运动为马克思主义的广泛传播准备了思想和文化的条件","新文化运动的局限：**把改造国民性置于优先地位，但离开改造产生封建思想的社会环境的革命实践，仅靠少数人呐喊和有限宣传手段，不可能根本改造国民性**；许多领导人物还没有马克思主义的批判精神，使用的方法一般还是资产阶级的方法"],"q":["易混：**前期新文化运动属于资产阶级民主主义性质**；局限是对东西方文化存在绝对肯定或绝对否定的形式主义偏向","考法：新民主主义革命与旧民主主义革命的**根本区别在于领导权掌握在资产阶级还是无产阶级手中**"],"m":"","c":["sg"],"id":"1915b"},{"y":1917.86,"d":"1917年11月7日","t":"十月革命·马克思主义在中国初步传播","ch":["史纲·第四章"],"p":"俄国彼得格勒→北京","s":"中国先进分子找到了马克思主义","b":"俄国十月革命胜利，给中国送来了马克思列宁主义。李大钊在北京率先宣传十月革命和马克思主义。","k":["**李大钊是中国最早的马克思主义者**，1918年发表《法俄革命之比较观》《庶民的胜利》《Bolshevism的胜利》等文章","1919年李大钊发表《我的马克思主义观》，**标志着马克思主义在中国进入比较系统的传播阶段**","1919年苏维埃俄国第一次对华宣言声明放弃沙俄在中国攫取的一切特权，引起人们很大震动"],"q":["考法：毛泽东语——**“十月革命一声炮响，给我们送来了马克思列宁主义”**"],"m":"","c":["sg"],"id":"1917b"},{"y":1919.34,"d":"1919年5月4日","t":"五四运动","ch":["史纲·第四章"],"p":"北京→上海","s":"中国新民主主义革命的开端","b":"巴黎和会上中国外交失败，5月4日北京学生举行示威游行；6月3日后上海工人罢工，运动中心转到上海。","k":["是一场**彻底地不妥协地反帝反封建的爱国运动**","**中国工人阶级开始以独立的姿态登上政治舞台**","**促进了马克思主义在中国的传播及其同中国工人运动的结合**，为中国共产党成立作了思想上和干部上的准备","民族意识：普遍觉醒——甲午战争；全面觉醒——五四运动"],"q":["易混：**运动主力由学生转为工人，中心由北京转到上海**；直接导火索是巴黎和会外交失败"],"m":"五四：新民主主义革命的起点","c":["sg"],"id":"1919b"},{"y":1921.56,"d":"1921年7月23日","t":"中共一大·中国共产党成立","ch":["史纲·第四章"],"p":"上海→浙江嘉兴南湖","s":"开天辟地的大事变，是近现代中国历史发展的必然产物，是中国人民在救亡图存斗争中顽强求索的必然产物，是实现中华民族伟大复兴的必然产物","b":"1920年起，上海、北京、武汉、长沙、济南、广州等地以及旅日、旅法的先进分子相继建立共产党早期组织。1921年7月23日中共一大在上海开幕，最后一天的会议转移到嘉兴南湖的一艘游船上举行。","k":["**确定党的名称为“中国共产党”，通过党的第一个纲领和第一个决议**","纲领规定党的奋斗目标是**推翻资产阶级政权、建立无产阶级专政、消灭私有制**","确定党成立后的中心任务是**组织工人阶级、领导工人运动**；选举陈独秀为中央局书记","**中国共产党是马克思列宁主义同中国工人运动相结合的产物**","会场受到暗探注意和法租界巡捕房搜查，最后一天会议转移到嘉兴南湖游船上举行，这条游船后来被称为“红船”","中国共产党一开始就是以马克思列宁主义理论为基础的党，是区别于第二国际旧式社会改良党的新型工人阶级革命政党，是在马克思主义同中国工人运动相结合的基础上产生的","伟大建党精神：**坚持真理、坚守理想、践行初心、担当使命、不怕牺牲、英勇斗争、对党忠诚、不负人民**，是中国共产党的精神之源"],"q":["易混：**一大只提出了最高纲领，还没有提出反帝反封建的民主革命纲领**——这一步由二大完成","考法：**7月1日是1941年由党中央正式确定的纪念日，一大实际开幕日是7月23日**","易混：中国共产党是在马克思主义同中国工人运动相结合的基础上产生的，不能说农民运动"],"m":"","c":["sg"],"id":"1921a"},{"y":1922.54,"d":"1922年7月16日","t":"中共二大·民主革命纲领","ch":["史纲·第四章"],"p":"上海","s":"第一次明确提出彻底的反帝反封建民主革命纲领，也是中国近代史上第一个彻底的反帝反封建的民主革命纲领","b":"建党一年后，党在领导工人运动的实践中，并借助列宁关于民族和殖民地问题的理论，认识到中国首先要进行民主革命。","k":["**最高纲领：实现共产主义；最低纲领：打倒军阀，推翻国际帝国主义的压迫，统一中国为真正的民主共和国**","**第一次明确提出彻底的反帝反封建的民主革命纲领**，为中国人民的革命斗争指明了方向","**通过党的第一部党章，提出党要成为“大的群众党”**；决定加入共产国际"],"q":["易混：**一大＝党名、第一个纲领（最高纲领）；二大＝民主革命纲领（最低纲领）、第一部党章；三大＝国共合作方针**","易混：二大提出组成“民主主义的联合战线”，是第一次提出统一战线政策，但此时还不是与孙中山领导的国民党建立统一战线","考法：共产国际及其在中国的代表对大革命起了积极作用，但并不真正了解中国情况，也出了一些错误主意，幼年的党难以摆脱其错误指导"],"m":"一大建党，二大定纲，三大合作","c":["sg"],"id":"1922a"},{"y":1923.45,"d":"1923年6月12日","t":"中共三大·确定国共合作方针","ch":["史纲·第四章"],"p":"广州","s":"确定以“党内合作”形式建立革命统一战线","b":"1923年2月京汉铁路工人大罢工遭到军阀吴佩孚血腥镇压（二七惨案），党认识到工人阶级孤军奋斗难以战胜强大的敌人，必须争取一切可能的同盟者。","k":["**决定共产党员以个人身份加入国民党**，同时在政治上、组织上保持党的独立性","**实行国共合作，建立各民主阶级的革命统一战线**","三大正确估计了孙中山的革命立场和国民党进行改革的可能性"],"q":["考法：合作形式是**“党内合作”——共产党员以个人名义加入国民党，而不是两党平行合作**","考法：共产党员加入国民党时，党必须在政治上、思想上、组织上保持自己的独立性"],"m":"","c":["sg"],"id":"1923a"},{"y":1924.05,"d":"1924年1月20日","t":"国民党一大·第一次国共合作","ch":["史纲·第四章"],"p":"广州","s":"标志第一次国共合作正式形成","b":"孙中山在中国共产党和共产国际帮助下改组国民党，在广州召开国民党第一次全国代表大会，李大钊等共产党员参加大会并进入国民党中央领导机构。","k":["大会宣言对三民主义作了新的解释，形成**以联俄、联共、扶助农工三大政策为基础的新三民主义**","**新三民主义的政纲同中国共产党民主革命阶段的纲领基本一致，成为国共合作的政治基础**","1924年5月创办黄埔军校，为国民革命培养军事和政治骨干"],"q":["易混：旧三民主义（1905同盟会）→ 新三民主义（1924国民党一大）：**民族主义突出反帝，民权主义强调“为一般平民所共有”，民生主义增加“节制资本”**","考法：**国共合作的政治基础是新三民主义，合作形式是党内合作**","考法：民生主义概括为“平均地权”和“节制资本”两大原则，后来孙中山又提出“耕者有其田”的主张"],"m":"","c":["sg"],"id":"1924a"},{"y":1925.03,"d":"1925年1月11日","t":"中共四大·领导权与工农联盟","ch":["史纲·第四章"],"p":"上海","s":"第一次提出无产阶级领导权和工农联盟问题","b":"国共合作后，统一战线内部谁来领导、依靠谁的问题逐渐突出，党需要从理论上作出回答。","k":["**明确提出无产阶级在民主革命中的领导权问题**","提出工农联盟问题，指出**农民是工人阶级天然的同盟者**","四大对民主革命的内容作了更加完整的规定，这是对中国革命问题认识的重大进展。"],"q":["易混：四大提出了领导权问题，但大革命后期以陈独秀为代表的右倾机会主义恰恰放弃了领导权","中国革命的中心问题是无产阶级领导权问题。"],"m":"","c":["sg"],"id":"1925a"},{"y":1925.41,"d":"1925年5月30日","t":"五卅运动","ch":["史纲·第四章"],"p":"上海","s":"大革命高潮的起点","b":"上海日本纱厂资本家枪杀工人顾正红，5月30日英国巡捕在南京路向抗议群众开枪，制造了五卅惨案。","k":["中国共产党领导上海工人罢工、学生罢课、商人罢市，反帝怒潮迅速席卷全国","**6月爆发省港大罢工，坚持16个月**，有力支援了广东革命政府","五卅运动后，以广东为中心的革命统一战线进一步巩固，为北伐准备了条件"],"q":["易混：**五卅运动是大革命高潮的起点，北伐战争把大革命推向高潮**","省港大罢工是持续时间最长的罢工。"],"m":"","c":["sg"],"id":"1925b"},{"y":1926.52,"d":"1926年7月9日","t":"北伐战争","ch":["史纲·第四章"],"p":"广州出师→长江流域","s":"把大革命推向高潮","b":"国民革命军从广州出师北伐，口号是“打倒列强，除军阀”，主要打击吴佩孚、孙传芳、张作霖三支北洋军阀力量。","k":["共产党员和共青团员在北伐军中发挥了先锋模范作用，**叶挺独立团被誉为“铁军”**","不到半年就从珠江流域打到长江流域，**基本消灭了吴佩孚、孙传芳的主力**","北伐推动了工农运动的高涨，1927年3月上海工人第三次武装起义取得胜利","北伐战争以推翻北洋军阀统治为目标，国民革命军在工农群众支援下采取各个击破的战略节节胜利。","共产党人建立工人纠察队、农民自卫军等工农武装，配合正规军作战。"],"q":["考法：**北伐的胜利进军是国共合作的成果**，但高潮中也潜伏着统一战线破裂的危机","北伐战争在孙中山逝世之后发生，不由孙中山发动。"],"m":"","c":["sg"],"id":"1926a"},{"y":1927.28,"d":"1927年4月12日、7月15日","t":"四一二·七一五政变·大革命失败","ch":["史纲·第四章"],"p":"上海·武汉","s":"第一次国共合作破裂，大革命失败","b":"1927年4月12日蒋介石在上海发动反革命政变，大肆屠杀共产党员和革命群众；7月15日汪精卫集团在武汉公开“分共”。","k":["客观原因：反革命力量强大，大大超过革命力量；**资产阶级严重动摇，统一战线内部发生剧烈分化**","主观原因：党的领导机关在大革命后期犯了以陈独秀为代表的右倾机会主义错误，**放弃了对农民、对政权特别是对武装力量的领导权**","大革命失败的国际因素：大革命后期受到共产国际的错误指导","大革命失败后，国民党不再是工人、农民、城市小资产阶级和民族资产阶级的革命联盟，而是变成由代表地主阶级、买办性大资产阶级利益的反动集团控制的政党；其建立的南京国民政府同北洋军阀统治没有本质区别，国民党统治下中国社会的半殖民地半封建性质没有改变"],"q":["考法：大革命失败最深刻的教训是**党必须掌握革命的领导权，特别是对武装力量的领导权**","易混：1935年遵义会议之前党失败的原因共同点是**不善于把理论与实践相结合、共产国际瞎指挥**"],"m":"","c":["sg"],"id":"1927a"},{"y":1927.33,"d":"1927年4—5月","t":"中共五大","ch":["史纲·第四章"],"p":"湖北武汉","s":"首次明确民主集中制为党的根本组织原则","b":"1927年4—5月，中国共产党第五次全国代表大会在武汉举行，通过《中国共产党第三次修正章程决案》。","k":["**首次明确规定党组织的“指导原则为民主集中制”**","五大于1927年4月27日至5月9日在武汉举行，提出争取无产阶级对革命的领导权、建立革命民主政权和实行土地革命等正确原则。"],"q":["五大没有就如何争取革命领导权、如何领导农民实行土地革命、特别是如何建立党领导的革命武装提出有效具体措施，难以承担起挽救革命的任务。"],"m":"","c":["sg"],"id":"1927e"},{"y":1927.58,"d":"1927年8月1日","t":"南昌起义","ch":["史纲·第五章"],"p":"江西南昌","s":"打响武装反抗国民党反动派的第一枪","b":"大革命失败后，周恩来、贺龙、叶挺、朱德、刘伯承等领导党所掌握和影响的军队两万余人在南昌举行起义。","k":["**标志着中国共产党独立领导革命战争、创建人民军队和武装夺取政权的开端**","起义军南下广东途中受挫，朱德、陈毅率余部转战湘南，1928年4月上井冈山与毛泽东部会师","**8月1日后来被定为中国人民解放军建军节**"],"q":["易混：南昌起义是“第一枪”“开端”；**第一次公开打出“工农革命军”旗帜的是秋收起义**"],"m":"","c":["sg"],"id":"1927b"},{"y":1927.6,"d":"1927年8月7日","t":"八七会议","ch":["史纲·第五章"],"p":"湖北汉口","s":"由大革命失败到土地革命战争兴起的历史性转折","b":"大革命失败后全国陷入白色恐怖，共产党被宣布为“非法”，党的组织不断遭到破坏，活动被迫转入地下；1927年3月到1928年上半年，被杀害的共产党员和革命群众达31万多人，全党党员由五大时的57967人锐减到1万余人。党中央在汉口秘密召开紧急会议，总结大革命失败的教训，纠正以陈独秀为代表的右倾机会主义错误。","k":["**确定了实行土地革命和武装反抗国民党反动派的总方针**","毛泽东提出**“须知政权是由枪杆子中取得的”**","会后派干部到各地发动武装起义；但会议在反对右倾错误时，也为“左”倾错误的发展开了先河","八七会议明确提出**土地革命是中国资产阶级民主革命的中心问题**"],"q":["考法：**“枪杆子里面出政权”的思想最早在八七会议上提出**","易混：中国革命的**首要问题是分清敌友，中心问题是领导权问题，基本问题是农民问题，中国资产阶级民主革命的中心问题是土地革命**"],"m":"","c":["sg"],"id":"1927c"},{"y":1927.69,"d":"1927年9月9日起","t":"秋收起义·井冈山革命根据地","ch":["史纲·第五章"],"p":"湘赣边界→江西井冈山","s":"由进攻城市转向农村进军的伟大开端","b":"毛泽东领导湘赣边界秋收起义，攻打长沙受挫后，果断放弃进攻大城市，率部转向敌人统治薄弱的农村山区。","k":["**起义第一次公开打出“工农革命军”的旗帜**","9月底三湾改编，**把党的支部建在连上，从组织上确立了党对军队的领导**","10月到达井冈山，**创建第一个农村革命根据地**；1928年4月朱德、陈毅部到达井冈山，两军会师组成工农革命军第四军","1928年毛泽东写下《中国的红色政权为什么能够存在？》《井冈山的斗争》，**提出“工农武装割据”思想**"],"q":["考法：工农武装割据＝**以武装斗争为主要形式、以土地革命为基本内容、以农村革命根据地为战略阵地**，三者紧密结合","考法：三湾改编是建设无产阶级领导的新型人民军队的重要开端，标志着毛泽东建设人民军队思想开始形成，也是中国共产党建设新型人民军队最早的一次成功探索和实践"],"m":"秋收转兵上井冈，支部建在连上","c":["sg"],"id":"1927d"},{"y":1928.47,"d":"1928年6月18日—7月11日","t":"中共六大","ch":["史纲·第五章"],"p":"苏联莫斯科","s":"唯一一次在国外召开的全国代表大会；确定以争取群众为首要任务，是党的工作方针的一次重要转变","b":"大革命失败后，党内对中国社会性质和革命性质认识不一，“左”倾盲动错误又给革命造成了损失。会议在继续把城市工作的复兴视为革命高潮到来的决定条件的同时，肯定了农村根据地和红军是决定革命新高潮的更大发展基础和重要力量。","k":["肯定中国仍是半殖民地半封建社会，**现阶段的革命仍是资产阶级民主革命**","指出当时处在两个革命高潮之间，**党的总任务是争取群众，而不是进攻和暴动**","不足：对中间阶级的作用和反动势力内部的矛盾缺乏正确估计，对农村根据地的重要性和民主革命的长期性认识不足"],"q":["易混：土地革命时期三次“左”倾错误——瞿秋白盲动主义（1927—1928）、李立三冒险主义（1930）、王明教条主义（1931—1935），**危害最大的是王明“左”倾错误**"],"m":"","c":["sg"],"id":"1928a"},{"y":1929.99,"d":"1929年12月28日","t":"古田会议","ch":["史纲·第五章"],"p":"福建上杭古田","s":"确立思想建党、政治建军的原则","b":"红军长期处于农村游击环境，成分复杂（农民和其他小资产阶级占多数），存在单纯军事观点、极端民主化、非组织观点等非无产阶级思想，影响军队建设和党的领导。1929年12月，红四军第九次党的代表大会在福建上杭古田召开，通过了毛泽东起草的决议（即古田会议决议）。","k":["规定**红军是一个执行革命的政治任务的武装集团，必须绝对服从党的领导**","批判了单纯军事观点、极端民主化、非组织观点等错误思想","**古田会议决议是党和人民军队建设的纲领性文献**","**把思想建设放在党的建设首位，用无产阶级思想克服非无产阶级思想**","红军必须担负打仗、筹款和做群众工作的任务，必须加强政治工作"],"q":["易混：三湾改编从“组织上”确立党对军队的领导；**古田会议从“思想上、政治上”确立建党建军原则**","易混：党对军队的绝对领导——**发端于南昌起义、奠基于三湾改编（支部建在连上）、定型于古田会议**"],"m":"","c":["sg"],"id":"1929a"},{"y":1931.71,"d":"1931年9月18日","t":"九一八事变","ch":["史纲·第六章"],"p":"辽宁沈阳","s":"中国人民抗日战争的起点","b":"日本关东军炸毁沈阳北郊柳条湖附近的南满铁路，反诬中国军队所为，当夜炮轰东北军驻地北大营，接着向沈阳城等地发动进攻。国民党政府奉行“攘外必先安内”方针，实行不抵抗政策，东北三省很快沦陷。","k":["**揭开了中国人民抗日战争的序幕，也揭开了世界反法西斯战争的序幕**","1932年**日本扶植成立伪“满洲国”**；东北抗日义勇军和后来的东北抗日联军坚持抗战","中国共产党号召武装抗日，领导和推动了东北的抗日斗争","国际联盟和英、美等国对日本采取姑息、纵容政策，使日本对中国的侵略计划步步得逞"],"q":["易混：**九一八事变＝局部抗战开始（14年抗战的起点）；七七事变＝全民族抗战开始**"],"m":"","c":["sg"],"id":"1931a"},{"y":1931.87,"d":"1931年11月","t":"中华苏维埃第一次全国代表大会","ch":["史纲·第五章"],"p":"江西瑞金","s":"成立中华苏维埃共和国，中国历史上第一个全国性的工农民主政权","b":"1931年11月，中华苏维埃第一次全国代表大会在江西瑞金召开，成立了中华苏维埃共和国临时中央政府。大会的召开扩大了党和红色政权的影响，一定程度上加强了对处于被分割状态的各根据地的中枢指挥作用，推动了各根据地的政权、经济、文化教育和党的自身建设，开创了土地革命战争新局面。","k":["**通过《中华苏维埃共和国宪法大纲》**以及土地法令、劳动法等","选举产生中央执行委员会，**毛泽东当选为临时中央政府主席**","中华苏维埃共和国是**中国历史上第一个全国性的工农民主政权**，是中国共产党在局部地区执政的重要尝试","实行工农兵代表大会制度，各级苏维埃政府广泛吸收工农群众代表参加政权管理"],"q":["易混：**土地革命时期政权性质——工农民主政权；抗日战争时期——一切赞成抗日又赞成民主的人们政权；解放战争时期——各个革命阶级的联合专政；新中国——人民民主专政**"],"m":"","c":["sg"],"id":"1931b"},{"y":1934.78,"d":"1934年10月10日—1936年10月","t":"红军长征","ch":["史纲·第五章"],"p":"江西瑞金→陕北→甘肃会宁","s":"中国革命转危为安的伟大战略转移","b":"由于王明“左”倾教条主义错误的领导，中央革命根据地第五次反“围剿”失败，中央红军被迫进行战略转移。","k":["1935年10月中央红军到达陕北吴起镇；**1936年10月红一、二、四方面军在甘肃会宁、宁夏将台堡会师，长征胜利结束**","**长征是宣言书，是宣传队，是播种机**；宣告了国民党反动派围追堵截的破产","长征的胜利，是党和中国革命事业**从挫折走向胜利的伟大转折点**，形成了伟大的长征精神"],"q":["考法：长征胜利结束的标志是1936年10月三大主力会师；长征途中最重要的会议是遵义会议"],"m":"","c":["sg"],"id":"1934a"},{"y":1935.04,"d":"1935年1月15日","t":"遵义会议","ch":["史纲·第五章"],"p":"贵州遵义","s":"党的历史上一个生死攸关的转折点","b":"长征初期红军损失惨重，湘江战役后由出发时的8.6万余人锐减到3万余人。博古、李德等人的“左”倾错误军事指挥是第五次反“围剿”失败的主要原因，党和红军面临生死存亡的危机，迫切需要纠正错误、确立正确领导。1935年1月中央政治局在遵义召开扩大会议。","k":["**集中解决了当时具有决定意义的军事问题和组织问题**，结束了王明“左”倾教条主义在党中央的统治","**实际上确立了毛泽东在党中央和红军的领导地位**","是党第一次独立自主地运用马克思主义基本原理解决自己的路线、方针、政策问题，标志着党在政治上开始走向成熟","在极其危急的情况下**挽救了中国共产党、挽救了中国工农红军、挽救了中国革命**"],"q":["易混：遵义会议没有全面讨论政治路线问题，而是集中解决军事和组织问题——这是紧急情况下的正确选择","易混：遵义会议确立毛泽东的领导地位；**正式确立毛泽东思想为指导思想是1945年七大**"],"m":"生死攸关的转折点","c":["sg"],"id":"1935a"},{"y":1935.94,"d":"1935年12月9日","t":"一二·九运动·瓦窑堡会议","ch":["史纲·第六章"],"p":"北平·陕北瓦窑堡","s":"抗日救亡新高潮与抗日民族统一战线策略方针的确定","b":"1935年日本策动“华北事变”，企图使华北五省脱离中国政府管辖，民族危机空前严重。","k":["12月9日北平学生举行抗日救国示威游行，**标志着中国人民抗日救亡运动新高潮的到来**","12月中共中央在瓦窑堡召开政治局会议，**确定了建立抗日民族统一战线的策略方针**","毛泽东作《论反对日本帝国主义的策略》报告，**批判了党内的“左”倾关门主义**","瓦窑堡会议批评了“左”倾冒险主义和关门主义错误，强调共产党在抗日民族统一战线中的领导作用","瓦窑堡会议**开始解决党的政治路线问题、实现了政治路线的转变**，标志着党的抗日民族统一战线策略正式形成"],"q":["易混：1935年8月的《八一宣言》呼吁停止内战、一致抗日；**瓦窑堡会议才正式确定抗日民族统一战线的策略方针**"],"m":"","c":["sg"],"id":"1935b"},{"y":1936.95,"d":"1936年12月12日","t":"西安事变","ch":["史纲·第六章"],"p":"陕西西安","s":"西安事变的和平解决成为时局转换的枢纽，十年内战局面基本结束、国内和平初步实现","b":"蒋介石“攘外必先安内”的方针并没有根本改变，1936年12月初他到达西安，逼张学良、杨虎城“剿共”。张学良、杨虎城多次劝谏蒋介石停止内战、联共抗日无效后，在西安扣押蒋介石，实行“兵谏”。","k":["中国共产党从民族大义出发，**主张和平解决**，派周恩来等赴西安谈判","蒋介石被迫接受“停止内战，联共抗日”的主张","西安事变的和平解决使**十年内战的局面基本结束，国内和平初步实现**"],"q":["考法：**西安事变和平解决 ≠ 抗日民族统一战线正式形成**（正式形成在1937年9月）"],"m":"","c":["sg"],"id":"1936a"},{"y":1937.52,"d":"1937年7月7日","t":"七七事变·全民族抗战","ch":["史纲·第六章"],"p":"北平卢沟桥","s":"全民族抗战的开始","b":"日军借口一名士兵“失踪”，向北平西南卢沟桥一带的中国守军发动进攻，中国守军奋起抵抗。","k":["7月8日中共中央通电全国：“平津危急！华北危急！中华民族危急！**只有全民族实行抗战，才是我们的出路！**”","8月洛川会议提出全面抗战路线（人民战争路线），制定《抗日救国十大纲领》；红军主力改编为八路军，10月南方红军游击队改编为新四军","9月22日国民党中央通讯社发表中共中央提交的国共合作宣言，23日蒋介石发表谈话承认共产党的合法地位，**标志着以国共第二次合作为基础的抗日民族统一战线正式形成**"],"q":["易混：**共产党的全面抗战路线（依靠广大人民群众）vs 国民党的片面抗战路线（单纯依靠政府和军队）**"],"m":"","c":["sg"],"id":"1937a"},{"y":1937.52,"d":"1937年7月7日—1938年10月","t":"正面战场·战略防御","ch":["史纲·第六章"],"p":"淞沪·太原·徐州·武汉","s":"国民党军队担负正面战场作战","b":"战略防御阶段，国民党政府的抗战态度比较积极，组织了一系列大规模会战。","k":["先后组织淞沪、太原、徐州、武汉等会战，粉碎了日本“三个月灭亡中国”的狂妄计划","1938年春**台儿庄战役，是抗战以来正面战场取得的最大胜利**","1937年12月日军攻陷南京，制造了**屠杀中国军民30万人以上的南京大屠杀**；12月13日现为南京大屠杀死难者国家公祭日","1938年10月广州、武汉失守后，**抗日战争进入战略相持阶段**","忻口会战是国共两党军队合作抗日配合最好的一次战役。","国民党实行片面抗战路线，不敢放手发动和武装民众，在战略战术上进行单纯的阵地防御战。","战略防御阶段，国民党正面战场的正规战是主要的，敌后游击战是辅助的。","1938年初国民政府改组军事委员会下设政治部，聘请周恩来任副部长，同年6月国民参政会成立。","东部沿海一批重要工厂企业内迁，北京大学、清华大学、南开大学迁往昆明合并组建国立西南联合大学。"],"q":["考法：进入相持阶段后，**日本对国民党改以政治诱降为主、军事打击为辅，国民党政策重心逐渐转向消极抗日、积极反共**","除台儿庄战役取得大捷外，正面战场其他战役几乎都以退却、失败告终。"],"m":"","c":["sg"],"id":"1937b"},{"y":1937.62,"d":"1937年8月","t":"洛川会议","ch":["史纲·第六章"],"p":"陕西洛川","s":"制定全面抗战路线和《抗日救国十大纲领》","b":"1937年“七七事变”后全面抗日战争爆发，面对日军全面进攻，党需要明确抗战的路线、方针和策略，解决“如何抗战、依靠谁抗战”的关键问题。1937年8月，中共中央在陕北洛川召开政治局扩大会议。","k":["**制定了中国共产党的全面抗战路线，制定《抗日救国十大纲领》**","**实行全国军事的总动员、全国人民的总动员**","**坚持抗日战争中的无产阶级领导权**，在敌人后方放手发动独立自主的山地游击战争","提出必须改革政治机构，并适当改善工农大众的生活"],"q":["易混：**瓦窑堡会议（1935.12）侧重“建立统一战线”；洛川会议（1937.8）侧重“如何抗战”**、制定全面抗战路线"],"m":"","c":["sg"],"id":"1937d"},{"y":1937.71,"d":"1937年9月—1945年8月","t":"敌后战场与抗日根据地建设","ch":["史纲·第六章"],"p":"华北·华中敌后","s":"中国共产党成为全民族抗战的中流砥柱","b":"全民族抗战开始后，八路军、新四军深入敌后，发动群众开展游击战争，开辟敌后战场，建立抗日根据地。为克服根据地面临的严重困难局面，毛泽东提出“发展经济，保障供给”的经济工作和财政工作总方针，发出“自己动手，丰衣足食”的号召，领导根据地军民开展大生产运动。","k":["1937年9月平型关大捷，是**全国抗战以来中国军队的第一个大胜仗**","1940年8—12月百团大战，是抗战期间八路军在华北发动的规模最大、持续时间最长的战役","抗日民主政权实行**“三三制”：共产党员、非党的左派进步分子、不左不右的中间派各占三分之一**；农村实行减租减息","面对国民党顽固派的三次反共高潮（第二次以1941年1月皖南事变为顶点），**党坚持“发展进步势力，争取中间势力，孤立顽固势力”的方针**"],"q":["易混：**减租减息（抗战时期，地主减租减息、农民交租交息）≠ 没收地主土地（解放战争时期）**","易混：进步势力指工人、农民和城市小资产阶级，是统一战线的基础和抗日战争的主要依靠力量；中间势力指民族资产阶级、开明绅士和地方实力派"],"m":"","c":["sg"],"id":"1937c"},{"y":1938.4,"d":"1938年5月26日","t":"《论持久战》","ch":["史纲·第六章"],"p":"陕北延安","s":"科学预见了抗日战争的发展进程","b":"抗战初期，国内流行“亡国论”和“速胜论”两种错误观点。毛泽东在延安抗日战争研究会上发表长篇讲演。","k":["**驳斥了“亡国论”和“速胜论”，指出抗日战争是持久战，最后胜利属于中国**","预见抗日战争将经过**战略防御、战略相持、战略反攻三个阶段，战略相持阶段是最重要、是转变的枢纽**","强调“战争的伟力之最深厚的根源，存在于民众之中”，指出游击战争的战略地位和作用，**兵民是胜利之本**"],"q":["考法：持久战的依据是中日双方的基本特点——敌强我弱、敌退步我进步、敌小我大、敌寡助我多助"],"m":"","c":["sg"],"id":"1938a"},{"y":1938.75,"d":"1938年9月29日—11月6日","t":"六届六中全会·提出“马克思主义中国化”","ch":["史纲·第六章"],"p":"陕北延安","s":"第一次明确提出“马克思主义中国化”的命题","b":"王明从苏联回国后提出“一切经过统一战线”的右倾主张，党内思想亟须统一。1938年8月中共驻共产国际代表王稼祥回国，传达共产国际指示：中共中央的政治路线是正确的，中共中央要以毛泽东为首来解决统一领导的问题。","k":["毛泽东指出：要**“使马克思主义在中国具体化，使之在其每一表现中带着必须有的中国的特性”**","强调在统一战线中坚持独立自主原则，**批判了“一切经过统一战线”的错误主张**","全会**基本上纠正了王明的右倾错误**，统一了全党的思想和步调","毛泽东在会上作《论新阶段》政治报告，**第一次提出“马克思主义中国化”的科学命题**，它源于对中国革命进程中正反两个方面实践经验的科学总结","毛泽东后来指出“六中全会是决定中国之命运的”；全会进一步巩固了毛泽东在全党的领导地位"],"q":["易混：**1938年提出“马克思主义中国化”；十九届六中全会决议、二十大报告进一步使用“马克思主义中国化时代化”的表述**"],"m":"","c":["sg"],"id":"1938b"},{"y":1940.02,"d":"1940年1月9日","t":"《新民主主义论》","ch":["史纲·第六章"],"p":"陕北延安","s":"系统阐述新民主主义理论","b":"抗战进入相持阶段后，“中国向何处去”成为各界关注的问题。毛泽东在陕甘宁边区文化协会第一次代表大会上发表讲演，后以《新民主主义论》为题发表。","k":["中国革命分两步走：第一步是新民主主义革命，第二步是社会主义革命，好比文章的上篇和下篇","**系统阐述了新民主主义的政治、经济、文化纲领**","新民主主义文化是**民族的、科学的、大众的文化**","同期著作一起系统阐述了新民主主义革命理论，**标志着毛泽东思想走向成熟**"],"q":["易混：**民主主义革命是社会主义革命的必要准备，社会主义革命是民主主义革命的必然趋势**"],"m":"","c":["sg"],"id":"1940a"},{"y":1942.09,"d":"1942年2月1日—1945年4月","t":"延安整风运动","ch":["史纲·第六章"],"p":"陕北延安","s":"一次全党范围的马克思主义思想教育运动","b":"遵义会议以来党的路线已走上马克思主义的正确轨道，但对曾经给党的事业造成严重危害的主观主义、教条主义还没有来得及从思想上进行认真清理。为清除“左”倾和右倾错误、特别是教条主义的影响，党在全党范围内开展整风。1941年5月毛泽东作《改造我们的学习》报告，1942年2月作《整顿党的作风》《反对党八股》讲演。","k":["**主要内容：反对主观主义以整顿学风，反对宗派主义以整顿党风，反对党八股以整顿文风**","**反对主观主义是整风运动最主要的任务，重点是反对教条主义**","毛泽东对“实事求是”作了马克思主义的解释，**党的实事求是思想路线得以确立**","1945年4月六届七中全会通过《关于若干历史问题的决议》，**即党的第一个历史决议**"],"q":["易混：三个历史决议——1945年六届七中全会、1981年十一届六中全会、2021年十九届六中全会","易混：**遵义会议解决军事和组织问题，瓦窑堡会议解决政治路线问题，延安整风解决思想问题**（实事求是思想路线在全党确立）"],"m":"","c":["sg"],"id":"1942a"},{"y":1945.31,"d":"1945年4月23日—6月11日","t":"中共七大·确立毛泽东思想为指导思想","ch":["史纲·第六章"],"p":"陕北延安","s":"把毛泽东思想确立为党的指导思想并写入党章","b":"抗战胜利前夕，党的第七次全国代表大会在延安召开。七大召开前，延安整风使全党团结在毛泽东的旗帜下，实现了党的空前统一和团结。","k":["毛泽东作《论联合政府》政治报告，提出党的政治路线：**放手发动群众，壮大人民力量，在党的领导下打败日本侵略者，解放全国人民，建立一个新民主主义的中国**","总结了党的三大优良作风：**理论和实践相结合、和人民群众紧密地联系在一起、自我批评**","中共七大以“团结的大会，胜利的大会”载入党的史册，标志着我们党在政治上、思想上、组织上走向了成熟"],"q":["易混：“毛泽东思想”一词由王稼祥在1943年7月首先提出；**1945年七大正式确立为党的指导思想**","考法：**毛泽东思想是马克思主义中国化的第一个重大理论成果**"],"m":"","c":["sg"],"id":"1945a"},{"y":1945.62,"d":"1945年8月15日","t":"抗日战争胜利","ch":["史纲·第六章"],"p":"全国","s":"近代以来中国人民反抗外敌入侵第一次取得完全胜利的民族解放战争","b":"1945年8月苏联对日宣战，中国军民发起大反攻；8月15日日本宣布无条件投降，9月2日在投降书上签字。","k":["**9月3日被确定为中国人民抗日战争胜利纪念日；10月25日台湾光复**","胜利原因：**中国共产党的中流砥柱作用**；全民族团结抗战；世界上一切爱好和平和正义的国家和人民的支持","意义：彻底粉碎了日本军国主义殖民奴役中国的图谋，洗刷了近代以来抗击外来侵略屡战屡败的民族耻辱，**重新确立了中国在世界上的大国地位，开辟了中华民族伟大复兴的光明前景**","**中国战场是世界反法西斯战争的东方主战场**","胜利原因还包括：以爱国主义为核心的民族精神是中国人民抗日战争胜利的决定因素","抗日战争的伟大胜利是中华民族从近代以来陷入深重危机走向伟大复兴的历史转折点"],"q":["易混：**14年抗战（1931—1945）vs 8年全民族抗战（1937—1945）**"],"m":"","c":["sg"],"id":"1945b"},{"y":1945.66,"d":"1945年8月28日—10月10日","t":"重庆谈判·《双十协定》","ch":["史纲·第七章"],"p":"重庆","s":"国民党被迫承认和平建国的基本方针","b":"抗战胜利后，中国面临两种命运、两个前途的抉择。蒋介石三次电邀毛泽东赴重庆谈判，其目的是一以此敷衍国内外舆论、掩盖其正在进行的内战准备，二是诱使中共交出人民军队和解放区政权以期不战而控制全中国，三是如果谈判不成即放手发动内战并把战争责任转嫁给中国共产党。","k":["毛泽东、周恩来、王若飞赴重庆谈判，**10月10日签订《政府与中共代表会谈纪要》（即《双十协定》）**","**国民党承认和平建国的基本方针**，同意召开政治协商会议，但军队和解放区政权问题未能解决","1945年8月25日中共中央发表《对目前时局的宣言》，**明确提出和平、民主、团结的口号**","政协协议较多地吸收了中间人士的意见，虽然还不是新民主主义性质的，但有利于冲破蒋介石的独裁统治和实行民主政治、有利于和平建国；在一个时期内，是否忠实履行政协协议成了人们衡量政治是非的重要尺度"],"q":[],"m":"","c":["sg"],"id":"1945c"},{"y":1946.48,"d":"1946年6月26日","t":"全面内战爆发","ch":["史纲·第七章"],"p":"中原解放区","s":"解放战争全面开始","b":"国民党依仗军事优势和美国援助，以围攻中原解放区为起点，向各解放区发动全面进攻。","k":["战略防御阶段（1946年6月—1947年6月），**以歼灭敌人有生力量为主要目标，不以保守或夺取地方为主要目标**","1947年3月起国民党转为对陕北和山东解放区的重点进攻；5月孟良崮战役全歼整编第七十四师","1946年5月4日中共中央发出《关于清算减租及土地问题的指示》（《五四指示》），**将减租减息政策改为实现“耕者有其田”**","毛泽东指出，在军事上必须采取集中优势兵力、各个歼灭敌人的作战原则；在政治上必须在党的领导下建立最广泛的人民民主统一战线","1947年10月10日中国人民解放军总部发表宣言，提出**“打倒蒋介石，解放全中国”的口号**"],"q":["考法：1946年8月毛泽东同斯特朗谈话，提出**“一切反动派都是纸老虎”**","易混：**解放战争三阶段是战略防御、战略进攻、战略决战；抗日战争三阶段是战略防御、战略相持（最重要）、战略反攻**"],"m":"","c":["sg"],"id":"1946a"},{"y":1947.38,"d":"1947年5月20日","t":"五二〇运动·第二条战线","ch":["史纲·第七章"],"p":"南京·上海·天津等地","s":"国民党统治区人民民主运动形成第二条战线","b":"国统区物价飞涨、民不聊生，各地学生举行“反饥饿、反内战、反迫害”示威游行，遭到军警镇压。","k":["毛泽东指出：中国境内已有了两条战线，**学生运动与国民党反动政府之间的尖锐斗争是第二条战线**","学生运动带动工人、农民和各阶层人民的斗争，与人民解放战争相配合","国民党政府陷入全民的包围之中","国民党政府派官员到原沦陷区接收时把接收变成劫收。","1948年8月法币发行额比1937年抗战前增发47万多倍，物价暴涨725万多倍，国统区陷入严重经济危机。","1946年6月23日南京下关事件，上海人民团体联合会请愿团在南京下关遭暴徒围殴5个小时，马叙伦、雷洁琼等多人受伤。","1947年2月28日台湾发生二二八起义。"],"q":["考法：第二条战线指**国统区以学生运动为先导的人民民主运动**"],"m":"","c":["sg"],"id":"1947a"},{"y":1947.49,"d":"1947年6月30日","t":"刘邓大军挺进大别山","ch":["史纲·第七章"],"p":"鲁西南→大别山","s":"揭开战略进攻的序幕","b":"经过一年作战，国民党军的全面进攻和重点进攻相继被粉碎，战争形势开始发生根本变化。","k":["刘伯承、邓小平率晋冀鲁豫野战军主力强渡黄河，**千里跃进大别山**","陈赓、谢富治兵团挺进豫西，陈毅、粟裕率华东野战军主力进入豫皖苏，三路大军在中原形成“品”字形阵势","**人民解放战争由战略防御转入战略进攻**","三路大军打到外线，迫使国民党军由战略进攻转变为“全面防御”，人民军队结束了长期以来在国内革命战争中所处的战略防御地位"],"q":["易混：**挺进大别山＝战略进攻开始（1947年下半年）；三大战役＝战略决战（1948年秋—1949年初）**"],"m":"","c":["sg"],"id":"1947b"},{"y":1947.77,"d":"1947年10月10日","t":"《中国土地法大纲》","ch":["史纲·第七章"],"p":"河北平山西柏坡","s":"规定实行耕者有其田的土地制度","b":"1947年下半年，解放区2/3的地方已基本实现“耕者有其田”，但还有1/3的地方没有进行土地制度改革，已进行土改的地方有的也不够彻底。1947年7—9月中共中央工作委员会在西柏坡召开全国土地会议，制定《中国土地法大纲》，10月由中共中央公布。","k":["**废除封建性及半封建性剥削的土地制度，实行耕者有其田**","**按乡村人口平分土地，土地归农民所有**","解放区土改使广大农民踊跃参军支前，**为解放战争胜利奠定了雄厚的群众基础**","经过土改运动，到1948年秋，1亿人口的解放区消灭了封建生产关系","土地制度改革使占中国人口绝大多数的农民进一步认识到中国共产党是他们自身利益的坚决维护者，因而自觉地在党的周围团结起来，为打败蒋介石、建立新中国奠定了深厚的群众基础"],"q":["易混：**减租减息（抗战）→《五四指示》（1946）→《中国土地法大纲》（1947）→《土地改革法》（1950）**"],"m":"","c":["sg"],"id":"1947c"},{"y":1947.98,"d":"1947年12月25日","t":"十二月会议·新民主主义三大经济纲领","ch":["史纲·第七章"],"p":"陕北米脂杨家沟","s":"完整提出新民主主义三大经济纲领","b":"中共中央在陕北米脂县杨家沟召开扩大会议，毛泽东作《目前形势和我们的任务》报告。","k":["**没收封建阶级的土地归农民所有**","**没收以蒋介石、宋子文、孔祥熙、陈立夫为首的垄断资本归新民主主义的国家所有**","**保护民族工商业**"],"q":["考法：**没收官僚资本具有民主革命和社会主义革命的双重性质**","考法：十二月会议所说的“转折点”是指人民解放军转入了全国规模的战略进攻，不是人民解放军占领南京，也不是战略决战时机成熟"],"m":"分地、收官、保民族","c":["sg"],"id":"1947d"},{"y":1948.7,"d":"1948年9月12日—1949年1月31日","t":"辽沈·淮海·平津三大战役","ch":["史纲·第七章"],"p":"东北·华东·华北","s":"战略决战，奠定了全国胜利的基础","b":"1948年秋人民解放军发展到280万人，解放区连成一片，中共中央决定同国民党军进行战略决战。","k":["辽沈战役（1948年9—11月）**解放东北全境**","淮海战役（1948年11月—1949年1月）以60万对80万，基本解放长江以北的华东、中原地区","平津战役（1948年11月—1949年1月）**北平和平解放，创造了“北平方式”**","三大战役**共歼灭和改编国民党军154万余人，国民党赖以维持其统治的主要军事力量基本被消灭**"],"q":["考法：解决国民党残余军队的三种方式——**天津方式（战斗解决）、北平方式（和平改编）、绥远方式（暂维原状，以后改编）**"],"m":"辽沈先打，淮海居中，平津收官","c":["sg"],"id":"1948b"},{"y":1949.2,"d":"1949年3月5—13日","t":"七届二中全会","ch":["史纲·第七章"],"p":"河北平山西柏坡","s":"为新中国的建立作了政治上、思想上的准备","b":"在全国胜利前夕，党在西柏坡召开七届二中全会，规划胜利后的建国方针。","k":["**党的工作重心由乡村移到城市，开始由城市到乡村并由城市领导乡村的时期**","提出**使中国稳步地由农业国转变为工业国、由新民主主义国家转变为社会主义国家**的发展方向","指出全国胜利后，国内的基本矛盾是工人阶级和资产阶级的矛盾，国外的基本矛盾是中国和帝国主义国家的矛盾","**提出“两个务必”：务必使同志们继续地保持谦虚、谨慎、不骄、不躁的作风，务必使同志们继续地保持艰苦奋斗的作风**","全会规定了党在全国胜利后在政治、经济、外交方面应当采取的基本政策，**提出“另起炉灶”的方针，同时正式确立“打扫干净屋子再请客”的外交方针**","毛泽东告诫全党，夺取全国胜利，这只是万里长征走完了第一步，中国革命以后的道路更长，工作更伟大，更艰苦"],"q":["考法：1949年3月23日党中央离开西柏坡前往北平，毛泽东称之为**“进京赶考”**"],"m":"","c":["sg"],"id":"1949a"},{"y":1949.31,"d":"1949年4月21—23日","t":"渡江战役·南京解放","ch":["史纲·第七章"],"p":"长江中下游·南京","s":"宣告国民党反动统治的覆灭","b":"国民党政府拒绝在《国内和平协定》上签字，国共和谈破裂。","k":["4月21日毛泽东、朱德发布《向全国进军的命令》，人民解放军在千里战线上强渡长江","**4月23日南京解放，延续22年的国民党反动统治宣告覆灭**","1949年元旦蒋介石发表求和声明，企图借和平谈判争取喘息时间并布置长江防线。","1月14日毛泽东发表关于时局的声明，提出惩办战争罪犯、废除伪宪法和伪法统、改编一切反动军队等八项和平条件，谈判4月1日开始，因国民党政府拒绝在国内和平协定上签字而破裂。","第二、第三野战军在东起江阴、西至湖口长达1000多里的战线上强渡长江，摧毁国民党经营三个半月的长江防线。"],"q":["考法：毛泽东《七律·人民解放军占领南京》——**“宜将剩勇追穷寇，不可沽名学霸王”**"],"m":"","c":["sg"],"id":"1949b"},{"y":1949.5,"d":"1949年6月30日","t":"《论人民民主专政》","ch":["史纲·第七章"],"p":"北平","s":"系统论述人民民主专政理论，为新中国奠定理论基础","b":"新中国成立前夕，毛泽东发表《论人民民主专政》，总结新民主主义革命的基本经验，阐明新中国的国家性质。","k":["提出人民民主专政的概念：**工人阶级（经过共产党）领导的、以工农联盟为基础的人民民主专政**","提出团结民族资产阶级，利用一切于国计民生有利的城乡资本主义因素","**提出建国后“一边倒”的外交方针**"],"q":["易混：《将革命进行到底》（1948）第一次公开使用人民民主专政概念；《论人民民主专政》（1949）系统论述人民民主专政理论"],"m":"","c":["sg"],"id":"1949e"},{"y":1949.73,"d":"1949年9月21—30日","t":"新政协·《共同纲领》","ch":["史纲·第七章"],"p":"北平","s":"完成了建立新中国的各项准备","b":"1948年中共中央发布“五一口号”，号召召开新的政治协商会议，各民主党派和无党派民主人士热烈响应，走上与共产党合作的道路。1949年6月毛泽东发表《论人民民主专政》。","k":["中国人民政治协商会议第一届全体会议**代行全国人民代表大会的职权**","通过《中国人民政治协商会议共同纲领》，**起临时宪法的作用，规定新中国实行人民民主专政**","选举毛泽东为中央人民政府主席；定都北平并改名北京，以五星红旗为国旗，以《义勇军进行曲》为代国歌，采用公元纪年","1948年4月30日中共中央“五一口号”提出迅速召开政治协商会议、成立民主联合政府，**揭开了中国共产党同各党派、各团体、各族各界人士协商建国的序幕，奠定了中国共产党领导的多党合作和政治协商制度的基础**"],"q":["易混：1949年新政协代行人大职权、通过《共同纲领》；1954年第一届全国人大才通过第一部《中华人民共和国宪法》","易混：“占人类总数四分之一的中国人从此站起来了”出自政协第一届全体会议开幕词（9月21日），不是开国大典","**易混：人民政协是中国共产党领导的以工农联盟为基础的人民民主统一战线的组织形式（不是国家机关）**","易混：新政协的召开**标志着中国共产党领导的多党合作和政治协商制度正式确立，标志着爱国统一战线和全国人民大团结在组织上完全形成**"],"m":"","c":["sg"],"id":"1949c"},{"y":1949.75,"d":"1949年10月1日","t":"中华人民共和国成立","ch":["史纲·第八章"],"p":"北京天安门","s":"新民主主义革命取得伟大胜利","b":"10月1日下午，开国大典在北京天安门广场隆重举行，毛泽东宣告中华人民共和国中央人民政府成立。","k":["**结束了一百多年来中国被侵略被奴役的屈辱历史，真正实现了民族独立**","**中国人民从此站起来了，成为国家、社会和自己命运的主人**","实现了从几千年封建专制政治向人民民主的伟大飞跃","**为实现中华民族伟大复兴创造了根本社会条件**"],"q":["考法：**新中国成立标志着半殖民地半封建社会的结束和新民主主义社会的建立**，中国进入从新民主主义向社会主义过渡的时期"],"m":"","c":["sg"],"id":"1949d"},{"y":1950.49,"d":"1950年6月28日","t":"《中华人民共和国土地改革法》","ch":["史纲·第八章"],"p":"新解放区","s":"在新解放区彻底废除封建土地制度；这次土改是我国历史上规模最大、历次土改运动中进行得最好的一次","b":"新中国成立时，占全国人口多数的新解放区还没有进行土地改革。1950年6月中央人民政府公布《土地改革法》，规定这次土改的目的是废除地主阶级封建剥削的土地所有制，实行农民的土地所有制，解放农村生产力，发展农业生产，为新中国的工业化开辟道路。","k":["**废除地主阶级封建剥削的土地所有制，实行农民的土地所有制**","**由征收富农多余土地改为保存富农经济，以孤立地主、保护中农**","到1952年底，除部分少数民族地区外，全国基本完成土改，延续两千多年的封建土地制度被彻底摧毁"],"q":["**易混：《中国土地法大纲》（1947）征收富农多余土地财产；《土地改革法》（1950）保存富农经济**"],"m":"","c":["sg"],"id":"1950a"},{"y":1950.8,"d":"1950年10月19日","t":"抗美援朝战争","ch":["史纲·第八章"],"p":"朝鲜半岛","s":"打出了国威军威，赢得了和平建设的环境","b":"1950年6月朝鲜内战爆发，美国出兵干涉并派第七舰队侵入台湾海峡；美军越过三八线，战火烧到鸭绿江边。应朝鲜请求，党中央作出抗美援朝、保家卫国的决策。","k":["10月19日中国人民志愿军跨过鸭绿江，10月25日打响第一仗，后定为抗美援朝纪念日","1953年7月27日朝鲜停战协定签字","美国侵略军把朝鲜战争的战火烧到鸭绿江边时，中国政府毅然作出抗美援朝的决策。","中朝两国人民及其军队经过近三年的艰苦作战以及谈判斗争，最终迫使美国代表在停战协定上签字。","抗美援朝战争有力地打破了美国军队不可战胜的神话，人民军队战斗力威震世界。","抗美援朝战争极大促进了国防和军队现代化，有力推动了世界和平与人类进步事业。"],"q":["**考法：抗美援朝战争伟大胜利，是中国人民站起来后屹立于世界东方的宣言书**"],"m":"","c":["sg"],"id":"1950b"},{"y":1953.45,"d":"1953年6月15日","t":"过渡时期总路线·“一五”计划","ch":["史纲·第八章"],"p":"全国","s":"“一化三改”：社会主义建设与社会主义改造同时并举","b":"1952年底国民经济恢复任务基本完成。1953年6月毛泽东在中央政治局会议上提出过渡时期总路线，同年底正式向全党全国公布。","k":["**在一个相当长的时期内，逐步实现国家的社会主义工业化，并逐步实现对农业、手工业和资本主义工商业的社会主义改造**","主体是社会主义工业化，两翼是三大改造，体现了发展生产力与变革生产关系的有机统一","**1953年开始实施第一个五年计划，以156个建设项目为中心进行工业建设，1957年超额完成**","1953年6月毛泽东正式提出过渡时期总路线和总任务，同年12月形成完整表述，1954年2月党的七届四中全会通过决议正式批准。","1952年9月毛泽东提出用十年到十五年时间基本上完成向社会主义过渡，而不是十年以后才开始过渡；此前党内共识是先用三个五年计划搞工业化再过渡，一般估计要15年到20年。","过渡时期之所以必要且需要相当长的时间，是因为我国经济和文化落后，且有极其广大的个体农业、手工业和占国民经济很大比重的资本主义工商业需要改造。","提出总路线的现实依据之一是到1952年国营工业产值在全国工业总产值中的比重已增加到56%。","一五计划确定的经济建设指导方针突出的核心要点是集中主要力量发展重工业，建立国家工业化和国防现代化的初步基础。","1956年年底三大改造基本完成，社会主义公有制成为我国社会的经济基础，标志着中国历史上长达数千年的阶级剥削制度的结束和社会主义基本制度的确立。"],"q":["**易混：1953年过渡时期总路线（一化三改）vs 1958年社会主义建设总路线（鼓足干劲、力争上游、多快好省）**","最初设想是先完成工业化、然后进行社会主义改造，新的认识变为工业化建设和社会主义改造同时进行。"],"m":"一化三改，一体两翼","c":["sg"],"id":"1953a"},{"y":1954.71,"d":"1954年9月15日","t":"第一届全国人大·“五四宪法”","ch":["史纲·第八章"],"p":"北京","s":"人民代表大会制度在全国范围内建立","b":"第一届全国人民代表大会第一次会议在北京召开。","k":["**通过《中华人民共和国宪法》，这是我国第一部社会主义类型的宪法**","**人民代表大会制度成为我国的根本政治制度**","1954年宪法体现了人民民主原则和社会主义原则。","在1954年第一届全国人民代表大会召开前，中国人民政治协商会议代行全国人民代表大会职权。"],"q":["**易混：根本政治制度＝人民代表大会制度；基本政治制度＝中国共产党领导的多党合作和政治协商制度、民族区域自治制度、基层群众自治制度**","三大改造前通过的《中国人民政治协商会议共同纲领》在一个时期内起着新中国临时宪法的作用，但它还不是社会主义类型的宪法。"],"m":"","c":["sg"],"id":"1954a"},{"y":1956.32,"d":"1956年4月25日","t":"《论十大关系》","ch":["史纲·第八章"],"p":"北京","s":"以毛泽东为主要代表的中国共产党人开始探索中国自己的社会主义建设道路的标志，是党探索中国社会主义建设道路的良好开端","b":"苏共二十大暴露了苏联模式的问题。毛泽东用一个多月时间听取国务院34个部门的汇报后，在中央政治局扩大会议上作报告。","k":["**提出“以苏为鉴”，强调把马克思列宁主义基本原理同中国具体实际进行“第二次结合”**","**基本方针：调动一切积极因素为社会主义事业服务**","论述了重工业和轻工业、农业，沿海工业和内地工业，中央和地方，汉族和少数民族，中国和外国等十个方面的关系","**提出以农业为基础、以工业为主导，以农轻重为序发展国民经济的总方针**","**提出一整套“两条腿走路”的方针：重工业和轻工业、中央工业和地方工业、沿海工业和内地工业、大型企业和小型企业同时并举**"],"q":["**易混：“双百”方针针对科学文化工作；“长期共存、互相监督”针对共产党与民主党派的关系**","易混：**把马克思列宁主义基本原理同中国具体实际进行“第二次结合”是1956年4月《论十大关系》提出的，不是中共八大提出的**；《论十大关系》为同年9月中共八大的召开作了理论准备"],"m":"","c":["sg"],"id":"1956a"},{"y":1956.71,"d":"1956年9月15日","t":"中共八大","ch":["史纲·第八章"],"p":"北京","s":"为全面建设社会主义指明了方向","b":"社会主义改造即将基本完成，党在执政条件下召开第一次全国代表大会。","k":["**国内主要矛盾已经是人民对于建立先进的工业国的要求同落后的农业国的现实之间的矛盾，是人民对于经济文化迅速发展的需要同当前经济文化不能满足人民需要的状况之间的矛盾**","**党和人民的主要任务是集中力量发展社会生产力，尽快把我国从落后的农业国变为先进的工业国**","**经济建设方针：既反保守又反冒进，在综合平衡中稳步前进**","陈云提出“三个主体、三个补充”的设想"],"q":["**易混：主要矛盾表述——八大（1956）；1981年历史决议“人民日益增长的物质文化需要同落后的社会生产之间的矛盾”；十九大（2017）“人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾”**","易混：“第二次结合”是《论十大关系》（1956年4月）提出的，不是八大提出的；1958年社会主义建设总路线是八大二次会议通过的，不是八大"],"m":"","c":["sg"],"id":"1956b"},{"y":1956.96,"d":"1956年底","t":"三大改造基本完成·社会主义基本制度确立","ch":["史纲·第八章"],"p":"全国","s":"我国进入社会主义初级阶段","b":"1955年下半年起农业合作化迅速推进，带动手工业和资本主义工商业改造形成高潮；1956年初出现全行业公私合营高潮。","k":["**农业：互助组（社会主义萌芽）→ 初级社（半社会主义）→ 高级社（完全社会主义），坚持自愿互利、典型示范、国家帮助**","**资本主义工商业：和平赎买，经过国家资本主义由初级形式（加工订货、统购包销、经销代销）到高级形式（公私合营），全行业公私合营后实行“定息”**","**社会主义基本制度的确立，是中国历史上最深刻最伟大的社会变革，为当代中国一切发展进步奠定了根本政治前提和制度基础**","不足：1955年夏季以后要求过急，工作过粗，改变过快，形式过于简单划一"],"q":["**易混：个别企业公私合营时利润按“四马分肥”分配（国家所得税、企业公积金、工人福利费、资方红利）；全行业公私合营后改为“定息”**"],"m":"","c":["sg"],"id":"1956c"},{"y":1957.16,"d":"1957年2月27日","t":"《关于正确处理人民内部矛盾的问题》","ch":["史纲·第八章"],"p":"北京","s":"把正确处理人民内部矛盾作为国家政治生活的主题","b":"1956年国际上发生波匈事件，国内也出现少数人闹事的情况。毛泽东在最高国务会议上讲话，6月经整理后公开发表。","k":["**社会主义社会的基本矛盾仍然是生产关系和生产力、上层建筑和经济基础之间的矛盾，它们既相适应又相矛盾，可以通过社会主义制度本身不断得到解决**","**严格区分敌我矛盾和人民内部矛盾两类不同性质的矛盾：前者用专政的方法，后者用民主的方法（团结—批评—团结）**","同年整风运动中开展的反右派斗争被严重扩大化，造成了不幸的后果","**解决人民内部矛盾的各领域方针：科学文化领域实行“百花齐放、百家争鸣”，民族之间实行民族平等、团结互助，共产党和民主党派之间实行“长期共存、互相监督”**"],"q":["**考法：处理人民内部矛盾的方法——政治思想领域“团结—批评—团结”，物质利益分配“统筹兼顾、适当安排”**","**易混：“长期共存、互相监督、肝胆相照、荣辱与共”十六字方针是十二大增加的，不是毛泽东提出的；毛泽东提出的是“长期共存、互相监督”八字方针**"],"m":"","c":["sg"],"id":"1957a"},{"y":1958.34,"d":"1958年5月5日","t":"社会主义建设总路线·“大跃进”·人民公社化运动","ch":["史纲·第八章"],"p":"全国","s":"急于求成的严重失误","b":"八大二次会议正式通过“鼓足干劲、力争上游、多快好省地建设社会主义”的总路线，随后全国掀起“大跃进”和人民公社化运动。","k":["**以高指标、瞎指挥、浮夸风和“共产风”为主要标志的“左”倾错误严重泛滥**","**人民公社“一大二公”，搞平均主义和无偿调拨**","1959年庐山会议后期错误地开展“反右倾”斗争，加上自然灾害和苏联背信弃义撕毁合同，国民经济在1959—1961年发生严重困难"],"q":["考法：教训——社会主义建设必须从实际出发，尊重客观经济规律，不能急于求成"],"m":"","c":["sg"],"id":"1958a"},{"y":1962.03,"d":"1962年1月11日—2月7日","t":"七千人大会·国民经济调整","ch":["史纲·第八章"],"p":"北京","s":"初步总结“大跃进”以来的经验教训","b":"1961年1月八届九中全会正式通过对国民经济实行“调整、巩固、充实、提高”的八字方针。","k":["**1962年初扩大的中央工作会议（七千人大会）开展批评与自我批评，发扬党内民主**","到1965年国民经济调整任务全面完成"],"q":["**易混：八字方针是“调整、巩固、充实、提高”，不要与1979年的“调整、改革、整顿、提高”混淆**","长期共存、互相监督，肝胆相照、荣辱与共十六字方针是改革开放后十二大提出的，要与调整、巩固、充实、提高八字方针区分开。"],"m":"","c":["sg"],"id":"1962a"},{"y":1964.79,"d":"1964年10月16日、12月21日","t":"第一颗原子弹爆炸·明确“四个现代化”","ch":["史纲·第八章"],"p":"新疆罗布泊·北京","s":"社会主义建设取得重大成就，明确现代化目标","b":"1964年10月16日我国第一颗原子弹爆炸成功；12月三届全国人大一次会议召开。","k":["**周恩来在政府工作报告中提出，在不太长的历史时期内，把我国建设成为具有现代农业、现代工业、现代国防和现代科学技术的社会主义强国**","提出“两步走”设想：先建立一个独立的比较完整的工业体系和国民经济体系，再全面实现四个现代化"],"q":["**易混：1954年一届全国人大提出工业、农业、交通运输业和国防现代化；1964年三届全国人大一次会议明确农业、工业、国防和科学技术现代化目标**"],"m":"","c":["sg"],"id":"1964a"},{"y":1966.37,"d":"1966年5月16日—1976年10月","t":"“文化大革命”","ch":["史纲·第八章"],"p":"全国","s":"一场给党、国家和各族人民带来严重灾难的内乱","b":"1966年5月中央政治局扩大会议通过《五一六通知》，8月八届十一中全会通过《关于无产阶级文化大革命的决定》，“文化大革命”全面发动。","k":["**1981年历史决议指出：“文化大革命”是一场由领导者错误发动，被反革命集团利用，给党、国家和各族人民带来严重灾难的内乱**","**1976年10月中央政治局执行党和人民的意志，一举粉碎“四人帮”，结束了“文化大革命”**","1981年党的十一届六中全会通过《关于建国以来党的若干历史问题的决议》，标志着党和国家指导思想上拨乱反正的完成。","1978年关于真理标准问题的大讨论成为正本清源、拨乱反正和改革开放的思想先导。"],"q":["**易混：“文化大革命”不是也不可能是任何意义上的革命或社会进步；要把毛泽东晚年的错误同经过长期历史检验形成为科学理论的毛泽东思想区别开来**","毛泽东晚年的错误有主观因素和个人责任，还在于复杂的国内国际的社会历史原因，应该全面、历史、辩证地看待和分析。"],"m":"","c":["sg"],"id":"1966a"},{"y":1971.82,"d":"1971年10月25日","t":"恢复联合国合法席位·外交新局面","ch":["史纲·第八章"],"p":"美国纽约·北京","s":"外交工作打开新局面","b":"中国国际地位不断提高，许多亚非拉国家支持恢复新中国在联合国的合法权利。","k":["**1971年10月第26届联合国大会通过第2758号决议，恢复中华人民共和国在联合国的一切合法权利**","**1972年2月美国总统尼克松访华，中美发表《联合公报》（上海公报）；1979年1月1日中美正式建交**","**1972年9月中日两国建交；1974年毛泽东提出划分“三个世界”的战略思想**"],"q":["中间地带、三个世界划分都是毛泽东提出的，不要和邓小平混淆。"],"m":"","c":["sg"],"id":"1971a"},{"y":1978.36,"d":"1978年5月11日","t":"真理标准问题大讨论","ch":["史纲·第九章"],"p":"北京","s":"一场马克思主义的思想解放运动","b":"粉碎“四人帮”后，“两个凡是”（凡是毛主席作出的决策都坚决维护，凡是毛主席的指示都始终不渝地遵循）的方针严重束缚人们的思想。","k":["**《光明日报》发表特约评论员文章《实践是检验真理的唯一标准》，引发全国范围的大讨论**","**冲破了“两个凡是”的严重束缚，为十一届三中全会的召开作了思想准备**","**为重新确立解放思想、实事求是的思想路线奠定了基础**"],"q":["考法：真理标准问题讨论是马克思主义认识论（实践是检验真理的唯一标准）在中国现实中的运用"],"m":"","c":["sg"],"id":"1978a"},{"y":1978.9,"d":"1978年11月24日起","t":"农村改革·家庭联产承包责任制","ch":["史纲·第九章"],"p":"安徽凤阳小岗村等","s":"经济体制改革首先在农村取得突破","b":"1978年11月，安徽省凤阳县小岗村开创了家庭联产承包责任制的先河，农民自发实行包产到户、包干到户。","k":["**1982年1月1日，党历史上第一个关于农村工作的一号文件正式出台，明确指出包产到户、包干到户都是社会主义集体经济的生产责任制**","**家庭联产承包责任制的实质是打破人民公社体制下土地集体所有、集体经营的旧的农业耕作模式，实现土地集体所有权和经营权的分离，确立土地集体所有制基础上以户为单位的家庭承包经营的新型农业耕作模式**","家庭联产承包责任制在全国普遍推行，人民公社体制随之废除"],"q":["考法：改革从农村开始，1984年十二届三中全会后改革重点转向城市"],"m":"","c":["sg"],"id":"1978c"},{"y":1978.97,"d":"1978年12月18—22日","t":"十一届三中全会","ch":["史纲·第九章"],"p":"北京","s":"新中国成立以来党的历史上具有深远意义的伟大转折","b":"全会前召开的中央工作会议上，邓小平作《解放思想，实事求是，团结一致向前看》讲话，实际上成为全会的主题报告。","k":["**重新确立了解放思想、实事求是的思想路线**","**停止使用“以阶级斗争为纲”的错误口号，作出把党和国家工作中心转移到经济建设上来、实行改革开放的历史性决策**","**开启了改革开放和社会主义现代化建设新时期，实际上形成了以邓小平为核心的党的第二代中央领导集体**","提出实现民主制度化、法律化的任务，决定健全党的民主集中制，健全党规党法，严肃党纪；增选中央领导机构成员，成立中央纪律检查委员会"],"q":["**考法：十一届三中全会是中国特色社会主义理论体系形成发展的起点**","**易混：科学评价毛泽东并概括毛泽东思想的科学体系和活的灵魂，是1981年十一届六中全会《关于建国以来党的若干历史问题的决议》，不是十一届三中全会**"],"m":"伟大转折：思想路线、工作中心、改革开放","c":["sg"],"id":"1978b"},{"y":1979.24,"d":"1979年3月30日","t":"坚持四项基本原则","ch":["史纲·第九章"],"p":"北京","s":"立国之本","b":"改革开放初期，社会上出现怀疑和否定社会主义道路、党的领导等错误思潮。邓小平在党的理论工作务虚会上作《坚持四项基本原则》讲话。","k":["**必须坚持社会主义道路，坚持无产阶级专政（人民民主专政），坚持共产党的领导，坚持马列主义、毛泽东思想**","**四项基本原则是立国之本，改革开放是强国之路**","**邓小平首次提出“四项基本原则”的概念，指出坚持四项基本原则“是实现四个现代化的根本前提”**"],"q":["**易混：“一个中心、两个基本点”到1987年十三大才被完整概括为党在社会主义初级阶段的基本路线**"],"m":"","c":["sg"],"id":"1979a"},{"y":1980.65,"d":"1980年8月26日","t":"设立经济特区","ch":["史纲·第九章"],"p":"深圳·珠海·汕头·厦门","s":"对外开放迈出重要步伐","b":"1979年7月中央决定对广东、福建两省实行特殊政策和灵活措施；1980年决定在深圳、珠海、汕头、厦门试办经济特区，8月26日深圳经济特区正式成立。","k":["1984年开放大连、上海等14个沿海港口城市；1988年设立海南省并建立经济特区；1990年开发开放上海浦东","**逐步形成经济特区—沿海开放城市—沿海经济开放区—沿江和内陆开放城市—沿边开放城市的全方位对外开放格局**"],"q":["考法：对外开放是我国的基本国策"],"m":"","c":["sg"],"id":"1980a"},{"y":1981.49,"d":"1981年6月27日","t":"第二个历史决议","ch":["史纲·第九章"],"p":"北京","s":"党在指导思想上完成了拨乱反正","b":"十一届六中全会通过《关于建国以来党的若干历史问题的决议》。","k":["**彻底否定“文化大革命”的理论和实践**","**实事求是地评价毛泽东的历史地位：他的功绩是主要的，错误是次要的**","**科学论述了毛泽东思想，概括了贯穿其中的立场、观点和方法——毛泽东思想活的灵魂：实事求是、群众路线、独立自主**","**对我国社会主义主要矛盾作了规范表述：人民日益增长的物质文化需要同落后的社会生产之间的矛盾**","**第一次提出我国社会主义制度还处于初级的阶段**","提出“计划经济为主、市场调节为辅”的方针"],"q":["**易混：三个历史决议——1945年《关于若干历史问题的决议》、1981年《关于建国以来党的若干历史问题的决议》、2021年《中共中央关于党的百年奋斗重大成就和历史经验的决议》**","**考法：《决议》解决了两个相互联系的重大历史课题：一是科学评价毛泽东的历史地位和毛泽东思想的科学体系，二是根据新的实际和发展要求实行改革开放、确立中国社会主义现代化建设正确道路**"],"m":"活的灵魂：实事求是、群众路线、独立自主","c":["sg"],"id":"1981a"},{"y":1982.67,"d":"1982年9月1日","t":"中共十二大","ch":["史纲·第九章"],"p":"北京","s":"第一次明确提出“建设有中国特色的社会主义”","b":"邓小平在大会开幕词中总结历史经验。","k":["**提出“把马克思主义的普遍真理同我国的具体实际结合起来，走自己的道路，建设有中国特色的社会主义”**","提出到20世纪末力争使全国工农业年总产值翻两番的目标","同年12月五届全国人大五次会议通过现行宪法（“八二宪法”）"],"q":["考法：“走自己的道路”是对新中国成立以来历史经验的基本总结","易混：邓小平理论主题形成于十二大，轮廓形成于十三大，走向成熟于南方谈话，“邓小平理论”正式提出于十五大并写入党章"],"m":"","c":["sg"],"id":"1982a"},{"y":1984.81,"d":"1984年10月20日","t":"十二届三中全会·经济体制改革决定","ch":["史纲·第九章"],"p":"北京","s":"改革重点由农村转向城市","b":"全会通过《中共中央关于经济体制改革的决定》。","k":["**提出社会主义经济是公有制基础上的有计划的商品经济，突破了把计划经济同商品经济对立起来的传统观念**","改革开放开始后一个很长时期内，我国经济体制改革的核心问题是如何正确认识和处理计划与市场的关系，传统观念认为计划经济是社会主义的基本特征，市场经济是资本主义特有的东西。"],"q":["**易混：改革目标的演进——计划经济为主、市场调节为辅（十二大）→ 有计划的商品经济（1984）→ 社会主义市场经济体制（1992年十四大）**"],"m":"","c":["sg"],"id":"1984a"},{"y":1987.82,"d":"1987年10月25日","t":"中共十三大","ch":["史纲·第九章"],"p":"北京","s":"系统阐述社会主义初级阶段理论","b":"大会召开时，改革开放已经进行了将近十年。","k":["**我国正处在并将长期处在社会主义初级阶段：一是我国已经是社会主义社会，二是我国的社会主义社会还处在初级阶段**","**概括党在社会主义初级阶段的基本路线：以经济建设为中心，坚持四项基本原则，坚持改革开放（“一个中心、两个基本点”）**","提出“三步走”发展战略：第一步从1981年到1990年，国民生产总值翻一番，解决人民的温饱问题；第二步从1991年到20世纪末，国民生产总值再翻一番，人民生活达到小康水平；第三步到21世纪中叶，国民生产总值再翻两番，人民生活比较富裕，基本实现现代化","**第一次对中国特色社会主义理论进行系统的概括，标志着邓小平理论轮廓的形成**"],"q":["**易混：社会主义初级阶段特指我国从1956年生产资料私有制的社会主义改造基本完成到社会主义现代化基本实现的整个历史阶段**"],"m":"一个中心、两个基本点；三步走","c":["sg"],"id":"1987a"},{"y":1992.05,"d":"1992年1月18日—2月21日","t":"邓小平南方谈话","ch":["史纲·第九章"],"p":"武昌·深圳·珠海·上海","s":"又一个解放思想、实事求是的宣言书","b":"东欧剧变、苏联解体前后，一些人对改革开放产生了姓“资”姓“社”的疑问。邓小平视察南方并发表重要谈话。","k":["**计划多一点还是市场多一点，不是社会主义与资本主义的本质区别，计划和市场都是经济手段**","**社会主义的本质：解放生产力，发展生产力，消灭剥削，消除两极分化，最终达到共同富裕**","**判断标准：是否有利于发展社会主义社会的生产力，是否有利于增强社会主义国家的综合国力，是否有利于提高人民的生活水平（“三个有利于”）**","**“发展才是硬道理”**"],"q":["**考法：南方谈话和十四大标志着邓小平理论走向成熟**"],"m":"三个有利于，发展是硬道理","c":["sg"],"id":"1992a"},{"y":1992.78,"d":"1992年10月12日","t":"中共十四大","ch":["史纲·第九章"],"p":"北京","s":"确立社会主义市场经济体制的改革目标","b":"在南方谈话精神推动下，改革开放和现代化建设进入新的阶段。","k":["**明确我国经济体制改革的目标是建立社会主义市场经济体制**","**确立邓小平建设有中国特色社会主义理论在全党的指导地位**"],"q":["**易混：十四大称“邓小平建设有中国特色社会主义理论”；十五大正式使用“邓小平理论”并确立为党的指导思想**","**考法：以邓小平南方谈话和党的十四大为标志，改革开放和现代化建设事业进入从计划经济体制向社会主义市场经济体制转变的新阶段**"],"m":"","c":["sg"],"id":"1992b"},{"y":1997.5,"d":"1997年7月1日、1999年12月20日","t":"香港、澳门回归祖国","ch":["史纲·第九章"],"p":"香港·澳门","s":"“一国两制”的成功实践","b":"“一国两制”构想最初为解决台湾问题提出，首先运用于解决香港、澳门问题。1984年中英、1987年中葡分别签署关于香港、澳门问题的联合声明。","k":["**1997年7月1日中国政府恢复对香港行使主权，1999年12月20日恢复对澳门行使主权**","**实行“港人治港”“澳人治澳”、高度自治**","香港、澳门特别行政区享有高度自治权，包括行政管理权、立法权、独立的司法权和终审权。","一国两制的根本宗旨是维护国家主权、安全、发展利益，保持香港、澳门长期繁荣稳定。","宪法和基本法共同构成特别行政区的宪制基础，基本法是根据宪法制定的基本法律，规定了在特别行政区实行的制度和政策。","要坚定落实爱国者治港、爱国者治澳原则，把特别行政区管治权牢牢掌握在爱国者手中。"],"q":["**考法：“一国两制”的前提是一个中国；台湾问题是中国的内政**","一国两制构想最早是针对台湾问题提出来的，后来被率先运用于解决香港和澳门问题；香港、澳门问题是历史上殖民主义侵略遗留下来的问题，台湾问题是国内战争遗留下来的问题，两者性质不同。","一国是本，两制从属和派生于一国，并统一于一国之内，国家的主体必须实行社会主义制度。"],"m":"","c":["sg"],"id":"1997a"},{"y":1997.7,"d":"1997年9月12日","t":"中共十五大","ch":["史纲·第九章"],"p":"北京","s":"把邓小平理论确立为党的指导思想","b":"邓小平于1997年2月逝世，党的十五大高举邓小平理论伟大旗帜。","k":["**正式使用“邓小平理论”的科学称谓，确立为党的指导思想并写入党章**","**明确公有制为主体、多种所有制经济共同发展是社会主义初级阶段的基本经济制度**","**提出依法治国、建设社会主义法治国家的基本方略**","非公有制经济是我国社会主义市场经济的重要组成部分"],"q":["**考法：邓小平理论的首要基本理论问题是“什么是社会主义、怎样建设社会主义”，精髓是解放思想、实事求是**"],"m":"","c":["sg"],"id":"1997b"},{"y":2000.15,"d":"2000年2月25日","t":"提出“三个代表”重要思想","ch":["史纲·第九章"],"p":"广东","s":"回答“建设什么样的党、怎样建设党”","b":"江泽民在广东考察时首次全面提出；2001年“七一”讲话作了系统阐述。","k":["**中国共产党始终代表中国先进生产力的发展要求，始终代表中国先进文化的前进方向，始终代表中国最广大人民的根本利益**","三个代表重要思想是在开创全面改革开放新局面、推进党的建设新的伟大工程、成功把中国特色社会主义推向21世纪的伟大实践中形成和发展起来的。","三个代表是我们党的立党之本、执政之基、力量之源，贯彻三个代表重要思想，关键在坚持与时俱进，核心在坚持党的先进性，本质在坚持执政为民。","发展是党执政兴国的第一要务，改革是动力、发展是目的、稳定是前提，实施引进来和走出去相结合的对外开放战略。"],"q":["**易混：邓小平理论——什么是社会主义、怎样建设社会主义；“三个代表”——建设什么样的党、怎样建设党；科学发展观——实现什么样的发展、怎样发展**","三个代表重要思想用一系列紧密联系、相互贯通的新思想新观点新论断，进一步回答了什么是社会主义、怎样建设社会主义的问题，创造性回答了建设什么样的党、怎样建设党的问题。"],"m":"生产力、先进文化、根本利益","c":["sg"],"id":"2000a"},{"y":2001.95,"d":"2001年12月11日","t":"加入世界贸易组织","ch":["史纲·第九章"],"p":"瑞士日内瓦·北京","s":"对外开放进入新阶段","b":"经过约15年的谈判，中国正式成为世贸组织成员。","k":["**标志着我国对外开放进入在更大范围、更宽领域、更深层次上参与经济全球化的新阶段**","加入世界贸易组织后，我国深度参与国际分工，融入国际大循环，形成市场和资源两头在外的发展格局，对抓住经济全球化机遇快速提升经济实力、改善人民生活发挥了重要作用。"],"q":["考法：入世是对外开放从有限范围、有限领域向全方位、多层次、宽领域转变的标志"],"m":"","c":["sg"],"id":"2001a"},{"y":2002.85,"d":"2002年11月8日","t":"中共十六大","ch":["史纲·第九章"],"p":"北京","s":"把“三个代表”重要思想确立为党的指导思想","b":"新世纪召开的第一次党的全国代表大会。","k":["**确立“三个代表”重要思想为党的指导思想并写入党章**","**提出在21世纪头二十年全面建设惠及十几亿人口的更高水平的小康社会**","**提出“两个毫不动摇”：毫不动摇地巩固和发展公有制经济，毫不动摇地鼓励、支持和引导非公有制经济发展**"],"q":["易混：十六大“全面建设小康社会”；十八大改为“全面建成小康社会”"],"m":"","c":["sg"],"id":"2002a"},{"y":2007.79,"d":"2007年10月15日","t":"中共十七大","ch":["史纲·第九章"],"p":"北京","s":"把科学发展观写入党章","b":"改革开放即将走过三十年，大会全面总结了改革开放的宝贵经验。","k":["**第一次明确提出“中国特色社会主义理论体系”，包括邓小平理论、“三个代表”重要思想以及科学发展观等重大战略思想**","基本路线奋斗目标增加“和谐”，成为富强民主文明和谐","科学发展观的第一要义是推动经济社会发展，核心立场是以人为本，基本要求是全面协调可持续，根本方法是统筹兼顾。","科学发展观进一步回答了什么是社会主义、怎样建设社会主义和建设什么样的党、怎样建设党的问题，创造性地回答了新形势下实现什么样的发展、怎样发展等重大问题。","构建社会主义和谐社会的总要求是民主法治、公平正义、诚信友爱、充满活力、安定有序、人与自然和谐相处。"],"q":["考法：中国特色社会主义道路、理论体系在十七大提出；十八大加上制度；十九大加上文化"],"m":"","c":["sg"],"id":"2007a"},{"y":2012.86,"d":"2012年11月8日","t":"中共十八大","ch":["史纲·第十章"],"p":"北京","s":"中国特色社会主义进入新时代的起点","b":"大会之后，十八届一中全会选举习近平为中共中央总书记。","k":["**把科学发展观同马克思列宁主义、毛泽东思想、邓小平理论、“三个代表”重要思想一道，确立为党必须长期坚持的指导思想**","**提出“五位一体”总体布局：经济建设、政治建设、文化建设、社会建设、生态文明建设**","提出道路自信、理论自信、制度自信；**倡导富强、民主、文明、和谐，自由、平等、公正、法治，爱国、敬业、诚信、友善的社会主义核心价值观**","2012年11月29日习近平在参观《复兴之路》展览时阐释了实现中华民族伟大复兴的中国梦","**提出“两个百年”奋斗目标：在中国共产党成立一百年时全面建成小康社会，在新中国成立一百年时建成富强民主文明和谐的社会主义现代化国家**"],"q":["易混：“三个自信”（十八大）→ 增加文化自信，形成“四个自信”（2016年“七一”讲话）"],"m":"","c":["sg"],"id":"2012a"},{"y":2013.68,"d":"2013年9月7日—11月12日","t":"全面深化改革·“一带一路”倡议","ch":["史纲·第十章"],"p":"北京·哈萨克斯坦·印度尼西亚","s":"开启全面深化改革和全方位对外开放新局面","b":"2013年9月、10月，习近平出访哈萨克斯坦和印度尼西亚时，先后提出共建“丝绸之路经济带”和“21世纪海上丝绸之路”。","k":["11月十八届三中全会通过《中共中央关于全面深化改革若干重大问题的决定》","**全面深化改革的总目标是完善和发展中国特色社会主义制度，推进国家治理体系和治理能力现代化**","**使市场在资源配置中起决定性作用和更好发挥政府作用**","此后形成“四个全面”战略布局：**全面建设社会主义现代化国家（原为全面建成小康社会）、全面深化改革、全面依法治国、全面从严治党**","**全面深化改革是“四个全面”战略布局中具有突破性和先导性的关键环节**"],"q":["易混：市场的作用——“基础性作用”（十四大）→“决定性作用”（十八届三中全会）","**易混：十八届三中全会也是划时代的，但“开启改革开放和社会主义现代化建设新时期”是十一届三中全会，“确定建立社会主义市场经济体制”是十四大，不要张冠李戴**"],"m":"","c":["sg"],"id":"2013a"},{"y":2015.82,"d":"2015年10月26日","t":"十八届五中全会·新发展理念","ch":["史纲·第十章"],"p":"北京","s":"提出创新、协调、绿色、开放、共享的新发展理念","b":"我国经济发展进入新常态，需要用新的发展理念引领发展方式转变。","k":["创新是引领发展的第一动力，协调是持续健康发展的内在要求，绿色是永续发展的必要条件，开放是国家繁荣发展的必由之路，共享是中国特色社会主义的本质要求","**坚持以人民为中心的发展思想**","创新发展注重的是解决发展动力问题，协调发展注重的是解决发展不平衡问题，绿色发展注重的是解决人与自然和谐共生问题，开放发展注重的是解决发展内外联动问题，共享发展注重的是解决社会公平正义的问题。","新发展理念是指挥棒、红绿灯，是引领我国发展全局深刻变革的科学指引，必须完整、准确、全面地理解和把握。","把握新发展理念要从根本宗旨上把握，坚持以人民为中心的发展思想，让现代化建设成果更多更公平惠及全体人民。"],"q":["考法：新发展理念回答了关于发展的目的、动力、方式、路径等一系列理论和实践问题"],"m":"创新、协调、绿色、开放、共享","c":["sg"],"id":"2015a"},{"y":2017.8,"d":"2017年10月18日","t":"中共十九大","ch":["史纲·第十章"],"p":"北京","s":"中国特色社会主义进入新时代","b":"经过长期努力，我国发展站到了新的历史起点上。","k":["**作出中国特色社会主义进入新时代的重大政治论断**","**我国社会主要矛盾已经转化为人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾**","**确立习近平新时代中国特色社会主义思想为党的指导思想并写入党章**","**新时代“两步走”：2020年到2035年基本实现社会主义现代化；2035年到本世纪中叶建成富强民主文明和谐美丽的社会主义现代化强国**","**揭示中国共产党人的初心和使命，就是为中国人民谋幸福、为中华民族谋复兴**"],"q":["**易混：主要矛盾变了，但我国仍处于并将长期处于社会主义初级阶段的基本国情没有变，我国是世界最大发展中国家的国际地位没有变**"],"m":"新时代、新矛盾、新思想、新目标","c":["sg"],"id":"2017a"},{"y":2018.19,"d":"2018年3月11日","t":"宪法修正案","ch":["史纲·第十章"],"p":"北京","s":"把党的理论创新成果载入国家根本法","b":"十三届全国人大一次会议通过《中华人民共和国宪法修正案》。","k":["**把习近平新时代中国特色社会主义思想载入宪法**","**在宪法正文中写入“中国共产党领导是中国特色社会主义最本质的特征”**","增加有关监察委员会的规定，国家监察委员会成立"],"q":[],"m":"","c":["sg"],"id":"2018a"},{"y":2020.82,"d":"2020年10月26日","t":"十九届五中全会·新发展格局","ch":["史纲·第十章"],"p":"北京","s":"擘画“十四五”规划和2035年远景目标","b":"在全面建成小康社会胜利在望之际，全会审议通过关于“十四五”规划和2035年远景目标的建议。","k":["**提出加快构建以国内大循环为主体、国内国际双循环相互促进的新发展格局**","**明确到2035年基本实现社会主义现代化的远景目标**","构建新发展格局是把握未来发展主动权的战略性布局和先手棋，不是被迫之举和权宜之计。","构建新发展格局是开放的国内国际双循环，不是封闭的国内单循环，以国内大循环为主体是针对全国而言的，不能各自为政、画地为牢。","构建新发展格局最本质的特征是实现高水平的自立自强，构建新发展格局必须保证经济循环畅通无阻，实现生产、分配、流通、消费各环节有机衔接。","构建新发展格局的基本立足点是满足国内需求，战略基点是扩大内需，主线是深化供给侧结构性改革，战略支撑是科技自立自强。","到2035年基本实现社会主义现代化的总体目标包括经济实力、科技实力、综合国力大幅跃升，基本实现新型工业化、信息化、城镇化、农业现代化，基本实现国家治理体系和治理能力现代化。"],"q":["考法：新发展阶段明确了历史方位，新发展理念明确了指导原则，新发展格局明确了路径选择"],"m":"","c":["sg"],"id":"2020a"},{"y":2021.5,"d":"2021年7月1日","t":"庆祝建党百年·全面建成小康社会","ch":["史纲·第十章"],"p":"北京天安门","s":"实现第一个百年奋斗目标","b":"2021年2月全国脱贫攻坚总结表彰大会宣告：现行标准下9899万农村贫困人口全部脱贫，832个贫困县全部摘帽。","k":["**习近平宣告：我们实现了第一个百年奋斗目标，在中华大地上全面建成了小康社会，历史性地解决了绝对贫困问题**","提出伟大建党精神：**坚持真理、坚守理想，践行初心、担当使命，不怕牺牲、英勇斗争，对党忠诚、不负人民**","**强调坚持把马克思主义基本原理同中国具体实际相结合、同中华优秀传统文化相结合（“两个结合”）**","全面建成小康社会不是终点，而是新生活、新奋斗的起点。","全面建成小康社会、实现第一个百年奋斗目标之后，要乘势而上开启全面建设社会主义现代化国家新征程、向第二个百年奋斗目标进军，这标志着我国进入了一个新发展阶段。"],"q":[],"m":"","c":["sg"],"id":"2021a"},{"y":2021.85,"d":"2021年11月8日","t":"第三个历史决议","ch":["史纲·第十章"],"p":"北京","s":"全面总结党的百年奋斗重大成就和历史经验","b":"十九届六中全会通过《中共中央关于党的百年奋斗重大成就和历史经验的决议》。","k":["总结“十个坚持”的历史经验：**坚持党的领导、人民至上、理论创新、独立自主、中国道路、胸怀天下、开拓创新、敢于斗争、统一战线、自我革命**","**指出党确立习近平同志党中央的核心、全党的核心地位，确立习近平新时代中国特色社会主义思想的指导地位（“两个确立”）**","党的十九大、十九届六中全会提出的十个明确、十四个坚持、十三个方面成就，概括了习近平新时代中国特色社会主义思想的主要内容。","十个明确是习近平新时代中国特色社会主义思想的主体内容，十四个坚持构成了新时代坚持和发展中国特色社会主义的基本方略，十三个方面成就全景式地展示了习近平新时代中国特色社会主义思想的理论与实践成果。","两个确立是新时代党和国家事业取得历史性成就、发生历史性变革的决定性因素，是党和人民应对一切不确定性的最大确定性、最大底气、最大保证。"],"q":["**易混：马克思主义中国化的理论成果——毛泽东思想、中国特色社会主义理论体系、习近平新时代中国特色社会主义思想**","深刻领悟两个确立的决定性意义，要增强四个意识（政治意识、大局意识、核心意识、看齐意识）、坚定四个自信（道路自信、理论自信、制度自信、文化自信）、做到两个维护（坚决维护习近平总书记党中央核心、全党核心地位，坚决维护党中央权威和集中统一领导）。"],"m":"","c":["sg"],"id":"2021b"},{"y":2022.79,"d":"2022年10月16日","t":"中共二十大","ch":["史纲·第十章"],"p":"北京","s":"以中国式现代化全面推进中华民族伟大复兴","b":"大会在全党全国各族人民迈上全面建设社会主义现代化国家新征程的关键时刻召开。","k":["**中心任务：团结带领全国各族人民全面建成社会主义现代化强国、实现第二个百年奋斗目标，以中国式现代化全面推进中华民族伟大复兴**","中国式现代化是**人口规模巨大、全体人民共同富裕、物质文明和精神文明相协调、人与自然和谐共生、走和平发展道路的现代化**","“六个必须坚持”：**人民至上、自信自立、守正创新、问题导向、系统观念、胸怀天下**"],"q":["**考法：中国式现代化的本质要求共九条，第一条是坚持中国共产党领导，第二条是坚持中国特色社会主义**","**考法：“三个务必”是习近平总书记在党的二十大报告中提出的**"],"m":"","c":["sg"],"id":"2022a"}]}</script>
@@ -666,7 +744,7 @@ let saved={},storageOK=true;
 try{const probe=LS+'-check';localStorage.setItem(probe,'1');localStorage.removeItem(probe);saved=JSON.parse(localStorage.getItem(LS)||'{}')||{};}catch(_){saved={};storageOK=false;}
 const savedCur=typeof saved.cur==='string'?saved.cur:((saved.cur&&saved.cur.sg)||'');
 const S={cur:savedCur,theme:(saved.theme==='light'||saved.theme==='dark')?saved.theme:null,ribbonHide:!!saved.ribbonHide,star:Object.assign({},saved.star),done:Object.assign({},saved.done),f:'all',ch:'',q:'',playing:false,speed:[0.5,1,2,3].indexOf(saved.speed)>=0?saved.speed:1};
-function save(){try{localStorage.setItem(LS,JSON.stringify({cur:S.cur,theme:S.theme,ribbonHide:S.ribbonHide,star:S.star,done:S.done,speed:S.speed}));}catch(_){storageOK=false;const el=$('.storage-note');if(el)el.textContent='当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。';}}
+function save(){try{localStorage.setItem(LS,JSON.stringify({cur:S.cur,theme:S.theme,ribbonHide:S.ribbonHide,star:S.star,done:S.done,speed:S.speed}));}catch(_){storageOK=false;}}
 
 const yr=e=>Math.floor(e.y);
 function eraOf(e){const set=ERASET;for(const r of set){if(e.y>=r.from&&e.y<r.to)return r;}return set[set.length-1];}
@@ -787,19 +865,19 @@ let lastDir=null;
 function cardHTML(){return cardHTMLFor(cur(),neighbor(-1),neighbor(1));}
 function cardHTMLFor(e,pv,nx){
   const r=eraOf(e);
-  const tags=e.ch.map(chParts);
   let h='<article class="card" data-era="'+r.k+'" aria-labelledby="ev-t">';
   h+='<div class="crumb"><span class="dot"></span><span>'+esc(r.name)+'</span><span class="yr">'+esc(r.range)+'</span></div>';
   h+='<div class="head"><div class="year">'+yr(e)+'</div><div class="when"><span class="date">'+esc(e.d)+'</span>'+(e.p?'<span class="place">'+IC.pin+'<span>'+esc(e.p)+'</span></span>':'')+'</div><div class="acts" id="acts">'+actsHTML(e)+'</div></div>';
   h+='<h2 class="title" id="ev-t">'+esc(e.t)+'</h2>';
-  if(tags.length)h+='<div class="tags">'+tags.map(x=>'<button class="tag here" type="button" data-ripplet data-ch="'+esc(x.c)+'" title="筛选本章全部节点"><b>'+esc(x.cn+' · '+x.chap)+'</b><span>'+esc(x.name)+'</span></button>').join('')+'</div>';
+  /* 章节标签按键已删除：不需要点击跳转筛选，也不需要在正文里注明第几章，
+     且整颗按钮压在翻页滑动区上会干扰左右滑（2026-11-14 用户要求） */
   h+='<p class="sig"><span class="lab">意义</span>'+fmt(e.s)+'</p>';
   const WS='<div class="wave-sep" aria-hidden="true"></div>';
   h+=WS+'<section class="blk"><h3 class="lab">背景</h3><p class="bg">'+fmt(e.b)+'</p></section>';
     h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ol></section>';
     if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map(tipHTML).join('')+'</ul></section>';
     if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn">'+fmt(e.m)+'</p></section>';
-  h+='<p class="note">章节对应马工程重点教材2023年版。此为复习提要，不替代教材，请以你的课程与考试大纲为准。<br><span class="storage-note">'+(storageOK?'重点与掌握记录仅保存在当前浏览器，不会跨设备同步。':'当前环境无法保存进度；重点与掌握记录仅在本次打开期间有效。')+'</span></p></article>';
+  h+='</article>';
   return h;
 }
 let pagerSwap=false;
@@ -813,53 +891,75 @@ function renderDetail(){
 }
 
 /* ---------- 时间带 ---------- */
-let POS=[],trackW=800,curEls=null;
-function cacheCurEls(){const tr=$('#track');curEls={line:$('.cur-line',tr),dot:$('.cur-dot',tr),lab:$('.cur-lab',tr),fill:$('.rail-fill',tr),ticks:$$('.tick',tr)};}
-/* 小球定位：只写 transform（translateX / 进度条 scaleX），走合成层，不读布局、不触发重排。
-   轨道宽度在 layoutRibbon / 尺寸变化时缓存到 trackW，每帧直接用缓存值算像素偏移。 */
-/* 直线轨道：中心线恒在 y=27，轨道 SVG、小球、节点圆点共用这条直线，视觉上严丝合缝。 */
+let POS=[],trackW=800,curEls=null,ERASEG=[];
+function cacheCurEls(){const tr=$('#track');curEls={tr:tr,line:$('.cur-line',tr),dot:$('.cur-dot',tr),fill:$('.rail-fill',tr)};}
+/* 小球定位：只写 transform（translateX / 进度条 dasharray），走合成层。
+   轨道宽度必须现测、不许只信 layoutRibbon 的缓存：轨道是 flex:1，左端阶段名
+   长度随时期变（3～9 字），轨道宽跟着变；而 layoutRibbon 只在初始化 / 尺寸
+   变化时跑——初次测量时阶段名还没填（空文本），缓存值先天偏大一截，之后切
+   时期也不刷新。旧代码每帧拿这份过期宽度算像素偏移，跳到靠后的时期时小球
+   被整体推出轨道右端、飞出胶囊（2026-11-14 用户实机截图：跳到 1978 年小球
+   贴在屏幕右缘）。clientWidth 在布局干净时只是读缓存值、不触发重排；切时期
+   那一帧阶段名刚改、布局本就待算，顺带测得新宽，之后每帧都是净读。 */
+/* 直线轨道：中心线恒在 y=18（单行轨道高 36px），轨道 SVG、小球、节点圆点共用这条直线，视觉上严丝合缝。 */
 function railPath(){
-  return 'M0 27L'+Math.max(1,Math.round(trackW))+' 27';
+  return 'M0 18L'+Math.max(1,Math.round(trackW))+' 18';
 }
+let ballLastP=null;
 function paintBall(p){
   if(!curEls)cacheCurEls();if(!curEls)return;
-  const x=p*trackW,tx='translateX('+x.toFixed(2)+'px)';
+  const w=curEls.tr&&curEls.tr.clientWidth;if(w&&w!==trackW)trackW=w;
+  /* 位置钳制在轨道两端之内：弹簧欠阻尼的过冲、拖动预览的边界值，
+     都不许把小球带出轨道——过冲时球贴在端点止住，而不是飞出去 */
+  const pc=p<0?0:p>1?1:p;ballLastP=pc;
+  const x=pc*trackW,tx='translateX('+x.toFixed(2)+'px)';
   if(curEls.line)curEls.line.style.transform=tx;
   if(curEls.dot)curEls.dot.style.transform=tx;
-  if(curEls.fill)curEls.fill.style.strokeDasharray=(p*100).toFixed(2)+' 100';
-  const lab=curEls.lab;
-  if(lab){const f=x<24,l=!f&&(trackW-x)<24;
-    if(lab.classList.contains('first')!==f)lab.classList.toggle('first',f);
-    if(lab.classList.contains('last')!==l)lab.classList.toggle('last',l);
-    lab.style.transform=tx+(f?'':l?' translateX(-100%)':' translateX(-50%)');}
-  if(curEls.ticks)curEls.ticks.forEach(t=>{const hide=Math.abs(+t.dataset.p-p)*trackW<48;if(t.classList.contains('hide')!==hide)t.classList.toggle('hide',hide);});
+  if(curEls.fill)curEls.fill.style.strokeDasharray=(pc*100).toFixed(2)+' 100';
+  /* 单行化后轨道上没有任何文字标签（游标年份标签、年份刻度均已删除），paintBall 只写
+     游标竖线 / 圆点 / 进度条三处 transform 与 dasharray，不再有标签避让逻辑 */
 }
 function layoutRibbon(){
   const L=LIST,N=L.length,tr=$('#track');
+  /* 先把阶段名填上再测宽：阶段名长度决定轨道宽，空着测会把 trackW 测大一截，
+     POS 的 pad 与轨道线都按这份宽度算，先填可一并对齐（paintBall 另有现测兜底） */
+  const en0=$('#eraName');if(en0&&!en0.textContent){try{const r0=eraOf(cur());en0.textContent=r0.short;en0.setAttribute('data-era',r0.k);}catch(_){}}
   trackW=tr.clientWidth||trackW;
   const pad=12/trackW,inset=p=>pad+(1-2*pad)*p;
   /* 节点等距：位置只由序号决定，与真实年份间隔无关，游标每步移动距离相同 */
   POS=L.map((e,i)=>inset((i+0.5)/N));
   const set=ERASET;
   const wd=railPath();
-  let h='<div class="ribbon-meta"><span class="era-current"></span><span class="ribbon-count"></span></div><svg class="rail-svg" viewBox="0 0 '+Math.max(1,Math.round(trackW))+' 72" preserveAspectRatio="none" aria-hidden="true"><path class="rail-w" d="'+wd+'"/><path class="rail-fill" pathLength="100" stroke-dasharray="0 100" d="'+wd+'"/></svg>';
+  /* 单行轨道只生成三样：轨道线 SVG、五段时代色带（纯色段、无文字）、节点圆点与游标。
+     年份刻度与时代名标签不再生成——阶段由色带分段 + 胶囊左端常驻的当前阶段名表达。
+     手机端（≤760px）连节点圆点也不生成：轨道只剩五段时期，拖动按时期跳转（见 bindTrack），
+     一百多个圆点既无意义又白占合成层。ERASEG 缓存每段的起止分数与首个事件序号，
+     供手机端时期判定与桌面端共用同一套 inset 坐标，不会两处算出不同的段界 */
+  ERASEG=[];
+  let h='<svg class="rail-svg" viewBox="0 0 '+Math.max(1,Math.round(trackW))+' 36" preserveAspectRatio="none" aria-hidden="true"><path class="rail-w" d="'+wd+'"/><path class="rail-fill" pathLength="100" stroke-dasharray="0 100" d="'+wd+'"/></svg>';
   set.forEach(r=>{
     let a=-1,b=-1;L.forEach((e,i)=>{if(e.y>=r.from&&e.y<r.to){if(a<0)a=i;b=i;}});
     if(a<0)return;
     const x0=inset(a/N),x1=inset((b+1)/N);
-    h+='<div class="band" data-era="'+r.k+'" style="left:'+(x0*100).toFixed(3)+'%;width:'+((x1-x0)*100).toFixed(3)+'%"><span class="bl">'+esc(r.short)+'</span><span class="bb"></span></div>';
+    ERASEG.push({k:r.k,first:a,x0:x0,x1:x1});
+    h+='<div class="band" data-era="'+r.k+'" style="left:'+(x0*100).toFixed(3)+'%;width:'+((x1-x0)*100).toFixed(3)+'%"><span class="bb"></span></div>';
   });
-  const tk=[{y:yr(L[0]),p:POS[0]}];
-  set.forEach(r=>{if(r.tick&&r.from>L[0].y&&r.from<L[N-1].y){let n=0;while(n<N&&L[n].y<r.from)n++;tk.push({y:r.tick,p:inset(n/N)});}});
-  tk.push({y:yr(L[N-1]),p:POS[N-1]});
-  const w=trackW,kept=[];
-  tk.forEach((t,i)=>{if(kept.length&&(t.p-kept[kept.length-1].p)*w<50){if(i===tk.length-1)kept.pop();else return;}kept.push(t);});
-  h+=kept.map(t=>'<span class="tick'+(t.p*w<24?' first':(1-t.p)*w<24?' last':'')+'" data-p="'+t.p+'" style="left:'+(t.p*100).toFixed(3)+'%">'+t.y+'</span>').join('');
-  h+=L.map((e,i)=>'<span class="dot-e" data-i="'+i+'" data-era="'+eraOf(e).k+'" style="left:'+(POS[i]*100).toFixed(3)+'%;top:27px"></span>').join('');
-  h+='<span class="cur-line"></span><span class="cur-dot"></span><span class="cur-lab"></span>';
+  if(!isNarrow())h+=L.map((e,i)=>'<span class="dot-e" data-i="'+i+'" data-era="'+eraOf(e).k+'" style="left:'+(POS[i]*100).toFixed(3)+'%;top:18px"></span>').join('');
+  h+='<span class="cur-line"></span><span class="cur-dot"></span>';
   tr.innerHTML=h;cacheCurEls();
-  tr.setAttribute('aria-valuemin','1');tr.setAttribute('aria-valuemax',String(N));
+  if(isNarrow()){
+    tr.setAttribute('aria-label','时间轴（按时期拖动）');tr.title='拖动选择时期，松手跳到该时期的第一个事件。';
+    tr.setAttribute('aria-valuemin','1');tr.setAttribute('aria-valuemax',String(ERASEG.length||set.length));
+  }else{
+    tr.setAttribute('aria-label','时间轴（可拖动；节点等距排列）');tr.title='拖动浏览；节点按顺序等距排列，与真实年份间隔无关。← → 切换节点，Home / End 跳转首尾。';
+    tr.setAttribute('aria-valuemin','1');tr.setAttribute('aria-valuemax',String(N));
+  }
   paintDots();updateCursor();
+  /* 轨道刚整段重建过：新游标元素没有 transform、停在轨道左端，updateCursor 里
+     setBall 走的是弹簧（下一帧才写位置）——在 rAF 被节流的环境（应用内嵌
+     WebView 息屏 / 后台切回）里球会长时间停在左端假死。按上次画过的位置同步
+     补画一笔：弹簧在飞时它下一帧自己覆盖，在息时补画值就是目标值，不跳变 */
+  if(ballLastP!=null)paintBall(ballLastP);
 }
 function paintDots(){
   const L=LIST,vis=filtered()?new Set(VIS.map(e=>e.id)):null;
@@ -869,13 +969,14 @@ function updateCursor(){
   const L=LIST,id=curId(),i=L.findIndex(e=>e.id===id);if(i<0||!POS.length)return;
   const tr=$('#track'),p=POS[i],e=L[i],r=eraOf(e);
   if(!curEls)cacheCurEls();
-  if(curEls)[curEls.line,curEls.dot,curEls.lab].forEach(el=>{if(el)el.setAttribute('data-era',r.k);});
+  if(curEls)[curEls.line,curEls.dot].forEach(el=>{if(el)el.setAttribute('data-era',r.k);});
   if(!S.playing)setBall(p);
   $$('.dot-e',tr).forEach(d=>d.classList.toggle('now',+d.dataset.i===i));
   const pcEl=$('#playCount');if(pcEl)swapText(pcEl,(i+1)+' / '+L.length);
-  const lab=curEls&&curEls.lab;if(lab)lab.textContent=yr(e);
-  $('.era-current',tr).textContent=r.short;$('.era-current',tr).setAttribute('data-era',r.k);$('.ribbon-count',tr).textContent=(i+1)+' / '+L.length;
-  tr.setAttribute('aria-valuenow',String(i+1));tr.setAttribute('aria-valuetext',e.d+' '+e.t);
+  /* 当前阶段名：胶囊左端常驻文本，游标走到哪段就报哪段的阶段名（短名），颜色随段走 */
+  const en=$('#eraName');if(en){en.textContent=r.short;en.setAttribute('data-era',r.k);}
+  /* 手机端轨道按时期计值：valuenow 报第几个时期，与 layoutRibbon 的 valuemax=时期数对应 */
+  tr.setAttribute('aria-valuenow',String(isNarrow()?ERASET.indexOf(r)+1:i+1));tr.setAttribute('aria-valuetext',e.d+' '+e.t);
 }
 function bindTrack(){
   const tr=$('#track');let drag=false,px=null,raf=0;
@@ -884,10 +985,32 @@ function bindTrack(){
     POS.forEach((p,i)=>{if(vis&&!vis.has(L[i].id))return;const d=Math.abs(p-t);if(d<bd){bd=d;bi=i;}});
     if(bi>=0&&L[bi].id!==curId())select(L[bi].id,{from:'ribbon'});};
   const queue=x=>{px=x;if(!raf)raf=requestAnimationFrame(pick);};
-  tr.addEventListener('pointerdown',ev=>{if(ev.button>0)return;drag=true;try{tr.setPointerCapture(ev.pointerId);}catch(_){}queue(ev.clientX);});
-  tr.addEventListener('pointermove',ev=>{if(drag)queue(ev.clientX);});
-  const end=()=>{drag=false;};
-  tr.addEventListener('pointerup',end);tr.addEventListener('pointercancel',end);tr.addEventListener('lostpointercapture',end);
+  /* 手机端（≤760px）：轨道不细分节点、只认五个时期。拖动全程不调 select——
+     桌面那套「拖到哪个节点就跳哪个节点」在手机上每过一个节点就要重渲详情、
+     列表高亮与游标，正是滑动卡顿的来源。这里拖动只做预览（小球跟手 +
+     胶囊左端阶段名跟着手指变，每帧只写 transform 与一处文本），松手才一次性
+     跳到所停时期的第一个事件；点按（按下即松手）同样按时期跳转 */
+  let mDrag=false,mEra=-1,mRaf=0,mX=null;
+  const eraAt=t=>{let j=0;ERASEG.forEach((s,idx)=>{if(t>=s.x0)j=idx;});return j;};
+  const mPreview=()=>{mRaf=0;if(mX==null||!ERASEG.length)return;const rc=tr.getBoundingClientRect(),t=Math.max(0,Math.min(1,(mX-rc.left)/rc.width));const j=eraAt(t);mEra=j;setBall(t);
+    const r=ERASET[j],en=$('#eraName');if(en&&r){en.textContent=r.short;en.setAttribute('data-era',r.k);}};
+  const mQueue=x=>{mX=x;if(!mRaf)mRaf=requestAnimationFrame(mPreview);};
+  const mCommit=()=>{if(mRaf){cancelAnimationFrame(mRaf);mRaf=0;}
+    const seg=mEra>=0?ERASEG[mEra]:null;mEra=-1;
+    if(!seg){updateCursor();return;}
+    /* 跳到该时期的第一个事件：有筛选时取该时期内第一个可见事件，该时期没有可见事件则不动 */
+    let target=null;
+    if(filtered()&&VIS.length)target=VIS.find(e=>eraOf(e).k===seg.k)||null;
+    else target=LIST[seg.first]||null;
+    if(target&&target.id!==curId())select(target.id,{from:'ribbon'});else updateCursor();};
+  const mCancel=()=>{if(mRaf){cancelAnimationFrame(mRaf);mRaf=0;}mEra=-1;updateCursor();};
+  tr.addEventListener('pointerdown',ev=>{if(ev.button>0)return;try{tr.setPointerCapture(ev.pointerId);}catch(_){}
+    if(isNarrow()){mDrag=true;mEra=-1;mQueue(ev.clientX);}
+    else{drag=true;queue(ev.clientX);}});
+  tr.addEventListener('pointermove',ev=>{if(mDrag)mQueue(ev.clientX);else if(drag)queue(ev.clientX);});
+  const end=()=>{if(mDrag){mDrag=false;mCommit();}drag=false;};
+  const cancel=()=>{if(mDrag){mDrag=false;mCancel();}drag=false;};
+  tr.addEventListener('pointerup',end);tr.addEventListener('pointercancel',cancel);tr.addEventListener('lostpointercapture',end);
   tr.addEventListener('keydown',ev=>{const L=navList();
     if(ev.key==='Home'){ev.preventDefault();select(L[0].id);}
     else if(ev.key==='End'){ev.preventDefault();select(L[L.length-1].id);}
@@ -932,15 +1055,18 @@ function bindTrack(){
    - pointercancel（竖向接管 / 手势被打断）：拖动中直接拆条还原，绝不把页面
      留在半翻状态；弹簧落定途中没有活动手势，cancel 不触发拆条。
    - 帧率（iPad 60fps 专项）：每帧只写一件事——翻页条的 transform（pointermove
-     合并进 rAF、弹簧落定走 paint，均为 translate3d 独立合成层）。为此建条起到
-     落定拆条止给 <html> 挂 .paging，把逐帧重绘源一次性关停：条内克隆卡的
-     backdrop-filter / 阴影 / 过渡 / 动画全关（条只是静态快照，见 .pager-strip
-     规则）；压在条上方的胶囊与液态玻璃折射层关 backdrop-filter / filter；正文面
-     .detail 自身的 backdrop-filter 也关（带 backdrop-filter 的祖先会让 WebKit 把
-     后代合成进同一组、条身平移连带整面重绘）；背景 blob 整层隐藏（沉浸侧覆盖层
-     模糊本就是独立 .imm-bg 层、不参与重绘，见覆盖层一节）。上一版的深度转场
-     （离场压暗 / 入场转亮 / 接缝阴影）已整体移除——三层整页罩层的 opacity 逐帧
-     写入同样在吃帧，顺滑优先于转场。落定弹簧保持 stiffness 290 / damping 30。 */
+     合并进 rAF、弹簧落定走 paint，均为 translate3d 独立合成层）。逐帧重绘源的
+     关停只限条内：克隆卡的 backdrop-filter / 阴影 / 过渡 / 动画全关（条只是静态
+     快照，见 .pager-strip 规则）。页面其余表面的滤镜翻页期间一律保留：Chromium
+     里 .detail 的背板是静态 mesh + blob、不随条身平移失效，关掉它的
+     saturate(160%) 只会让整页背景在滑动开始 / 落定各变色一次（用户三报）、
+     并在落定那帧叠一笔全屏重栅格（切换重卡的一半）；只有 WebKit（无 .has-lg）
+     仍按旧规矩在 .paging 时关 .detail 的 backdrop-filter——它会把带滤镜的祖先
+     与后代合成进同一组、条身平移连带整面逐帧重绘（见翻页 CSS 一节）。背景
+     blob 不隐藏（静止缓存层，藏掉整页瞬间掉色）；沉浸侧覆盖层模糊本就是独立
+     .imm-bg 层、不参与重绘。上一版的深度转场（离场压暗 / 入场转亮 / 接缝
+     阴影）已整体移除——三层整页罩层的 opacity 逐帧写入同样在吃帧，顺滑优先
+     于转场。落定弹簧保持 stiffness 290 / damping 30。 */
 function makePager(scroller,host,htmlFor,guard){
   if(!scroller||!host)return;
   let pid=null,sx=0,sy=0,mode=0,dir=0,target=null,W=0;
@@ -1180,8 +1306,12 @@ function select(id,o){
   /* 左右滑跟手翻页落定后的提交：翻页条已经把新页滑到位，这里只换内容、不再叠加任何过渡 */
   if(o.from==='pager'){pagerSwap=true;try{swap();}finally{pagerSwap=false;}}
   /* View Transitions：手动切节点时让标题/年份做共享元素过渡；沉浸中（覆盖层已有自己的交叉过渡）、
-     播放自动推进、无此 API 的老浏览器都走原路径硬切，不叠加两套过渡 */
-  else if(!immersiveOn&&!o.auto&&document.startViewTransition&&!reducedMotion()){
+     播放自动推进、无此 API 的老浏览器都走原路径硬切，不叠加两套过渡。
+     手机端（≤760px）不用 VT：它要先给整页（含全屏 backdrop 模糊面 + 顶栏 SVG 折射）
+     拍一张快照再交叉淡化，中端安卓上每次切换都是一次肉眼可见的重卡（2026-11-14
+     用户报「每次切换都会狠狠的卡一下」）；窄屏直接换内容 + 卡片原有的 enter
+     轻滑入，便宜且跟手。桌面 / 平板保留 VT 的共享元素过渡 */
+  else if(!immersiveOn&&!o.auto&&!isNarrow()&&document.startViewTransition&&!reducedMotion()){
     vtBusy=true;
     try{document.startViewTransition(()=>{swap();vtBusy=false;});}
     catch(_){vtBusy=false;swap();}
@@ -1211,11 +1341,6 @@ function toggle(kind){
       if(kind==='done'&&m[e.id]){const db=$('[data-act="done"]',a);if(db)db.classList.add('just-done');}
     }}
   if(kind==='star'&&S.f==='star'){renderList();paintDots();}
-}
-function tagClick(c){
-  stopPlay();
-  S.ch=c;save();renderAll();
-  if(isNarrow())openSide();
 }
 /* 播放：小球匀速连续滑动。位置按导航序号线性推进（每个节点一份相同时长，1× = 6 秒，
    与真实年份间隔无关），逐帧用 requestAnimationFrame 只更新 transform：
@@ -1281,6 +1406,7 @@ function startPlay(){
   playRaf=requestAnimationFrame(playFrame);
 }
 function setPlay(on){
+  if(on&&isNarrow())on=false;/* 手机端已删播放功能：窄屏下拒绝启动（隐藏按钮之外的兜底） */
   S.playing=on;const b=$('#playBtn');b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',on?'暂停自动播放':'自动播放');if(!b.dataset.built){b.dataset.built='1';b.innerHTML='<span class="icon-swap" id="playSwap"><span class="ic" data-icon="play">'+IC.play+'</span><span class="ic" data-icon="pause">'+IC.pause+'</span></span>';}setSwap('playSwap',on?'pause':'play');
   $('#app').classList.toggle('playing',on);
   if(playRaf){cancelAnimationFrame(playRaf);playRaf=0;}
@@ -1323,18 +1449,9 @@ function renderOverlayCard(keepScroll){
   const dir=lastDir,c=$('.card',ov);
   if(c&&!reducedMotion()&&!pagerSwap)c.classList.add(dir==='prev'?'enter-prev':dir==='next'?'enter-next':'enter');
 }
-/* 沉浸全屏（best-effort）：Fullscreen API 只能由用户手势触发，这里挂在「沉浸阅读」点击里顺手调；
-   浏览器拒绝（iframe 权限、iOS 限制）时静默放弃，沉浸覆盖层本身不受影响；退出沉浸时同步退出全屏 */
-function fsEnter(){
-  try{
-    if(document.fullscreenElement)return;
-    const el=document.documentElement;
-    if(!el.requestFullscreen)return;
-    const r=el.requestFullscreen({navigationUI:'hide'});
-    if(r&&r.catch)r.catch(()=>{try{const r2=el.requestFullscreen();if(r2&&r2.catch)r2.catch(()=>{});}catch(__){}});
-  }catch(_){try{document.documentElement.requestFullscreen();}catch(__){}}
-}
-function fsExit(){try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();}catch(_){}}
+/* 沉浸不再调 Fullscreen API：覆盖层本身已是 fixed 全屏；全屏请求在沙箱 iframe 里要么被拒、
+   要么在入场落定后触发整页 resize + 重排（滑块画布、Lenis 观察器一齐被惊动），正是
+   「显示之后」那一下卡死的引信。去掉后进入沉浸只剩覆盖层自身的淡入，落定即定格磨砂 */
 /* 退出沉浸时把主页同步到沉浸里翻到的那一页：沉浸期间主页一直冻结在进入时的
    那一页（模糊背景不跟着翻页变），退出这一刻才渲染新页，并给新卡挂 imm-sync
    动画——与覆盖层 640ms 淡出同帧启动、同曲线，覆盖层淡尽时主页已滑稳在新页；
@@ -1360,7 +1477,8 @@ function enterImmersive(){
   const ov=$('#immOverlay');clearTimeout(immHideTimer);ov.hidden=false;void ov.offsetWidth;ov.classList.add('show');
   $('#app').inert=true;
   $('#immersiveExit').focus({preventScroll:true});
-  fsEnter();
+  /* 入场后不再安排任何定时动作：此前的全屏请求挂在这里、落定瞬间触发整页 resize 重排，
+     是「显示之后卡死」的引信，已连同 fsEnter/fsExit 一并删除（见上方注释） */
 }
 function exitImmersive(){
   if(!immersiveOn)return;immersiveOn=false;
@@ -1373,7 +1491,6 @@ function exitImmersive(){
      磨砂层淡尽时新页正好滑稳——退出沉浸的丝滑过渡靠这一对淡出 + 主页的 imm-sync 动画 */
   const bg=$('#immBg');bg.classList.remove('show');clearTimeout(immBgTimer);immBgTimer=setTimeout(()=>{if(!immersiveOn)bg.hidden=true;},660);
   const ov=$('#immOverlay');ov.classList.remove('show');clearTimeout(immHideTimer);immHideTimer=setTimeout(()=>{if(!immersiveOn)ov.hidden=true;},660);
-  fsExit();
   $('#immersiveBtn').focus({preventScroll:true});
 }
 let drawerReturn=null;
@@ -1401,7 +1518,6 @@ $('#list').addEventListener('click',ev=>{
 $('#detail').addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.go){select(b.dataset.go);return;}
-  if(b.dataset.ch){tagClick(b.dataset.ch);return;}
   const a=b.dataset.act;
   if(a==='star'||a==='done')toggle(a);
 });
@@ -1782,7 +1898,7 @@ function draw(now){
   }
   var starFade = 1 - smooth(t * 1.35);
   if (starFade > 0.003){
-    var tw = reduced ? 1 : 0.72 + 0.28 * Math.sin(now / 520);
+    var tw = (reduced || twinkleDone) ? 1 : 0.72 + 0.28 * Math.sin(now / 520);
     for (i = 0; i < starPts.length; i++){
       drawDot(starPts[i].x, starPts[i].y, starPts[i].a * starFade * tw, 1);
     }
@@ -1791,8 +1907,16 @@ function draw(now){
   ctx.globalAlpha = 1;
 }
 var rafId = null, lastTs = 0;
+/* 深色星星闪烁限时（与「我的订阅」同款修法）：落定深色后只闪 2.6 秒，到期星星定格全亮、
+   rAF 循环彻底停下。旧版只要停在深色就以 60fps 常驻重绘画布，顶栏胶囊的 backdrop 玻璃
+   被迫逐帧重采样，手机静置也满载——开抽屉 / 进沉浸的卡顿有一份是它垫的底。
+   每次弹簧落定到端点（切主题 / 跟随系统）都重新给一次 2.6 秒预算 */
+var twinkleStart = 0, twinkleDone = false;
 function twinkleActive(){
-  return !reduced && !dragging && target === null && t < 0.55;
+  if (reduced || dragging || target !== null || t >= 0.55 || twinkleDone) return false;
+  if (!twinkleStart) twinkleStart = performance.now();
+  if (performance.now() - twinkleStart > 2600){ twinkleDone = true; return true; }
+  return true;
 }
 function frame(ts){
   rafId = null;
@@ -1810,6 +1934,7 @@ function frame(ts){
     else if (t > 1){ t = 1; if (vel > 0) vel = 0; }
     if (Math.abs(t - target) < 0.0008 && Math.abs(vel) < 0.0008){
       t = target; vel = 0; target = null;
+      twinkleStart = 0; twinkleDone = false;
     }
   }
   /* 移动中（拖动 / 弹簧）页面主题逐帧跟随 t；t 归位端点后提交主题并清掉行内插值 */
@@ -1916,7 +2041,7 @@ var ERA_DEFS = {
   cn2: { era: [[208,138,132,1],[168,90,84,1]],   ink: [[226,172,166,1],[138,66,60,1]],  tint: [[208,138,132,0.14],[168,90,84,0.09]] },
   cn3: { era: [[210,168,112,1],[176,125,69,1]],  ink: [[228,192,142,1],[138,95,48,1]],  tint: [[210,168,112,0.14],[176,125,69,0.10]] },
   cn4: { era: [[132,184,164,1],[78,138,116,1]],  ink: [[168,210,192,1],[56,106,86,1]],  tint: [[132,184,164,0.14],[78,138,116,0.10]] },
-  cn5: { era: [[194,164,140,1],[140,115,96,1]],  ink: [[214,188,164,1],[110,87,71,1]],  tint: [[194,164,140,0.14],[140,115,96,0.10]] }
+  cn5: { era: [[183,156,237,1],[110,79,168,1]],  ink: [[214,198,245,1],[84,56,127,1]],  tint: [[183,156,237,0.14],[110,79,168,0.10]] }
 };
 var eraLabs = {};
 for (var ek in ERA_DEFS){
@@ -2101,13 +2226,14 @@ requestRender();
 if(window.matchMedia){const mqT=window.matchMedia('(prefers-color-scheme: dark)');if(mqT.addEventListener)mqT.addEventListener('change',e=>{if(!S.theme)applyTheme(e.matches?'dark':'light');});}
 $('#ribbonBtn').addEventListener('click',()=>{S.ribbonHide=!S.ribbonHide;save();updateRibbonBtn();if(!S.ribbonHide)requestAnimationFrame(()=>{layoutRibbon();updateCursor();});});
 $('#immersiveBtn').addEventListener('click',enterImmersive);
+/* 沉浸内的主题键：与顶栏滑块同一套提交（S.theme + applyTheme + save）；applyTheme 内的 __ldFollow 让滑块静默跟随，退出沉浸后位置一致 */
+$('#themeBtn').addEventListener('click',()=>{const nx=effectiveTheme()==='dark'?'light':'dark';S.theme=nx;applyTheme(nx);save();});
 $('#immersiveExit').addEventListener('click',()=>exitImmersive());
-/* 覆盖层内的交互与正文一致：翻页走 select（沉浸中只换覆盖层、主页冻结，退出时同步），章节标签先退出沉浸再筛选，
+/* 覆盖层内的交互与正文一致：翻页走 select（沉浸中只换覆盖层、主页冻结，退出时同步），
    重点/掌握走 toggle 更新状态后就地重渲染覆盖层卡片（保持滚动位置）并补同款动效 */
 $('#immDetail').addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.go){select(b.dataset.go);return;}
-  if(b.dataset.ch){const c=b.dataset.ch;exitImmersive();tagClick(c);return;}
   const a=b.dataset.act;
   if(a==='star'||a==='done'){
     toggle(a);renderOverlayCard(true);
@@ -2143,7 +2269,7 @@ document.addEventListener('keydown',ev=>{
 });
 window.addEventListener('hashchange',()=>{const i=S.cur;if(fromHash()&&S.cur!==i){S.ch='';renderAll();}});
 let rz=0;
-window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{layoutRibbon();syncPills(false);moveSelBar(false);syncInert();updateProg();if(!isNarrow())closeSide();},120);});
+window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{layoutRibbon();syncPills(false);moveSelBar(false);syncInert();updateProg();if(isNarrow())stopPlay();else closeSide();},120);});
 
 /* ripplet.js (luncheon/ripplet.js) inline declarative port: pointerdown on [data-ripplet],
    ripple spreads from the touch point (350ms, ease-soft), clears on pointerup/leave (600ms fade).
@@ -2185,100 +2311,6 @@ function initLenis(){
 
 fromHash();
 updateThemeBtn();updateRibbonBtn();updateSpeedUI();setPlay(false);syncInert();initBallSpring();renderAll();bindTrack();initLenis();
-})();
-</script>
-<script>
-/* 液态玻璃驱动（复刻 liquid-glass-react 的运行时行为，仅 Chromium 启用）：
-   - 门控：Chromium 内核（桌面/安卓 Chrome、Edge、Opera 等）才加 .lg-on；Safari、iOS 全部浏览器
-     （WebKit 不呈现 SVG 滤镜折射）与 Firefox 不加类，胶囊保持 4 号超透薄玻璃；
-     prefers-reduced-transparency 时同样不启用。
-   - 尺寸：原库按组件实测尺寸设置滤镜 SVG 的宽高（glassSize），这里用 ResizeObserver 同步两颗胶囊。
-   - 弹性：原库 elasticity=0.15 的鼠标跟随（200px 激活区、边缘距离淡入、方向拉伸 + 弹性平移）
-     改走独立的 translate / scale 属性，不碰两颗胶囊既有的 transform 动画（收起 / 沉浸）；
-     平移量按原库公式计算后钳制在 ±6px（胶囊比原库示例宽得多，全量平移会露边）；
-     触屏与 prefers-reduced-motion 不启用。 */
-(function(){
-  var ua=navigator.userAgent||"";
-  var isIOS=/iP(hone|ad|od)/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-  var isFirefox=/Firefox\//.test(ua);
-  var isChromium=/Chrome\/|Chromium\/|Edg\/|OPR\/|SamsungBrowser\//.test(ua);
-  if(!isChromium||isFirefox||isIOS)return;
-  if(window.matchMedia&&matchMedia("(prefers-reduced-transparency: reduce)").matches)return;
-  var top=document.querySelector(".top"),ribbon=document.querySelector(".ribbon");
-  if(!top||!ribbon)return;
-  document.documentElement.classList.add("lg-on");
-
-  function syncSize(el){
-    var svg=el.querySelector(".lg-svg");
-    if(!svg)return;
-    var w=Math.round(el.clientWidth),h=Math.round(el.clientHeight);
-    if(w>0&&h>0){svg.setAttribute("width",w);svg.setAttribute("height",h);}
-  }
-  syncSize(top);syncSize(ribbon);
-  if(window.ResizeObserver){
-    var ro=new ResizeObserver(function(entries){
-      for(var i=0;i<entries.length;i++)syncSize(entries[i].target);
-    });
-    ro.observe(top);ro.observe(ribbon);
-  }else{
-    window.addEventListener("resize",function(){syncSize(top);syncSize(ribbon);},{passive:true});
-  }
-
-  var finePointer=window.matchMedia&&matchMedia("(hover: hover) and (pointer: fine)").matches;
-  var reducedMotion=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(!finePointer||reducedMotion)return;
-  var ELASTICITY=0.15,ACTIVATION=200;
-  var mouse=null;
-  window.addEventListener("pointermove",function(e){
-    if(e.pointerType&&e.pointerType!=="mouse")return;
-    mouse={x:e.clientX,y:e.clientY};
-    kick();
-  },{passive:true});
-  document.addEventListener("mouseleave",function(){mouse=null;kick();});
-  var states=[];
-  function attach(el){
-    var st={el:el,x:0,y:0,sx:1,sy:1,gx:0,gy:0,gsx:1,gsy:1,raf:0};
-    states.push(st);
-    return st;
-  }
-  var sTop=attach(top),sRibbon=attach(ribbon);
-  function kick(){for(var i=0;i<states.length;i++)wake(states[i]);}
-  function wake(st){if(!st.raf)st.raf=requestAnimationFrame(function(){step(st);});}
-  function clampT(v){return Math.max(-6,Math.min(6,v));}
-  function targets(st){
-    if(!mouse){st.gx=0;st.gy=0;st.gsx=1;st.gsy=1;return;}
-    var el=st.el,w=el.offsetWidth,h=el.offsetHeight;
-    if(!w||!h){st.gx=0;st.gy=0;st.gsx=1;st.gsy=1;return;}
-    var cx=el.offsetLeft+w/2,cy=el.offsetTop+h/2;
-    var dx=mouse.x-cx,dy=mouse.y-cy;
-    var ex=Math.max(0,Math.abs(dx)-w/2),ey=Math.max(0,Math.abs(dy)-h/2);
-    var edge=Math.sqrt(ex*ex+ey*ey);
-    if(edge>ACTIVATION){st.gx=0;st.gy=0;st.gsx=1;st.gsy=1;return;}
-    var fade=1-edge/ACTIVATION;
-    var cd=Math.sqrt(dx*dx+dy*dy);
-    if(cd===0){st.gx=0;st.gy=0;st.gsx=1;st.gsy=1;return;}
-    var nx=dx/cd,ny=dy/cd;
-    var stretch=Math.min(cd/300,1)*ELASTICITY*fade;
-    st.gsx=Math.max(0.8,1+Math.abs(nx)*stretch*0.3-Math.abs(ny)*stretch*0.15);
-    st.gsy=Math.max(0.8,1+Math.abs(ny)*stretch*0.3-Math.abs(nx)*stretch*0.15);
-    st.gx=clampT(dx*ELASTICITY*0.1*fade);
-    st.gy=clampT(dy*ELASTICITY*0.1*fade);
-  }
-  function step(st){
-    st.raf=0;
-    targets(st);
-    st.x+=(st.gx-st.x)*0.2;st.y+=(st.gy-st.y)*0.2;
-    st.sx+=(st.gsx-st.sx)*0.2;st.sy+=(st.gsy-st.sy)*0.2;
-    var settled=Math.abs(st.gx-st.x)<0.02&&Math.abs(st.gy-st.y)<0.02&&Math.abs(st.gsx-st.sx)<0.0005&&Math.abs(st.gsy-st.sy)<0.0005;
-    if(settled){st.x=st.gx;st.y=st.gy;st.sx=st.gsx;st.sy=st.gsy;}
-    if(st.x===0&&st.y===0&&st.sx===1&&st.sy===1){
-      if(st.el.style.translate||st.el.style.scale){st.el.style.translate="";st.el.style.scale="";}
-    }else{
-      st.el.style.translate=st.x.toFixed(2)+"px "+st.y.toFixed(2)+"px";
-      st.el.style.scale=st.sx.toFixed(4)+" "+st.sy.toFixed(4);
-    }
-    if(!settled)wake(st);
-  }
 })();
 </script>
 </body>
