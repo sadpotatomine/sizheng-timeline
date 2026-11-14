@@ -436,8 +436,19 @@ html.has-lg .top{-webkit-backdrop-filter:url("#lg-refract") blur(1px) saturate(1
   .ld-stage{width:68px;height:43.27px}
   .wrap{grid-template-columns:minmax(0,1fr)}
   .list{padding-bottom:18px}
-  .side{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(88vw,360px);border-right:0;border-radius:0 var(--r-frame) var(--r-frame) 0;overflow:hidden;isolation:isolate;background:var(--glass-panel);-webkit-backdrop-filter:var(--glass-panel-blur);backdrop-filter:var(--glass-panel-blur);box-shadow:var(--glass-shadow),var(--glass-insets);transform:translateX(-104%);transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-  .side.open{transform:none}
+  /* 移动端抽屉（2026-11-14 用户反馈「占比太多、打开有点卡」两项一起改）：
+     ① 宽度 88vw/360px → 72vw/290px：手机上不再几乎盖满整屏，右侧露出约四分之一正文，
+        列表条目（年份列 44px + 两行标题）在此宽度下仍完整可读；
+     ② 卡顿主因是整面 backdrop 模糊（blur 14px + saturate 160%）挂在滑动元素上——
+        抽屉每滑一帧，Chromium 就要对整面面板重采样一次背后的正文，中端安卓必掉帧。
+        改法与遮罩同理（见下方 .scrim 注释）：抽屉面改近不透明定格底（--imm-veil，
+        与沉浸定格底同色、仍带 8% 透出，观感与磨砂几乎一致），backdrop 模糊整体撤掉，
+        滑动只剩 transform 走合成层；多层内嵌高光投影同理压成一条单层柔影。
+     ③ 关闭态加 visibility:hidden（延迟到滑出动画结束才切）：关着的抽屉不再被合成器
+        常驻绘制，开/合首帧也不必先把它整面栅格化一遍。
+     桌面/平板的固定侧栏不在此规则内，磨砂与宽度均不变 */
+  .side{position:fixed;z-index:50;top:0;bottom:0;left:0;width:min(72vw,290px);border-right:0;border-radius:0 var(--r-frame) var(--r-frame) 0;overflow:hidden;isolation:isolate;background:var(--imm-veil);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:14px 0 36px rgba(20,34,52,.16);transform:translateX(-104%);visibility:hidden;transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),visibility 0s linear var(--dur-enter);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .side.open{transform:none;visibility:visible;transition:transform var(--dur-enter) var(--ease-apple),background-color var(--dur-struct) var(--ease-apple),visibility 0s linear 0s}
   .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 0 18px}
   .drawer-head b{font-family:var(--serif);font-size:18px;letter-spacing:.06em}
   /* 遮罩不带 backdrop 模糊：全屏模糊层做 opacity 淡入是抽屉打开卡顿的主因之一，去掉后只剩纯色淡入 */
@@ -511,22 +522,27 @@ html.has-lg .top{-webkit-backdrop-filter:url("#lg-refract") blur(1px) saturate(1
    box-shadow / text-shadow 光栅化、transition / animation 逐帧求值，条内都不需要；
    底色本身带 alpha，关掉这些在滑动的几百毫秒里看不出差别，落定拆条后真实卡片原样 */
 .pager-strip *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;transition:none!important;animation:none!important}
-/* 翻页期间的滤镜关停只留给 WebKit（无 .has-lg 的环境）：它是翻页条的祖先，WebKit
-   会把带 backdrop-filter 的祖先与其后代合成在同一组里，条身平移可能连带整个正文面
-   逐帧重绘——关掉后条身是独立合成层，每帧只剩它自己的 transform 在动。
-   Chromium（.has-lg，含用户的安卓手机）一律不关：.detail 的背板是 body mesh +
-   静止 blob，不随条身平移变化，保滤镜没有逐帧重采样；而 blur(14px) saturate(160%)
-   一旦关掉，整面正文的饱和与亮度立刻跳一档、落定恢复时再跳回来——用户三报的
-   「左右滑时背景会变色一下」就是它（此前误判 14px 模糊开关对合成色无影响：
-   模糊本身影响小，saturate(160%) 的开关才是变色主因）。同理，落定拆条那一帧
-   也不再有「全屏模糊重新栅格化」与内容替换叠在同一帧——那是每次滑动切换
-   「狠狠卡一下」的一半来源。
-   其余表面翻页期间同样一律不动（2026-11-14 用户两次要求：滑动时与正常阅读同色）：
+/* 翻页期间任何表面的滤镜一律保留、一个不关（Chromium 与 WebKit 同规矩）：
+   .detail 的背板是 body mesh + 静止 blob，位于它的身后、不随条身平移变化，
+   保滤镜没有逐帧重采样；而 blur(14px) saturate(160%) 一旦关掉，整面正文的
+   饱和与亮度立刻跳一档、落定恢复时再跳回来——用户三报的「左右滑时背景会
+   变色一下」就是它（此前误判 14px 模糊开关对合成色无影响：模糊本身影响小，
+   saturate(160%) 的开关才是变色主因）。同理，落定拆条那一帧也不再有「全屏
+   模糊重新栅格化」与内容替换叠在同一帧——那是每次滑动切换「狠狠卡一下」
+   的一半来源。
+   WebKit 曾单独留过一条 .paging 关 .detail 滤镜的旧规矩（防祖先与后代同组
+   逐帧重绘），2026-11-14 已废除：iPad 实测它才是平板变色的元凶——WebKit 里
+   同一 Backdrop Root 的玻璃面（顶栏 / 侧栏 / 正文面）共用一份背景快照，
+   .detail 的滤镜一关，整组背景被迫重算，顶栏胶囊与左边栏在重算期间直接
+   采样到未经深色玻璃面压制的原始蓝色 mesh+blob，整段滑动期间发蓝、落定
+   恢复滤镜才变回深色（用户附 iPad 截图为证；安卓 Chromium 从不关滤镜、
+   无此现象）。保滤镜后翻页期间零背景失效，条身仍是独立合成层逐帧只走
+   transform。其余表面同理一律不动（2026-11-14 用户两次要求：滑动时与
+   正常阅读同色）：
    - 任何表面的 background 不动；顶 / 底两颗胶囊与沉浸工具键的 backdrop 模糊 /
      折射全部保留、不关停（面积小，逐帧重采样成本有界；此前「关模糊 + 换
      --imm-veil 近不透明定格底」在深色下把透出蓝晕的玻璃面换成近黑实底，已废除）；
    - 背景 blob 翻页期间不隐藏：它们早已静止、是合成器缓存层，藏掉会让整页背景瞬间掉色 */
-html:not(.has-lg).paging .detail{-webkit-backdrop-filter:none;backdrop-filter:none}
 /* 沉浸期间底层正文面 / 侧栏的 backdrop 模糊关停：它们整层被 .imm-bg 的磨砂盖住、看不见，
    却仍在逐帧合成；关掉后沉浸里只剩 .imm-bg 一层全屏模糊在工作，进出沉浸不再多层叠加 */
 html.imm-on .detail,html.imm-on .side{-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -1057,12 +1073,13 @@ function bindTrack(){
    - 帧率（iPad 60fps 专项）：每帧只写一件事——翻页条的 transform（pointermove
      合并进 rAF、弹簧落定走 paint，均为 translate3d 独立合成层）。逐帧重绘源的
      关停只限条内：克隆卡的 backdrop-filter / 阴影 / 过渡 / 动画全关（条只是静态
-     快照，见 .pager-strip 规则）。页面其余表面的滤镜翻页期间一律保留：Chromium
-     里 .detail 的背板是静态 mesh + blob、不随条身平移失效，关掉它的
-     saturate(160%) 只会让整页背景在滑动开始 / 落定各变色一次（用户三报）、
-     并在落定那帧叠一笔全屏重栅格（切换重卡的一半）；只有 WebKit（无 .has-lg）
-     仍按旧规矩在 .paging 时关 .detail 的 backdrop-filter——它会把带滤镜的祖先
-     与后代合成进同一组、条身平移连带整面逐帧重绘（见翻页 CSS 一节）。背景
+     快照，见 .pager-strip 规则）。页面其余表面的滤镜翻页期间一律保留（所有
+     引擎同规矩）：.detail 的背板是静态 mesh + blob、不随条身平移失效，关掉
+     它的 saturate(160%) 只会让整页背景在滑动开始 / 落定各变色一次（用户
+     三报）、并在落定那帧叠一笔全屏重栅格（切换重卡的一半）；WebKit 还多一
+     层：同一 Backdrop Root 的玻璃面共用背景快照，关 .detail 的滤镜会连带
+     顶栏胶囊与左边栏在滑动期间采样到原始蓝背景而发蓝（iPad 实测，见翻页
+     CSS 一节），故 WebKit 的 .paging 关滤镜旧规矩已一并废除。背景
      blob 不隐藏（静止缓存层，藏掉整页瞬间掉色）；沉浸侧覆盖层模糊本就是独立
      .imm-bg 层、不参与重绘。上一版的深度转场（离场压暗 / 入场转亮 / 接缝
      阴影）已整体移除——三层整页罩层的 opacity 逐帧写入同样在吃帧，顺滑优先
@@ -1500,7 +1517,7 @@ function syncInert(){
   if(opened){s.setAttribute('role','dialog');s.setAttribute('aria-modal','true');}else{s.removeAttribute('role');s.removeAttribute('aria-modal');}
   ['.top','#detail','.ribbon'].forEach(sel=>{$(sel).inert=opened;});
 }
-function openSide(){drawerReturn=document.activeElement;$('#side').classList.add('open');$('#scrim').classList.add('show');$('#menuBtn').setAttribute('aria-expanded','true');syncInert();ensureVisible($('#list .item[aria-current]'),true);if(isNarrow())$('#closeSide').focus({preventScroll:true});}
+function openSide(){drawerReturn=document.activeElement;$('#side').classList.add('open');$('#scrim').classList.add('show');$('#menuBtn').setAttribute('aria-expanded','true');syncInert();/* 当前条目的滚动定位推迟两帧：ensureVisible 要连读两次 getBoundingClientRect 并写 scrollTop，原先与加 .open 类挤在同一帧，抽屉滑入的首帧先被一次强制布局 + 列表滚动卡住（用户反馈「打开的时候有点卡」）；推迟后滑入先起步，定位在抽屉尚在滑入途中（约 2 帧）落位，肉眼无感 */requestAnimationFrame(()=>requestAnimationFrame(()=>ensureVisible($('#list .item[aria-current]'),true)));if(isNarrow())$('#closeSide').focus({preventScroll:true});}
 function closeSide(){const was=$('#side').classList.contains('open');$('#side').classList.remove('open');$('#scrim').classList.remove('show');$('#menuBtn').setAttribute('aria-expanded','false');syncInert();if(was&&isNarrow())(drawerReturn&&drawerReturn.isConnected?drawerReturn:$('#menuBtn')).focus({preventScroll:true});}
 const sideOpen=()=>$('#side').classList.contains('open');
 
