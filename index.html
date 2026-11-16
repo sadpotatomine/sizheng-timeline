@@ -20,7 +20,7 @@
   --line:#D8E0EA;--line-2:#E6ECF2;--hover:rgba(237,242,247,.62);--focus:#2470B8;--accent:#2470B8;--accent-hover:#1D5F9E;
   --warn-bg:rgba(248,243,231,.72);--warn-line:#E4D7B8;--warn-ink:#7A5E1E;--warn-k:rgba(176,141,52,.15);
   --mn-bg:rgba(234,243,246,.70);--mn-line:#BFD9DE;--mn-ink:#285E6B;
-  --gold:#90701E;--green:#247A68;--mark:rgba(74,144,217,.28);--hl:#1D4ED8;
+  --gold:#90701E;--green:#247A68;--mark:rgba(74,144,217,.28);--hl:#1D4ED8;--qmark-bg:rgba(255,205,64,.55);--qmark-ring:rgba(198,150,0,.45);
   --shadow:0 1px 2px rgba(20,34,52,.06),0 10px 30px rgba(20,34,52,.12);
   --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","Noto Serif SC",serif;
   --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
@@ -66,7 +66,7 @@
   --line:#2E3B4A;--line-2:#263241;--hover:rgba(34,46,60,.62);--focus:#7DB6F0;--accent:#357EC2;--accent-hover:#2C6BA8;
   --warn-bg:rgba(46,42,30,.72);--warn-line:#4A4230;--warn-ink:#E3C98A;--warn-k:rgba(227,201,138,.16);
   --mn-bg:rgba(24,42,48,.70);--mn-line:#2E4A52;--mn-ink:#A8D3DC;
-  --gold:#D9B45C;--green:#62BFA6;--mark:rgba(125,182,240,.32);--hl:#93C5FD;
+  --gold:#D9B45C;--green:#62BFA6;--mark:rgba(125,182,240,.32);--hl:#93C5FD;--qmark-bg:rgba(255,205,64,.40);--qmark-ring:rgba(255,205,64,.55);
   --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.45);
   --glass-tint:rgba(15,23,42,.06);
   --glass-blur:blur(6px) saturate(140%);
@@ -249,6 +249,30 @@ html.ld-live *,html.ld-live *::before,html.ld-live *::after{transition:none!impo
 .it-f svg{width:15px;height:15px}
 .it-f .fs{color:var(--gold)} .it-f .fd{color:var(--green)}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+/* 搜索词高亮：比普通 mark 更醒目的黄标 + 描边，正文与目录共用；定位跳转时再脉冲一次 */
+mark.qmark{background:var(--qmark-bg);box-shadow:inset 0 0 0 1px var(--qmark-ring);font-weight:600}
+mark.qmark.qmark-on{animation:qPulse 1.8s var(--ease-apple)}
+@keyframes qPulse{0%,55%{background:#FFC400;box-shadow:0 0 0 3px rgba(255,196,0,.45)}100%{background:var(--qmark-bg);box-shadow:inset 0 0 0 1px var(--qmark-ring)}}
+/* 目录条目里的命中片段：先报命中位置（考点第几条优先），再给带高亮的上下文摘录 */
+.it-match{display:block;margin-top:4px;font-size:12.5px;line-height:1.5;color:var(--ink-2);overflow-wrap:anywhere}
+.it-loc{display:inline-block;margin-right:6px;padding:0 6px;border-radius:5px;background:var(--mark);color:var(--ink);font-size:11.5px;font-weight:700;line-height:18px;vertical-align:1px;white-space:nowrap}
+/* 搜索结果导航条（侧栏，搜索时才出现）：第几个结果 + 上/下一个结果 */
+.match-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px}
+.match-nav[hidden]{display:none}
+.mn-txt{font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mn-btns{display:flex;gap:6px;flex:none}
+.mn-btn{width:36px;height:36px;padding:0;display:grid;place-items:center;border-radius:999px;border:1px solid var(--glass-border);background:var(--glass-field);box-shadow:inset 0 1px 1px var(--glass-rim-top);color:var(--ink-2)}
+.mn-btn:hover:not(:disabled){background:var(--hover);color:var(--ink)}
+.mn-btn:disabled{opacity:.4;cursor:default}
+.mn-btn svg{width:16px;height:16px}
+/* 详情页命中定位条：逐个位置列成标签（标题 / 意义 / 考点第N条 / 易混·考法 / 口诀…），点标签滚动定位到对应段落并闪烁标示 */
+.match-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:14px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--glass-card);box-shadow:inset 0 1px 1px var(--glass-rim-top)}
+.mb-q{font-size:13.5px;font-weight:700;color:var(--ink);margin-right:2px}
+.mb-chip{min-height:32px;padding:0 10px;border-radius:999px;border:1px solid var(--glass-border);background:var(--era-tint);color:var(--era-ink);font-size:13px;font-weight:600;white-space:nowrap}
+.mb-chip:hover{border-color:var(--focus);color:var(--focus)}
+.mb-hint{font-size:12.5px;color:var(--ink-3)}
+.match-flash{animation:matchFlash 1.8s var(--ease-apple);border-radius:8px}
+@keyframes matchFlash{0%,55%{background-color:rgba(255,196,0,.30);box-shadow:0 0 0 3px rgba(255,196,0,.35)}100%{background-color:transparent;box-shadow:0 0 0 0 rgba(255,196,0,0)}}
 .empty{padding:44px 24px;text-align:center;color:var(--ink-2);font-size:14px}
 .empty p{margin:0 0 14px;line-height:1.7}
 
@@ -683,12 +707,13 @@ html.lenis,html.lenis body{height:auto}.lenis:not(.lenis-autoToggle).lenis-stopp
     <aside class="side" id="side" aria-label="事件目录">
       <div class="drawer-head"><b>目录</b><button class="btn icon-btn" id="closeSide" type="button" data-ripplet aria-label="关闭目录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
       <div class="side-head">
-        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="搜索事件、人物" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="搜索"><kbd id="kbd">/</kbd><button class="clear" id="clearQ" type="button" data-ripplet aria-label="清除搜索" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="搜索事件、人物、知识点" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="搜索"><kbd id="kbd">/</kbd><button class="clear" id="clearQ" type="button" data-ripplet aria-label="清除搜索" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
         <div class="filters" role="group" aria-label="筛选">
           <button class="chip" type="button" data-ripplet data-f="all" aria-pressed="true">全部</button>
           <button class="chip" type="button" data-ripplet data-f="star" aria-pressed="false"><span class="chip-star">★</span> 重点</button>
           <label class="sel" id="selWrap" data-ripplet><select id="chSel" aria-label="按章节筛选"></select></label>
         </div>
+        <div class="match-nav" id="matchNav" hidden><span class="mn-txt" id="matchNavTxt"></span><span class="mn-btns"><button class="mn-btn" id="matchPrev" type="button" data-ripplet aria-label="上一个搜索结果" title="上一个搜索结果（Shift+回车）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="mn-btn" id="matchNext" type="button" data-ripplet aria-label="下一个搜索结果" title="下一个搜索结果（回车）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span></div>
         <div class="side-cap" id="cap"></div>
       </div>
       <div class="list" id="list"></div>
@@ -770,12 +795,68 @@ function curId(){if(S.cur&&BY[S.cur])return S.cur;return LIST[0].id;}
 function cur(){return BY[curId()];}
 function shortDate(e){const d=e.d,p=yr(e)+'年';if(d.indexOf(p)!==0)return d;const rest=d.slice(p.length);if(!rest)return p;if(!/^\d/.test(rest))return d;return rest;}
 function terms(){return S.q.trim().toLowerCase().split(/\s+/).filter(Boolean);}
-function hay(e){if(!e._h){e._h=[e.t,e.d,e.p,e.s,e.b,e.m].concat(e.k,e.q,myChaps(e).map(x=>x.cn+x.chap+x.name)).join('\n').toLowerCase();}return e._h;}
+/* 搜索范围只认节点自身内容（标题 / 时间 / 地点 / 意义 / 背景 / 考点 / 易混 / 口诀），
+   不含所属章节名：第三章章名本身就是「辛亥革命与君主专制制度的终结」，若把章名算进
+   匹配，整章节点（兴中会成立、中华民国成立…）正文一个字没有也会被搜出来，且命中
+   位置解析（matchInfo 只查正文字段）报不出位置，看着像凭空冒出来的结果。
+   按章找节点走章节下拉，不走搜索——这样搜索结果与 matchInfo 严格一致：
+   凡出现在结果里的节点，正文里必有可高亮的命中处 */
+function hay(e){if(!e._h){e._h=[e.t,e.d,e.p,e.s,e.b,e.m].concat(e.k,e.q).join('\n').toLowerCase();}return e._h;}
 function filtered(){return S.f!=='all'||!!S.ch||terms().length>0;}
 let VIS=[];
-function computeVis(){const T=terms();VIS=LIST.filter(e=>{if(S.f==='star'&&!S.star[e.id])return false;if(S.ch&&e.ch.indexOf(S.ch)<0)return false;if(T.length){const h=hay(e);for(const t of T){if(h.indexOf(t)<0)return false;}}return true;});return VIS;}
-function hl(text){const T=terms();const s=esc(text);if(!T.length)return s;const re=new RegExp(T.map(t=>esc(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'gi');return s.replace(re,m=>'<mark>'+m+'</mark>');}
-function fmt(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong class="hl">$1</strong>');}
+function computeVis(){const T=terms();VIS=LIST.filter(e=>{if(S.f==='star'&&!S.star[e.id])return false;if(S.ch&&e.ch.indexOf(S.ch)<0)return false;if(T.length){const h=hay(e);for(const t of T){if(h.indexOf(t)<0)return false;}}return true;});
+  /* 搜索时按相关度排序（无搜索词时保持时间顺序，重点 / 章节筛选不受影响）：
+     标题命中最优先——标题里含词的排最前，标题命中次数多的再靠前；其余按正文
+     命中总次数降序，同分按时间先后。目录、结果导航（第几个结果）、搜索后自动
+     跳转的落点（VIS[0]）共用这个顺序，所以搜「辛亥革命」先落到标题就是
+     辛亥革命的「武昌起义·辛亥革命」，而不是正文偶然提到的节点 */
+  if(T.length&&VIS.length>1){
+    const scored=VIS.map((e,i)=>{
+      const info=matchInfo(e);
+      const tf=info?info.fields.find(f=>f.key==='t'):null;
+      return {e:e,i:i,title:tf?1:0,tcount:tf?tf.count:0,total:info?info.total:0};
+    });
+    scored.sort((a,b)=>(b.title-a.title)||(b.tcount-a.tcount)||(b.total-a.total)||(a.i-b.i));
+    VIS=scored.map(x=>x.e);
+  }
+  return VIS;}
+function hl(text){const T=terms();const s=esc(text);if(!T.length)return s;const re=new RegExp(T.map(t=>esc(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'gi');return s.replace(re,m=>'<mark class="qmark">'+m+'</mark>');}
+const escRe=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/* 给已生成的 HTML 标注搜索词：按标签切分，只在文本节点里包 <mark>，不碰标签本身与属性 */
+function markHTML(h){const T=terms();if(!T.length)return h;const re=new RegExp('('+T.map(escRe).join('|')+')','gi');return h.split(/(<[^>]+>)/g).map((seg,i)=>i%2===1?seg:seg.replace(re,'<mark class="qmark">$1</mark>')).join('');}
+function fmt(t){return markHTML(esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong class="hl">$1</strong>'));}
+/* 命中位置解析：逐字段数搜索词出现次数，考点 / 易混按「第几条」逐条报，
+   供目录摘录、详情定位条共用——用户问「搜索词在知识点哪里」，答案精确到条 */
+function matchInfo(e){
+  const T=terms();if(!T.length)return null;
+  const countIn=text=>{const low=String(text==null?'':text).toLowerCase();let n=0;for(const t of T){let i=0;while(t&&(i=low.indexOf(t,i))>=0){n++;i+=t.length;}}return n;};
+  const fields=[];const add=(key,label,text,idx)=>{const c=countIn(text);if(c)fields.push({key:key,label:label,count:c,idx:(idx==null?-1:idx),text:String(text==null?'':text)});};
+  add('t','标题',e.t);add('d','时间',e.d);if(e.p)add('p','地点',e.p);add('s','意义',e.s);add('b','背景',e.b);
+  e.k.forEach((x,i)=>add('k','考点第'+(i+1)+'条',x,i));
+  e.q.forEach((x,i)=>add('q','易混·考法第'+(i+1)+'条',x,i));
+  if(e.m)add('m','口诀',e.m);
+  if(!fields.length)return null;
+  return {fields:fields,total:fields.reduce((a,f)=>a+f.count,0)};
+}
+/* 目录摘录：优先取考点里的命中（其次易混、意义、背景、口诀），截命中点前后一小段并高亮 */
+function matchSnippet(e,info){
+  const order=['k','q','s','b','m','d','p','t'];let f=null;
+  for(const key of order){f=info.fields.find(x=>x.key===key);if(f)break;}
+  if(!f)return null;
+  if(f.key==='t')return {label:'标题',html:'搜索词在标题里，已高亮'};
+  const plain=f.text.replace(/\*\*/g,''),low=plain.toLowerCase();let idx=-1,len=0;
+  for(const t of terms()){const i=low.indexOf(t);if(i>=0&&(idx<0||i<idx)){idx=i;len=t.length;}}
+  if(idx<0)return {label:f.label,html:esc(plain.slice(0,44))+(plain.length>44?'…':'')};
+  const st=Math.max(0,idx-14),en=Math.min(plain.length,idx+len+22);
+  return {label:f.label,html:(st>0?'…':'')+hl(plain.slice(st,en))+(en<plain.length?'…':'')};
+}
+/* 详情定位条：命中总数 + 每个位置一颗标签，点标签跳到对应段落（见 jumpFromChip） */
+function matchBarHTML(e){
+  if(!terms().length)return '';
+  const info=matchInfo(e);if(!info)return '';
+  const chips=info.fields.map(f=>'<button class="mb-chip" type="button" data-jump="'+f.key+'" data-mi="'+f.idx+'">'+esc(f.label)+(f.count>1?' ×'+f.count:'')+'</button>').join('');
+  return '<div class="match-bar"><span class="mb-q">搜索命中 '+info.total+' 处</span>'+chips+'<span class="mb-hint">点标签定位到对应段落</span></div>';
+}
 function navList(){const id=curId();if(filtered()&&VIS.some(e=>e.id===id))return VIS;return LIST;}
 function neighbor(d){const L=navList(),i=L.findIndex(e=>e.id===curId());const j=i+d;return (i>=0&&j>=0&&j<L.length)?L[j]:null;}
 const isNarrow=()=>window.matchMedia('(max-width: 760px)').matches;
@@ -792,7 +873,10 @@ function renderChSel(){
 function flagsHTML(e){return (S.star[e.id]?'<i class="fs" title="重点">'+IC.starF+'</i>':'')+(S.done[e.id]?'<i class="fd" title="已掌握">'+IC.check+'</i>':'');}
 function itemInner(e){
   const chs=myChaps(e).map(x=>x.chap).join(' / ');
-  return '<span class="it-y">'+yr(e)+'</span><span class="it-m"><span class="it-t">'+hl(e.t)+'</span><span class="it-s">'+esc(shortDate(e))+(chs?' · '+esc(chs):'')+'</span></span><span class="it-f">'+flagsHTML(e)+'</span>';
+  let h='<span class="it-y">'+yr(e)+'</span><span class="it-m"><span class="it-t">'+hl(e.t)+'</span><span class="it-s">'+esc(shortDate(e))+(chs?' · '+esc(chs):'')+'</span>';
+  if(terms().length){const info=matchInfo(e);if(info){const sn=matchSnippet(e,info);if(sn)h+='<span class="it-match"><span class="it-loc">'+esc(sn.label)+'</span>'+sn.html+'</span>';}}
+  h+='</span><span class="it-f">'+flagsHTML(e)+'</span>';
+  return h;
 }
 function itemHTML(e,id){
   return '<button class="item" type="button" data-ripplet data-id="'+e.id+'"'+(e.id===id?' aria-current="true"':'')+'>'+itemInner(e)+'</button>';
@@ -820,7 +904,7 @@ function buildGroup(r){
   return g;
 }
 function renderList(){
-  computeVis();updateCap();
+  computeVis();updateCap();updateMatchNav();
   const list=$('#list'),id=curId();
   if(!emptyEl)emptyEl=document.createElement('div');
   if(!VIS.length){
@@ -831,8 +915,12 @@ function renderList(){
     return;
   }
   if(emptyEl.parentNode)emptyEl.remove();
-  const groups=[];let g=null;
-  VIS.forEach(e=>{const r=eraOf(e);if(!g||g.r!==r){g={r:r,items:[]};groups.push(g);}g.items.push(e);});
+  /* 按时代归并分组（不能按「连续同段」切分）：搜索结果按相关度排序后，同一时代的
+     节点未必相邻，连续切分会把一个时代拆成几段重复表头。无搜索时 VIS 本就是时间
+     顺序，归并结果与原来完全一致；有搜索时时代段按各自最佳名次的先后出现，
+     段内保持相关度顺序 */
+  const groups=[];const byEra=new Map();
+  VIS.forEach(e=>{const r=eraOf(e);let g=byEra.get(r.k);if(!g){g={r:r,items:[]};byEra.set(r.k,g);groups.push(g);}g.items.push(e);});
   const seenG=new Set(),seenI=new Set();
   groups.forEach(gr=>{
     seenG.add(gr.r.k);
@@ -871,7 +959,7 @@ function markList(scroll){
 function refreshFlags(id){const el=$('#list .item[data-id="'+id+'"] .it-f');if(el)el.innerHTML=flagsHTML(BY[id]);}
 
 /* ---------- 详情 ---------- */
-function tipHTML(x){const m=/^(易混|考法)：/.exec(x);return m?'<li><span class="k">'+m[1]+'</span>'+fmt(x.slice(m[0].length))+'</li>':'<li>'+fmt(x)+'</li>';}
+function tipHTML(x,i){const m=/^(易混|考法)：/.exec(x);const at=' data-mfield="q" data-mi="'+i+'"';return m?'<li'+at+'><span class="k">'+m[1]+'</span>'+fmt(x.slice(m[0].length))+'</li>':'<li'+at+'>'+fmt(x)+'</li>';}
 function actsHTML(e){
   const st=!!S.star[e.id],dn=!!S.done[e.id];
   return '<button class="btn sm star-btn'+(st?' on-star':'')+'" type="button" data-act="star" data-ripplet aria-pressed="'+st+'">'+(st?IC.starF:IC.star)+'<span>重点</span></button>'+
@@ -883,16 +971,17 @@ function cardHTMLFor(e,pv,nx){
   const r=eraOf(e);
   let h='<article class="card" data-era="'+r.k+'" aria-labelledby="ev-t">';
   h+='<div class="crumb"><span class="dot"></span><span>'+esc(r.name)+'</span><span class="yr">'+esc(r.range)+'</span></div>';
-  h+='<div class="head"><div class="year">'+yr(e)+'</div><div class="when"><span class="date">'+esc(e.d)+'</span>'+(e.p?'<span class="place">'+IC.pin+'<span>'+esc(e.p)+'</span></span>':'')+'</div><div class="acts" id="acts">'+actsHTML(e)+'</div></div>';
-  h+='<h2 class="title" id="ev-t">'+esc(e.t)+'</h2>';
+  h+='<div class="head"><div class="year">'+yr(e)+'</div><div class="when"><span class="date" data-mfield="d">'+hl(e.d)+'</span>'+(e.p?'<span class="place" data-mfield="p">'+IC.pin+'<span>'+hl(e.p)+'</span></span>':'')+'</div><div class="acts" id="acts">'+actsHTML(e)+'</div></div>';
+  h+='<h2 class="title" id="ev-t" data-mfield="t">'+hl(e.t)+'</h2>';
   /* 章节标签按键已删除：不需要点击跳转筛选，也不需要在正文里注明第几章，
      且整颗按钮压在翻页滑动区上会干扰左右滑（2026-11-14 用户要求） */
-  h+='<p class="sig"><span class="lab">意义</span>'+fmt(e.s)+'</p>';
+  h+=matchBarHTML(e);
+  h+='<p class="sig" data-mfield="s"><span class="lab">意义</span>'+fmt(e.s)+'</p>';
   const WS='<div class="wave-sep" aria-hidden="true"></div>';
-  h+=WS+'<section class="blk"><h3 class="lab">背景</h3><p class="bg">'+fmt(e.b)+'</p></section>';
-    h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ol></section>';
-    if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map(tipHTML).join('')+'</ul></section>';
-    if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn">'+fmt(e.m)+'</p></section>';
+  h+=WS+'<section class="blk"><h3 class="lab">背景</h3><p class="bg" data-mfield="b">'+fmt(e.b)+'</p></section>';
+    h+=WS+'<section class="blk"><h3 class="lab">考点</h3><ol class="pts">'+e.k.map((x,i)=>'<li data-mfield="k" data-mi="'+i+'">'+fmt(x)+'</li>').join('')+'</ol></section>';
+    if(e.q.length)h+=WS+'<section class="blk"><h3 class="lab">易混 · 考法</h3><ul class="tips">'+e.q.map((x,i)=>tipHTML(x,i)).join('')+'</ul></section>';
+    if(e.m)h+=WS+'<section class="blk"><h3 class="lab">口诀</h3><p class="mn" data-mfield="m">'+fmt(e.m)+'</p></section>';
   h+='</article>';
   return h;
 }
@@ -1328,14 +1417,17 @@ function select(id,o){
      拍一张快照再交叉淡化，中端安卓上每次切换都是一次肉眼可见的重卡（2026-11-14
      用户报「每次切换都会狠狠的卡一下」）；窄屏直接换内容 + 卡片原有的 enter
      轻滑入，便宜且跟手。桌面 / 平板保留 VT 的共享元素过渡 */
-  else if(!immersiveOn&&!o.auto&&!isNarrow()&&document.startViewTransition&&!reducedMotion()){
+  else if(!immersiveOn&&!o.auto&&!o.focusMatch&&!isNarrow()&&document.startViewTransition&&!reducedMotion()){
     vtBusy=true;
     try{document.startViewTransition(()=>{swap();vtBusy=false;});}
     catch(_){vtBusy=false;swap();}
   }else swap();
   if(immersiveOn){/* 侧栏高亮 / 时间轴游标同属冻结的背景，一并推迟到退出沉浸时同步 */}
   else{markList(o.from!=='list');updateCursor();}
+  updateMatchNav();
   setHash();
+  /* 搜索定位：新页渲染完再滚动到第一个命中段落（考点优先），避免与换页动画抢同一帧 */
+  if(o.focusMatch)requestAnimationFrame(()=>requestAnimationFrame(()=>focusFirstMatch()));
   if(o.from==='list'&&isNarrow())closeSide();
 }
 function step(d){const x=neighbor(d);if(x){select(x.id,{auto:step.auto});return true;}return false;}
@@ -1346,7 +1438,56 @@ function renderAll(){
 }
 function afterFilter(){renderList();paintDots();renderDetail();ensureVisible($('#list .item[aria-current]'),false);}
 function setFilter(f){S.f=f;$$('.chip').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.f===f)));syncPills(true);if(f==='star'){const c=$('.chip[data-f="star"]');if(c&&!reducedMotion()){c.classList.remove('is-pop');void c.offsetWidth;c.classList.add('is-pop');}}afterFilter();}
-function setQ(v){S.q=v;const q=$('#q');if(q.value!==v)q.value=v;$('#clearQ').hidden=!v;$('#kbd').style.display=v?'none':'';afterFilter();}
+/* 搜索结果导航条：搜索时显示当前是第几个结果，上/下按钮与回车在结果间循环定位 */
+function updateMatchNav(){
+  const nav=$('#matchNav');if(!nav)return;
+  const on=terms().length>0;nav.hidden=!on;if(!on)return;
+  const txt=$('#matchNavTxt'),pv=$('#matchPrev'),nx=$('#matchNext');
+  if(!VIS.length){txt.textContent='没有匹配的节点';pv.disabled=true;nx.disabled=true;return;}
+  pv.disabled=false;nx.disabled=false;
+  const i=VIS.findIndex(e=>e.id===curId());
+  txt.textContent=i>=0?('第 '+(i+1)+' / '+VIS.length+' 个结果'):(VIS.length+' 个结果');
+}
+function gotoMatch(d){
+  if(!VIS.length)return;
+  let i=VIS.findIndex(e=>e.id===curId());
+  i=i<0?(d>0?0:VIS.length-1):(i+d+VIS.length)%VIS.length;
+  select(VIS[i].id,{from:'search',focusMatch:true});
+}
+/* 把某个命中段落滚进视野并闪烁标示：段落本身一层黄闪、段内第一个搜索词再脉冲一次 */
+function scrollMatchTarget(target,scroller){
+  if(!target||!scroller)return;
+  const sr=scroller.getBoundingClientRect(),tr=target.getBoundingClientRect();
+  const top=scroller.scrollTop+(tr.top-sr.top)-Math.min(110,scroller.clientHeight*0.2);
+  try{scroller.scrollTo({top:Math.max(0,top),behavior:reducedMotion()?'auto':'smooth'});}catch(_){scroller.scrollTop=Math.max(0,top);}
+  target.classList.remove('match-flash');void target.offsetWidth;target.classList.add('match-flash');
+  setTimeout(()=>target.classList.remove('match-flash'),1900);
+  const mk=target.querySelector('mark.qmark');
+  if(mk){mk.classList.add('qmark-on');setTimeout(()=>mk.classList.remove('qmark-on'),1900);}
+}
+/* 自动定位落点：第一个带高亮的段落，考点（知识点）优先 */
+function focusFirstMatch(){
+  const host=immersiveOn?$('#immDetail'):$('#detail');if(!host)return;
+  const scroller=immersiveOn?$('#immScroll'):$('#detail');
+  const cands=$$('[data-mfield]',host).filter(el=>el.querySelector('mark.qmark'));
+  if(!cands.length)return;
+  scrollMatchTarget(cands.find(el=>el.dataset.mfield==='k')||cands[0],scroller);
+}
+/* 详情定位条的标签点击：按字段 + 条号找到对应段落并定位 */
+function jumpFromChip(btn){
+  const card=btn.closest('.card');if(!card)return;
+  const key=btn.dataset.jump,mi=btn.dataset.mi;
+  const target=card.querySelector('[data-mfield="'+key+'"]'+(mi&&mi!=='-1'?'[data-mi="'+mi+'"]':''));
+  if(!target)return;
+  scrollMatchTarget(target,target.closest('.imm-scroll')||target.closest('.detail')||$('#detail'));
+}
+let qTimer=0;
+function setQ(v){S.q=v;const q=$('#q');if(q.value!==v)q.value=v;$('#clearQ').hidden=!v;$('#kbd').style.display=v?'none':'';afterFilter();
+  /* 搜索后自动定位：停顿 300ms 后，若当前节点不在结果里，跳到第一个结果节点
+     并滚动到它命中的知识点；当前节点已在结果里则不动，不打断正在看的页面 */
+  clearTimeout(qTimer);
+  if(terms().length){const qv=v;qTimer=setTimeout(()=>{if(S.q===qv&&VIS.length&&!VIS.some(e=>e.id===curId()))select(VIS[0].id,{from:'search',focusMatch:true});},300);}
+}
 function setCh(c){S.ch=c;renderChSel();afterFilter();}
 function toggle(kind){
   const e=cur(),m=kind==='star'?S.star:S.done;
@@ -1523,7 +1664,9 @@ const sideOpen=()=>$('#side').classList.contains('open');
 
 $$('.chip').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.f)));
 $('#q').addEventListener('input',ev=>setQ(ev.target.value));
-$('#q').addEventListener('keydown',ev=>{if(ev.key==='Enter'){const f=VIS[0];if(f)select(f.id,{from:'list'});ev.target.blur();}});
+$('#q').addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();gotoMatch(ev.shiftKey?-1:1);}});
+$('#matchPrev').addEventListener('click',()=>gotoMatch(-1));
+$('#matchNext').addEventListener('click',()=>gotoMatch(1));
 $('#clearQ').addEventListener('click',()=>{dissolveClear();$('#q').focus();});
 $('#chSel').addEventListener('change',ev=>setCh(ev.target.value));
 $('#chSel').addEventListener('click',()=>{const w=$('#selWrap');w.classList.remove('pop');void w.offsetWidth;w.classList.add('pop');});
@@ -1535,6 +1678,7 @@ $('#list').addEventListener('click',ev=>{
 $('#detail').addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.go){select(b.dataset.go);return;}
+  if(b.dataset.jump){jumpFromChip(b);return;}
   const a=b.dataset.act;
   if(a==='star'||a==='done')toggle(a);
 });
@@ -2251,6 +2395,7 @@ $('#immersiveExit').addEventListener('click',()=>exitImmersive());
 $('#immDetail').addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.go){select(b.dataset.go);return;}
+  if(b.dataset.jump){jumpFromChip(b);return;}
   const a=b.dataset.act;
   if(a==='star'||a==='done'){
     toggle(a);renderOverlayCard(true);
